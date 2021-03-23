@@ -1,0 +1,10 @@
+.ordersContainer {
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1em;
+    .ordersContainer__ordersTable{
+        min-width: 80vw;
+    }
+}
