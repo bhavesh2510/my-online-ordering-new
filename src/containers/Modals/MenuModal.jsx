@@ -34,11 +34,11 @@ const MenuModal = ({item}) => {
       </Button>
       {console.log("Item passed to the modal", item)}
       {console.log("forcedModifiers", getForcedModifiers(item))}
-      <Modal style={{ top:"25%" }} isOpen={modal} toggle={toggle}>
+      <Modal style={{ top:"25%"}} isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>
           {item.title || item.cname || item.name}
         </ModalHeader>
-        <ModalBody>
+        <ModalBody style={{maxHeight:"400px", overflowY:"scroll" }} >
           <ForcedModifiers
             forcedModifier={getForcedModifiers(item)}
             detours = {item.detour_ids}

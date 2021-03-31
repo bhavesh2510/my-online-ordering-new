@@ -4,6 +4,7 @@ import { FormGroup, Input, Label } from 'reactstrap';
 const OptionalModifiers = ({ optionalModifier , symbol}) => {
   return(
       <div>
+        {console.log("OPTIONAL MODIFIERS", optionalModifier)}
           {optionalModifier.map((item)=>{
               if(item){
                   return(
