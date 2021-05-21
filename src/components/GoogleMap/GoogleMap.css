@@ -1,0 +1,10 @@
+.google-map-container {
+  position: relative;
+  width: 500px;
+  height:350px;
+}
+
+.address-info {
+  padding: 5px;
+  line-height: 1.5;
+}

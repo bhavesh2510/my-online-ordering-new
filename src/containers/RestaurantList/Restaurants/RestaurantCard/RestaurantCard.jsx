@@ -4,7 +4,7 @@ import React from "react";
 const RestaurantCard = ({ restaurant }) => {
   return (
     <a
-      href={`${`${process.env.REACT_APP_PUBLIC_URL}restId=${restaurant.restaurant_id}/menu`}`}
+      href={`${`?/restId=${restaurant.restaurant_id}/menu`}`}
       className="strip_list"
     >
       <div className="ribbon_1">Popular</div>

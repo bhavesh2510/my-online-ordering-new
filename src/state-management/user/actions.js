@@ -52,6 +52,9 @@ export function hideLoginFormMethod(error) {
 export function showForgotPasswordFormMethod() {
   return { type: actionTypes.SHOW_FORGOT_PASSWORD_FORM };
 }
+export function showRegisterFormMethod() {
+  return { type: actionTypes.SHOW_REGISTER_FORM };
+}
 
 export function hideForgotPasswordFormMethod() {
   return { type: actionTypes.HIDE_FORGOT_PASSWORD_FORM };
@@ -94,9 +97,9 @@ export function postPasswordUpdateFailure(payload) {
 }
 // REGISTER ACTIONS
 
-export function showRegisterFormMethod() {
-  return { type: actionTypes.SHOW_REGISTER_FORM };
-}
+// export function showRegisterFormMethod() {
+//   return { type: actionTypes.SHOW_REGISTER_FORM };
+// }
 
 export function hideRegisterFormMethod() {
   return { type: actionTypes.HIDE_REGISTER_FORM };
@@ -269,9 +272,8 @@ export function fetchAddressesListRequest() {
 }
 
 export function fetchAddressesListSuccess(payload) {
-  console.log("fetchAddressesListSuccess: ",payload);
+  console.log("fetchAddressesListSuccess: ", payload);
   return {
-    
     type: actionTypes.FETCH_ADDRESS_SUCCESS,
     payload,
   };
@@ -368,7 +370,6 @@ export function setDeliveryTime(deliveryTime) {
   };
 }
 
-
 export function setDeliveryCost(payload) {
   return {
     type: actionTypes.SET_DELIVERY_COST,
@@ -387,7 +388,7 @@ export function setPhoneCode(phonecode) {
 
 //set default address
 
-export function setDefaultAddress(defaultAddress){
+export function setDefaultAddress(defaultAddress) {
   return {
     type: actionTypes.SET_DEFAULT_ADDRESSS,
     defaultAddress,

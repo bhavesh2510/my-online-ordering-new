@@ -156,6 +156,7 @@ export function postMyProfileForm(clientId) {
 }
 
 export function postProfile(updateData) {
+  console.log("updatedatais", updateData);
   return async (dispatch) => {
     dispatch(actions.postMyProfileFormRequest());
     const url = "https://ciboapp.com/api/clients/v2/user/editProfile";
@@ -171,6 +172,24 @@ export function postProfile(updateData) {
   };
 }
 
+export function updateProfile(updateData) {
+  return async (dispatch) => {
+    dispatch(actions.postMyProfileFormRequest());
+    const url = "https://ciboapp.com/api/clients/v2/clientApi/editClientApi";
+
+    try {
+      console.log("UPDATE_DATA", updateData);
+      const profileData = { ...updateData };
+      const { data } = await axios.post(url, JSON.stringify(profileData));
+      console.log("Post Profile Data", data);
+      return dispatch(actions.updateMyProfileFormSuccess(data));
+    } catch (error) {
+      console.log("UPDATE_PROFILE", error);
+      return dispatch(actions.postMyProfileFormFailure(error));
+    }
+  };
+}
+
 // MyOrders
 export function fetchMyOrderList(userId) {
   return async (dispatch) => {
@@ -181,7 +200,7 @@ export function fetchMyOrderList(userId) {
       const dataOrderList = {
         userId,
         start: "0",
-        limit :"100000000"
+        limit: "100000000",
       };
       const esc = encodeURIComponent;
       const queryGetMenuItems = Object.keys(dataOrderList)

@@ -1,0 +1,27 @@
+.address-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  padding: 2%;
+  overflow: auto;
+}
+.main-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.add-address {
+  margin-left: 50px;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px dotted black;
+  padding: 100px;
+  height: auto;
+  width: 18rem;
+}

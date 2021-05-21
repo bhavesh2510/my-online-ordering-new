@@ -1,27 +1,28 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedCategoryId, displayHappyHours, displayPizzas } from "../../state-management/menu/actions";
-import {Link as ScrollLink, animateScroll as scroll} from 'react-scroll'
+import {
+  setSelectedCategoryId,
+  displayHappyHours,
+  displayPizzas,
+} from "../../state-management/menu/actions";
+import { Link as ScrollLink, animateScroll as scroll } from "react-scroll";
 const MenuCategories = React.memo(({ categories }) => {
   const menu = useSelector((state) => state.menu);
   const dispatch = useDispatch();
-  const [dishes, showDishes] = useState(false)
-  const [drinks, showDrinks] = useState(false) 
+  const [dishes, showDishes] = useState(false);
+  const [drinks, showDrinks] = useState(false);
   const isPizzaAvailable = menu.pizzas.length;
   const isHappyHoursActive = isHappyHoursActiveInMenu();
 
-
-  const onDishClick  = () => {
-    showDishes(!dishes)
-  }
-  const onDrinksClick = () =>{
-    showDrinks(!drinks)
-    
-  }
+  const onDishClick = () => {
+    showDishes(!dishes);
+  };
+  const onDrinksClick = () => {
+    showDrinks(!drinks);
+  };
   function isHappyHoursActiveInMenu() {
     return menu.menuItems.some(({ isHappyHourActive }) => isHappyHourActive);
   }
-
 
   return (
     <>
@@ -110,20 +111,27 @@ const MenuCategories = React.memo(({ categories }) => {
   );
 });
 
-const MenuSubCategory = React.memo(({list, searchQuery, selectedCategoryId, setSelectedCategoryId}) =>{
-  const dispatch = useDispatch();
-  const handleClick = (e, item) =>{
-    // e.stopPropagation();
-    dispatch(setSelectedCategoryId(item.category_id))
-    console.log(item);
+const MenuSubCategory = React.memo(
+  ({ list, searchQuery, selectedCategoryId, setSelectedCategoryId }) => {
+    console.log("list in menucategories is", list);
+    const dispatch = useDispatch();
+    const handleClick = (e, item) => {
+      // e.stopPropagation();
+      dispatch(setSelectedCategoryId(item.category_id));
+      console.log("items is", item);
+    };
+    return list.map((s_category) => {
+      return (
+        <li
+          key={s_category.category_id}
+          style={{ cursor: "pointer" }}
+          onClick={(e) => handleClick(e, s_category)}
+        >
+          <a style={{ color: "#5B53CD" }}>{s_category?.cname}</a>
+        </li>
+      );
+    });
   }
-  return list.map((s_category) => {
-    return (
-      <li key={s_category.category_id} style={{ cursor: "pointer" }} onClick = {(e)=>handleClick(e, s_category)}>
-        <a style={{ color: "#5B53CD" }}>{s_category?.cname}</a>
-      </li>
-    );
-  });
-})
+);
 
 export default MenuCategories;

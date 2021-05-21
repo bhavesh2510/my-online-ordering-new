@@ -16,14 +16,15 @@ const MenuItems = React.memo(
     //! Should filter isOnline isHappyhour active and need to implement details page for menun with subcategory,
     //! Should implement modifiers for the menu items,
     //? Need code splitting, load lazily because this is data intensive operation, create a suspense in main route.
-    
+
     //? Need to filter Pizzas and HappyHours based on isActive and isOnline
     const menu = useSelector((state) => state.menu);
     const allforcedModifiers = menu.allForcedModifier;
     const findCategory = (selectedCategoryId) => {
       console.log("memoized value");
       return menuItems.filter(
-        ({ category_id: cid, online }) => cid === selectedCategoryId && online === '1'
+        ({ category_id: cid, online }) =>
+          cid === selectedCategoryId && online === "1"
       );
     };
 
@@ -51,6 +52,7 @@ const MenuItems = React.memo(
           category["sub_category"].find(
             ({ category_id: cId }) => cId === selectedCategoryId
           );
+        console.log("subcategory is", subCategory);
         // cname = subCategory ? subCategory.cname : "";
         return subCategory ? subCategory.cname : "";
       }
@@ -67,6 +69,7 @@ const MenuItems = React.memo(
     };
 
     const getActualPrice = (item) => {
+      //console.log("item.price", item.price);
       if (menu.restaurantInfo) {
         // console.log("actual price", typeof(this.isPriceWithoutTax()));
         return isPriceWithoutTax()
@@ -81,37 +84,52 @@ const MenuItems = React.memo(
     };
 
     const getItemPrice = (item, isStillActive) => {
-    if (item.happyHourItem && isStillActive) {
-      if (item.similarItems && item.similarItems.length > 0) {
-        let totalPrice = 0;
+      if (item.happyHourItem && isStillActive) {
+        if (item.similarItems && item.similarItems.length > 0) {
+          let totalPrice = 0;
 
-        for (let i = 0; i < item.similarItems.length;i++) {
-          totalPrice += this.isPriceWithoutTax() ? item.similarItems[i].happyHourItem.subTotal : item.similarItems[i].happyHourItem.grandTotal;
+          for (let i = 0; i < item.similarItems.length; i++) {
+            totalPrice += this.isPriceWithoutTax()
+              ? item.similarItems[i].happyHourItem.subTotal
+              : item.similarItems[i].happyHourItem.grandTotal;
+          }
+
+          return Number(totalPrice).toFixed(2);
+        } else {
+          console.log("sub", Number(item.happyHourItem.subTotal).toFixed(2));
+          console.log(
+            "grand",
+            Number(item.happyHourItem.grandTotal).toFixed(2)
+          );
+          return this.isPriceWithoutTax()
+            ? Number(item.happyHourItem.subTotal).toFixed(2)
+            : Number(item.happyHourItem.grandTotal).toFixed(2);
         }
+      } else if (item.subTotal && item.grandTotal) {
+        if (item.similarItems && item.similarItems.length > 0) {
+          let totalPrice = 0;
 
-        return Number(totalPrice).toFixed(2);
-      } else {
-        console.log("sub", Number(item.happyHourItem.subTotal).toFixed(2));
-        console.log("grand", Number(item.happyHourItem.grandTotal).toFixed(2));
-        return this.isPriceWithoutTax()
-          ? Number(item.happyHourItem.subTotal).toFixed(2)
-          : Number(item.happyHourItem.grandTotal).toFixed(2);
-      }
-    } else if (item.subTotal && item.grandTotal) {
-      if (item.similarItems && item.similarItems.length > 0) {
-        let totalPrice = 0;
+          for (let i = 0; i < item.similarItems.length; i++) {
+            totalPrice += this.isPriceWithoutTax()
+              ? item.similarItems[i].subTotal || item.similarItems[i].price
+              : item.similarItems[i].grandTotal ||
+                this.getActualPrice(item.similarItems[i]);
+          }
 
-        for (let i = 0; i < item.similarItems.length;i++) {
-          totalPrice += this.isPriceWithoutTax() ? (item.similarItems[i].subTotal || item.similarItems[i].price) : (item.similarItems[i].grandTotal || this.getActualPrice(item.similarItems[i]));
+          return Number(totalPrice).toFixed(2);
+        } else {
+          console.log(
+            "log",
+            this.isPriceWithoutTax()
+              ? item.subTotal || item.price
+              : item.grandTotal || this.getActualPrice(item)
+          );
+          return this.isPriceWithoutTax()
+            ? item.subTotal || item.price
+            : item.grandTotal || this.getActualPrice(item);
         }
-
-        return Number(totalPrice).toFixed(2);
-      } else {
-        console.log("log", this.isPriceWithoutTax() ? (item.subTotal || item.price) : (item.grandTotal || this.getActualPrice(item)));
-        return this.isPriceWithoutTax() ? (item.subTotal || item.price) : (item.grandTotal || this.getActualPrice(item));
       }
-    }
-  }
+    };
 
     return (
       <>
@@ -136,13 +154,14 @@ const MenuItems = React.memo(
           // menuItems.filter(({ category_id: cid }) => cid === selectedCategoryId)
           filteredIems
         )} */}
-        
+
         {console.log("fltered items", filteredIems)}
         {console.log("check product type", filteredIems[0]?.productType)}
-        {(filteredIems[0]?.productType === "Dishes" || filteredIems[0]?.productType === "Drinks") ? (
+        {filteredIems[0]?.productType === "Dishes" ||
+        filteredIems[0]?.productType === "Drinks" ? (
           <MenuTable
             symbol={restaurantInfo.monetary_symbol}
-            actualPrice = {getActualPrice}
+            actualPrice={getActualPrice}
             category_name={getSelectedCategoryName()}
             list={filteredIems}
           />

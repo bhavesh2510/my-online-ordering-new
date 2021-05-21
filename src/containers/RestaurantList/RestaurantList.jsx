@@ -19,10 +19,11 @@ import {
   fetchRestuarantList,
 } from "../../state-management/main/asyncActions";
 // import "./RestaurantList.scss";
-import  Restaurants  from "./Restaurants/";
+import Restaurants from "./Restaurants/";
 import PageNotFound from "../../components/PageNotFound/PageNotFound";
 import LoadingBar from "../../components/LoadingBar/LoadingBar";
 import RestaurantInformation from "../RestaurantInformation/RestaurantInformation";
+import Login from "../../components/Login/Login";
 // import { LoadingBar } from "../../components/LoadingBar";
 
 class RestaurantList extends React.PureComponent {
@@ -102,8 +103,9 @@ class RestaurantList extends React.PureComponent {
               {/* <Route path="*">
                 <PageNotFound />
               </Route> */}
-            {/* Should fimd a way to redirect 404 */}
+              {/* Should fimd a way to redirect 404 */}
             </Switch>
+
             {console.log("selectedRestaurant", this.props.selectedRestaurant)}
             {this.props.selectedRestaurant ? (
               <RestaurantInformation

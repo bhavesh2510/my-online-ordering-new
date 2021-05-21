@@ -5,7 +5,7 @@ import { clearState } from "../utils/localStorage";
 const REDUCER_KEY = "user-reducer";
 
 const initialState = {
-  delivery_cost :"",
+  delivery_cost: "",
   showLoginForm: false,
   showForgotPasswordForm: false,
   showRegisterForm: false,
@@ -29,7 +29,7 @@ const initialState = {
   selectedDeliveryTime: null,
   selectedPickUpTime: null,
   deliveryOption: null,
-  defaultAddress:null,
+  defaultAddress: null,
   selectedAddress: null,
   distance: -1,
   isTakeAway: false,
@@ -91,6 +91,11 @@ const userReducer = (state = initialState, action) => {
         showLoginForm: true,
         showRegisterForm: false,
         showForgotPasswordForm: false,
+      };
+    case actionTypes.SHOW_REGISTER_FORM:
+      return {
+        ...state,
+        showRegisterForm: true,
       };
     case actionTypes.HIDE_LOGIN_FORM:
       return {
@@ -234,16 +239,16 @@ const userReducer = (state = initialState, action) => {
         selectedPickUpTime: `${action.pickupTime}:00`,
       };
     }
-    case actionTypes.SET_PHONE_CODE:{
+    case actionTypes.SET_PHONE_CODE: {
       return {
         ...state,
-       user:{
-         ...state.user,
-         phonecode:action.phonecode
-       }
-      }
+        user: {
+          ...state.user,
+          phonecode: action.phonecode,
+        },
+      };
     }
-    case actionTypes.SET_DEFAULT_ADDRESSS:{
+    case actionTypes.SET_DEFAULT_ADDRESSS: {
       return {
         ...state,
         defaultAddress: action.defaultAddress,
@@ -256,12 +261,12 @@ const userReducer = (state = initialState, action) => {
       };
     }
 
-  case actionTypes.SET_DELIVERY_COST:{
-    return{
-      ...state,
-      delivery_cost : action.payload
+    case actionTypes.SET_DELIVERY_COST: {
+      return {
+        ...state,
+        delivery_cost: action.payload,
+      };
     }
-  }
 
     case actionTypes.POST_MYPROFILE_FORM_SUCCESS: {
       newState = {

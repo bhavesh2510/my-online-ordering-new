@@ -1,0 +1,61 @@
+.modal-container {
+  position: fixed;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 120;
+}
+
+.align-container-center {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+.choose-address-box {
+  height: 500px;
+  width: 500px;
+  background-color: white;
+  border-radius: 5px;
+}
+.close {
+  color: white;
+  float: right;
+
+  cursor: pointer;
+}
+.close:hover {
+  color: black;
+  cursor: pointer;
+}
+.header {
+  margin: 20px;
+  /* margin-left: 20px; */
+}
+.login-form {
+  /* //margin: 20px; */
+  margin-left: 40px;
+}
+.login-buttons {
+  width: 80%;
+  margin-top: 20px;
+  margin-left: 40px;
+}
+.login-with-facebook button {
+  display: flex !important;
+
+  justify-content: center;
+  line-height: 11px;
+  width: 100%;
+  font-size: medium !important;
+}
+.login-with-Google button {
+  display: flex !important;
+  justify-content: center;
+  line-height: 11px;
+  width: 100%;
+  font-size: medium !important;
+}

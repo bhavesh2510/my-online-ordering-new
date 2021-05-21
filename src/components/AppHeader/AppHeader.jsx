@@ -1,29 +1,45 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
-import Logo from '../../assets/img/zottoLogo.png'
+import Logo from "../../assets/img/zottoLogo.png";
+import {
+  setUserLoggedOut,
+  showLoginFormMethod,
+  showRegisterFormMethod,
+} from "../../state-management/user/actions";
 // import "./AppHeader.scss";
 
 const Appheader = () => {
-  const menu = useSelector((state)=>state.menu)
-  const [navbar, setNavbar] = useState(false);
-  const history = useHistory()
+  const History = useHistory();
+  const menu = useSelector((state) => state.menu);
 
-  const changeBackground = () =>{
-    if (window.scrollY>=60){
+  const [navbar, setNavbar] = useState(false);
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const changeBackground = () => {
+    if (window.scrollY >= 60) {
       setNavbar(true);
-    }
-    else{
+    } else {
       setNavbar(false);
     }
-  }
+  };
 
-  window.addEventListener('scroll', changeBackground);
+  window.addEventListener("scroll", changeBackground);
+
+  const callLogout = () => {
+    dispatch(setUserLoggedOut());
+    window.location.replace(
+      `${process.env.REACT_APP_PUBLIC_URL}restId=${menu.restaurantInfo.restaurant_id}/menu`
+    );
+  };
 
   return (
     <header
+      className="main-header"
       style={{
-        background: `${navbar ? "#242B2E" : "transparent"}`,
+        background: `${navbar ? "#242B2E" : "#242B2E"}`,
         boxShadow: "1px 6px 18px -4px #000000",
       }}
     >
@@ -60,46 +76,87 @@ const Appheader = () => {
                       //     `${process.env.REACT_APP_PUBLIC_URL}chainId=${menu.restaurantInfo.chain_owner_id}`
                       //   )
                       // }
-                      href={`${process.env.REACT_APP_PUBLIC_URL}chainId=${menu.restaurantInfo.chain_owner_id}`}
+                      href={`?/chainId=${menu.restaurantInfo.chain_owner_id}`}
                     >
                       Home
                     </a>
                   </li>
                 ) : null}
                 <li>
-                  <a href="about.html">About us</a>
-                </li>
-                <li className="submenu">
-                  <a href="javascript:void(0);" className="show-submenu">
-                    User
-                    <i className="icon-down-open-mini" />
+                  <a
+                    href={`?/restId=${menu.restaurantInfo.restaurant_id}/menu`}
+                  >
+                    Menu
                   </a>
-                  <ul>
-                    <li>
-                      <a href="list_page.html">Edit Profile</a>
-                    </li>
-                    <li>
-                      <a href="grid_list.html">Manage Addresses</a>
-                    </li>
-                    <li>
-                      <Link
-                        to={`${process.env.REACT_APP_PUBLIC_URL}restId=${menu.restaurantInfo.restaurant_id}/myOrders`}
-                      >
-                        My Orders
-                      </Link>
-                    </li>
-                    <li>
-                      <a href="detail_page.html">Logout</a>
-                    </li>
-                  </ul>
                 </li>
+
+                {user.user.isUserLoggedIn ? (
+                  <li className="submenu">
+                    {user.user.isUserLoggedIn ? (
+                      <a href="javascript:void(0);" className="show-submenu">
+                        {user.user.firstName}
+                        <i className="icon-down-open-mini" />
+                      </a>
+                    ) : (
+                      <a href="javascript:void(0);" className="show-submenu">
+                        user
+                        <i className="icon-down-open-mini" />
+                      </a>
+                    )}
+                    {/* <a href="javascript:void(0);" className="show-submenu">
+                    user
+                    <i className="icon-down-open-mini" />
+                  </a> */}
+
+                    <ul>
+                      <li>
+                        <a
+                          href={`?/restId=${menu.restaurantInfo.restaurant_id}/myProfile`}
+                          //onClick={()=>History.push(`/restId=${menu.restaurantInfo.restaurant_id}/myProfile`)}
+                        >
+                          Edit Profile
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href={`?/restId=${menu.restaurantInfo.restaurant_id}/manageAddress`}
+                        >
+                          Manage Addresses
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href={`?/restId=${menu.restaurantInfo.restaurant_id}/myOrders`}
+                        >
+                          My Orders
+                        </a>
+                      </li>
+                      <li>
+                        <a onClick={callLogout} style={{ cursor: "pointer" }}>
+                          Logout
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                ) : null}
+
                 <li>
-                  <a href="#0" data-toggle="modal" data-target="#login_2">
+                  <a
+                    style={{ color: "white", cursor: "pointer" }}
+                    onClick={() => dispatch(showLoginFormMethod())}
+                    data-toggle="modal"
+                    data-target="#login_2"
+                  >
                     Login
                   </a>
                 </li>
                 <li>
-                  <a href="#0" data-toggle="modal" data-target="#login_2">
+                  <a
+                    style={{ color: "white", cursor: "pointer" }}
+                    onClick={() => dispatch(showRegisterFormMethod())}
+                    data-toggle="modal"
+                    data-target="#login_2"
+                  >
                     Register
                   </a>
                 </li>

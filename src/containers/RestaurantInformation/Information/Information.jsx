@@ -1,30 +1,71 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import {animateScroll as scroll} from 'react-scroll'
+import { animateScroll as scroll } from "react-scroll";
 import MenuCategories from "../../../components/MenuCategories/MenuCategories";
 import MenuItems from "../../MenuItems/MenuItems";
+import Cart from "../../../components/Cart/Cart";
+import Login from "../../../components/Login/Login";
+import CreateAccount from "../../../components/CreateAccount/CreateAccount";
+import ForgotPassword from "../../../components/ForgotPassword/ForgotPassword";
+import AppHeader from "../../../components/AppHeader/AppHeader";
+import Footer from "../../../components/Footer/Footer";
 
 const buttonStyle = {
-  position:"fixed",
+  position: "fixed",
   bottom: "5%",
-  right:"10%",
-  border:"none",
-  outline:"none",
-  backgroundColor:"#5B53CD",
+  right: "10%",
+  border: "none",
+  outline: "none",
+  backgroundColor: "#5B53CD",
   borderRadius: "20px",
-  height:"50px",
-  color:"white",
-  fontSize:"0.8rem",
-  fontWeight:"600",
-}
+  height: "50px",
+  color: "white",
+  fontSize: "0.8rem",
+  fontWeight: "600",
+};
 
 const Information = (props) => {
   const menu = useSelector((state) => state.menu);
-  const scrollToTop = () =>{
-    scroll.scrollToTop()
-  }
+  const user = useSelector((state) => state.user);
+  console.log("menu in selector is", menu);
+  const scrollToTop = () => {
+    scroll.scrollToTop();
+  };
+
+  const handleAddItem = (item, isHappyHoursActive) => {
+    console.log("items in cart is", item);
+    // if (item.optional_modifier !== '0' || item.forced_modifier !== '0') {
+    //   if (item.qty) {
+    //     this.props.openModal(
+    //       modalNames.INTERMEDIATE_ADD_MODAL,
+    //       {
+    //         item: {
+    //           ...item,
+    //           isHappyHoursActive,
+    //         },
+    //       },
+    //     );
+    //   } else {
+    //     this.props.openModal(
+    //       modalNames.DISH_MODAL,
+    //       {
+    //         item: {
+    //           ...item,
+    //           isHappyHoursActive,
+    //         },
+    //       },
+    //     );
+    //   }
+
+    //   return;
+    // }
+
+    // this.props.addItem(item, null, 0, this.props.restaurantInfo);
+  };
+
   return (
     <>
+      <AppHeader />
       {console.log("informations", props)}
       <section
         className="parallax-window"
@@ -69,7 +110,7 @@ const Information = (props) => {
               {`${props.restaurantInfo.address} - ${props.restaurantInfo.city} - ${props.restaurantInfo.country}`}{" "}
               <strong>Delivery charge:</strong> free over{" "}
               {props.restaurantInfo?.monetary_symbol}-
-              {props.restaurantInfo.cost.free_delivery_eligible_amount}.
+              {/* {props.restaurantInfo.cost.free_delivery_eligible_amount}. */}
             </div>
           </div>
           {/* End sub_content */}
@@ -132,144 +173,27 @@ const Information = (props) => {
               className="theiaStickySidebar"
               style={{ position: "sticky", top: "65px" }}
             >
-              <div id="cart_box">
-                <h3>
-                  Your order <i className="icon_cart_alt float-right" />
-                </h3>
-                <table className="table table_summary">
-                  <tbody>
-                    <tr>
-                      <td>
-                        <a href="#0" className="remove_item">
-                          <i className="icon_minus_alt" />
-                        </a>{" "}
-                        <strong>1x</strong> Enchiladas
-                      </td>
-                      <td>
-                        <strong className="float-right">$11</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <a href="#0" className="remove_item">
-                          <i className="icon_minus_alt" />
-                        </a>{" "}
-                        <strong>2x</strong> Burrito
-                      </td>
-                      <td>
-                        <strong className="float-right">$14</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <a href="#0" className="remove_item">
-                          <i className="icon_minus_alt" />
-                        </a>{" "}
-                        <strong>1x</strong> Chicken
-                      </td>
-                      <td>
-                        <strong className="float-right">$20</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <a href="#0" className="remove_item">
-                          <i className="icon_minus_alt" />
-                        </a>{" "}
-                        <strong>2x</strong> Corona Beer
-                      </td>
-                      <td>
-                        <strong className="float-right">$9</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <a href="#0" className="remove_item">
-                          <i className="icon_minus_alt" />
-                        </a>{" "}
-                        <strong>2x</strong> Cheese Cake
-                      </td>
-                      <td>
-                        <strong className="float-right">$12</strong>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <hr />
-                <div className="row" id="options_2">
-                  <div className="col-xl-4 col-md-12 col-sm-12 col-4">
-                    <label>
-                      <input
-                        type="radio"
-                        defaultValue
-                        defaultChecked
-                        name="option_2"
-                        className="icheck"
-                      />
-                      Delivery
-                    </label>
-                  </div>
-                  <div className="col-xl-4 col-md-12 col-sm-12 col-4">
-                    <label>
-                      <input
-                        type="radio"
-                        defaultValue
-                        name="option_2"
-                        className="icheck"
-                      />
-                      Eat In
-                    </label>
-                  </div>
-                  <div className="col-xl-4 col-md-12 col-sm-12 col-4">
-                    <label>
-                      <input
-                        type="radio"
-                        defaultValue
-                        name="option_2"
-                        className="icheck"
-                      />
-                      Take Away
-                    </label>
-                  </div>
-                </div>
-                {/* Edn options 2 */}
-                <hr />
-                <table className="table table_summary">
-                  <tbody>
-                    <tr>
-                      <td>
-                        Subtotal <span className="float-right">$56</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        Delivery fee <span className="float-right">$10</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="total">
-                        TOTAL <span className="float-right">$66</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <hr />
-                <a
-                  className="btn_full"
-                  href="cart.html"
-                  style={{ backgroundColor: "#5B53CD" }}
-                >
-                  Order now
-                </a>
-              </div>
+              <Cart
+                addItem={handleAddItem}
+                restinfo={menu.restaurantInfo}
+                cartlist={menu.cart}
+              />
+
               {/* End cart_box */}
             </div>
             {/* End theiaStickySidebar */}
           </div>
+
           {/* End col */}
         </div>
+
         {/* End row */}
       </div>
+
+      {user.showLoginForm ? <Login /> : null}
+      {user.showRegisterForm ? <CreateAccount /> : null}
+      {user.showForgotPasswordForm ? <ForgotPassword /> : null}
+      <Footer />
     </>
   );
 };
