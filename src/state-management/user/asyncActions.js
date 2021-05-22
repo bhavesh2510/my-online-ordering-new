@@ -190,6 +190,26 @@ export function updateProfile(updateData) {
   };
 }
 
+export function updatePassword(updatePasswordData) {
+  return async (dispatch) => {
+    dispatch(actions.postChangePasswordrequest());
+    const url = "https://ciboapp.com/api/clients/v2/client/changePassword";
+
+    try {
+      console.log("password update data", updatePasswordData);
+      const updatechangepassword = { ...updatePasswordData };
+      const { data } = await axios.post(
+        url,
+        JSON.stringify(updatechangepassword)
+      );
+      return dispatch(actions.postChangePasswordrequestSuccess(data));
+    } catch (error) {
+      console.log("update_password", error);
+      return dispatch(actions.postChangePasswordrequestFailure(error));
+    }
+  };
+}
+
 // MyOrders
 export function fetchMyOrderList(userId) {
   return async (dispatch) => {

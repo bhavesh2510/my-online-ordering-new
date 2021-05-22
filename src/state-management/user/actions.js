@@ -182,6 +182,28 @@ export function updateMyProfileFormSuccess(payload) {
     payload,
   };
 }
+//start
+export function postChangePasswordrequest() {
+  return {
+    type: actionTypes.POST_CHANGE_PASSWORD_REQUEST,
+  };
+}
+
+export function postChangePasswordrequestSuccess(payload) {
+  return {
+    type: actionTypes.POST_CHANGE_PASSWORD_SUCCESS,
+    payload,
+  };
+}
+
+export function postChangePasswordrequestFailure(payload) {
+  return {
+    type: actionTypes.POST_CHANGE_PASSWORD_FAILURE,
+    payload,
+  };
+}
+
+//end
 
 export function postMyProfileFormFailure(payload) {
   return {

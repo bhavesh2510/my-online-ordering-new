@@ -352,7 +352,7 @@ const ChooseAddress = () => {
 
       for (let i = 0; i < addressComponents.length; i++) {
         switch (
-          addressComponents[i].types[0] //[i].types[0]
+          addressComponents[i].types //[i].types[0]
         ) {
           case "street_number": {
             setState({
@@ -456,7 +456,8 @@ const ChooseAddress = () => {
     }
   };
   const handleDelivery = () => {
-    state.googleApi.calculateDistance(
+    console.log("state is", state);
+    state.googleApi.googleApi.calculateDistance(
       state.restaurantCordinate,
       state.customerCordinates,
       handleDistanceCalucationCallback
@@ -507,11 +508,11 @@ const ChooseAddress = () => {
               </strong>
             </div>
             <div className="content">
-              <GooglePlacesAutocomplete
+              {/* <GooglePlacesAutocomplete
                 //defaultValue={state.address}
                 selectProps={{ onChange: handleSelect }}
                 // apiKey={process.env.REACT_APP_GOOGLE_API_KEY}
-              />
+              /> */}
               {/* <PlacesAutocomplete
                 value={state.address}
                 //onChange={this.handleChange}

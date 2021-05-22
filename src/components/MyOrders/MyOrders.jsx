@@ -6,6 +6,7 @@ import TextField from "@material-ui/core/TextField";
 import {
   fetchMyOrderList,
   fetchMyOrderDetails,
+  updatePassword,
 } from "../../state-management/user/asyncActions";
 import LoadingBar from "../LoadingBar/LoadingBar";
 import MyOrderDetails from "../MyOrderDetails/MyOrderDetails";
@@ -17,15 +18,23 @@ import PersonIcon from "@material-ui/icons/Person";
 import FastfoodIcon from "@material-ui/icons/Fastfood";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import ModalWithGrid from "../MyOrders/ModalWithGrid";
+import { truncateDecimal } from "../../state-management/menu/utils";
+
 import moment from "moment";
 import WaitingOverlay from "../WaitingOverlay/WaitingOverlay";
+import axios from "axios";
 
 const MyOrders = React.memo(({ restaurantId }) => {
   const main = useSelector((state) => state.main);
   const user = useSelector((state) => state.user);
   const menu = useSelector((state) => state.menu);
   const dispatch = useDispatch();
+  const [passworddata, setpassworddata] = useState({
+    oldpass: "",
+    newpass: "",
+    //confirmnewpass: "",
+    token: user.user.token,
+  });
   const [state, setstate] = useState({
     showorder: false,
     showprofile: false,
@@ -131,6 +140,40 @@ const MyOrders = React.memo(({ restaurantId }) => {
     console.log("current order  is", currentdata);
   }, [currentdata]);
 
+  const handleOldPassword = (e) => {
+    setpassworddata({ ...passworddata, oldpass: e });
+  };
+
+  const handleNewPassword = (e) => {
+    setpassworddata({ ...passworddata, newpass: e });
+  };
+
+  const handleConfirmNewPassword = (e) => {
+    setpassworddata({ ...passworddata, confirmnewpass: e });
+  };
+  const changePasswordFormSubmit = async () => {
+    //axios.post("https://ciboapp.com/api/clients/v2/client/changePassword").then
+
+    var axios = require("axios");
+    var FormData = require("form-data");
+    var data = new FormData();
+    data.append("old_password", `${passworddata.oldpass}`);
+    data.append("new_password", `${passworddata.newpass}`);
+    data.append("token", `${user.user.token}`);
+
+    var config = {
+      method: "post",
+      url: "https://ciboapp.com/api/clients/v2/client/changePassword",
+      data: data,
+    };
+    axios(config)
+      .then(function (response) {
+        console.log("response is", response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
   return (
     <>
       {state.showloader ? <WaitingOverlay /> : null}
@@ -202,7 +245,13 @@ const MyOrders = React.memo(({ restaurantId }) => {
             </li>
           </ul>
         </nav>
-        <div style={{ backgroundColor: "white", marginTop: "-13px" }}>
+        <div
+          style={{
+            backgroundColor: "white",
+
+            marginTop: "-13px",
+          }}
+        >
           <div className="row">
             {state.showorder ? (
               <>
@@ -216,7 +265,8 @@ const MyOrders = React.memo(({ restaurantId }) => {
                           visibility: "visible",
                           animationDelay: "0.1s",
                           animationName: "fadeIn",
-                          marginTop: "20px",
+                          marginTop: "10px",
+                          // marginLeft: "10px",
                         }}
                       >
                         <div
@@ -224,6 +274,8 @@ const MyOrders = React.memo(({ restaurantId }) => {
                           style={{
                             height: "350px",
                             padding: "20px",
+                            marginLeft: "10px",
+                            marginRight: "10px",
                             borderRadius: "10px",
                             border: "1px dotted black",
                           }}
@@ -331,8 +383,10 @@ const MyOrders = React.memo(({ restaurantId }) => {
                                       {currval.product_name}
                                     </div>
                                     <div className="para-tax">
-                                      {Number(currval.subtotal) +
-                                        Number(currval.tax)}
+                                      {truncateDecimal(
+                                        Number(currval.subtotal) +
+                                          Number(currval.tax)
+                                      )}
                                       {/* Number(currval.tax)} */}
                                     </div>
                                   </div>
@@ -363,12 +417,16 @@ const MyOrders = React.memo(({ restaurantId }) => {
                       <div className="tax-area">
                         <div className="subtotal">
                           <p className="para-tax">Subtotal</p>
-                          <p className="para-tax">{subtotal}</p>
+                          <p className="para-tax">
+                            {truncateDecimal(subtotal)}
+                          </p>
                         </div>
 
                         <div className="subtotal">
                           <p className="para-tax">Taxes</p>
-                          <p className="para-tax">{currentdata.tax}</p>
+                          <p className="para-tax">
+                            {truncateDecimal(currentdata.tax)}
+                          </p>
                         </div>
 
                         <div className="subtotal">
@@ -390,7 +448,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
                           <b>GRAND TOTAL</b>
                         </p>
                         <p className="para-tax">
-                          <b>{currentdata.gtotal}</b>
+                          <b>{truncateDecimal(currentdata.gtotal)}</b>
                         </p>
                       </div>
                       <hr />
@@ -458,8 +516,8 @@ const MyOrders = React.memo(({ restaurantId }) => {
                           style={{ width: "120%" }}
                           label="Old Password"
                           variant="outlined"
-                          //value={state.firstName}
-                          //onChange={(e) => handleFirstName(e.target.value)}
+                          value={passworddata.oldpass}
+                          onChange={(e) => handleOldPassword(e.target.value)}
                         />
                         <br />
                         <br />
@@ -468,8 +526,8 @@ const MyOrders = React.memo(({ restaurantId }) => {
                           style={{ width: "120%" }}
                           label="New Password"
                           variant="outlined"
-                          //value={state.lastName}
-                          //onChange={(e) => handleLastName(e.target.value)}
+                          value={passworddata.newpass}
+                          onChange={(e) => handleNewPassword(e.target.value)}
                         />
                         <br />
                         <br />
@@ -478,14 +536,16 @@ const MyOrders = React.memo(({ restaurantId }) => {
                           style={{ width: "120%" }}
                           label="New Password"
                           variant="outlined"
-                          // value={state.email}
-                          //disabled
+                          value={passworddata.confirmnewpass}
+                          onChange={(e) =>
+                            handleConfirmNewPassword(e.target.value)
+                          }
                         />
                         <br />
                         <br />
 
                         <Button
-                          // onClick={formSubmit}
+                          onClick={changePasswordFormSubmit}
                           style={{
                             backgroundColor: "#6244da",
                             width: "120%",

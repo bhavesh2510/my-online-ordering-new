@@ -13,10 +13,7 @@ const MenuTable = ({ category_name, list, symbol, actualPrice }) => {
   const menu = useSelector((state) => state.menu);
   const addToCart = (item) => {
     console.log("items at the time of add", item);
-    // dispatch(
-    //   addItem(item, item.modifiers || null, item.subtotal, menu.restaurantInfo)
-    // );
-    //console.log("items in cart", item);
+
     dispatch(addItem(item, item.modifiers || null, 0, menu.restaurantInfo));
   };
   return (
@@ -86,24 +83,6 @@ const MenuTable = ({ category_name, list, symbol, actualPrice }) => {
                   ) : (
                     <>
                       <div style={{ display: "flex" }}>
-                        {/* <button
-                          style={{
-                            background: "#5B53CD",
-                            color: "whitesmoke",
-                            fontSize: "1.3rem",
-                            width: "30px",
-                            height: "30px",
-                            borderRadius: "50%",
-                            border: "none",
-                            outline: "none",
-                            display: "flex",
-                            justifyContent: "center",
-                          }}
-                          onClick={() => alert("-")}
-                        >
-                          <span style={{ display: "block" }}>-</span>
-                        </button>
-                        <span style={{ padding: "10px" }}>{`${item.qty}`}</span> */}
                         {!item.qty && (
                           <button
                             style={{

@@ -86,7 +86,7 @@ export function isHappyHourStillActive(item, timezone) {
 
 export function truncateDecimal(number) {
   return Number.isInteger(Number(number))
-    ? Number(number)
+    ? Number(number).toFixed(2)
     : Number(number).toFixed(2);
 }
 
