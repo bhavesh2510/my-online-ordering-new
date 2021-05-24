@@ -1,14 +1,14 @@
 import "../../components/ChooseAddress/ChooseAddress.css";
 import CloseIcon from "@material-ui/icons/Close";
 import "../../state-management/menu/actions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { setDeliveryOption } from "../../state-management/user/actions";
 import IconButton from "@material-ui/core/IconButton";
 import { displayAddressModal } from "../../state-management/menu/actions";
 import { useDispatch, useSelector } from "react-redux";
-import GooglePlacesAutocomplete, {
-  geocodeByPlaceId,
-} from "react-google-places-autocomplete";
+// import GooglePlacesAutocomplete, {
+//   geocodeByPlaceId,
+// } from "react-google-places-autocomplete";
 import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
@@ -23,10 +23,14 @@ Geocode.setApiKey("AIzaSyCMTj6FEwu3Kh0tSdgp6hh4QOKgIJF74rs");
 const ChooseAddress = () => {
   const main = useSelector((state) => state.main);
   const menu = useSelector((state) => state.menu);
+  const [latlng, setlatlng] = useState();
+
   const [state, setState] = useState({
     selectedItem: null,
-    lat: main.selectedRestaurant.lat,
-    lng: main.selectedRestaurant.lon,
+    mapCentre: {
+      lat: main.selectedRestaurant.lat,
+      lng: main.selectedRestaurant.lon,
+    },
     restaurantCordinate: {
       //TODO: check with Sandip why it was necessary to add this on state when its just one time thing :/
       lat: menu.restaurantInfo.lat,
@@ -295,39 +299,45 @@ const ChooseAddress = () => {
     dispatch(displayAddressModal(false));
   };
 
-  const handleSelect = async (props) => {
-    alert("yo");
-    const result = await geocodeByPlaceId(props["place_id"]);
-    console.log("select", result);
-    const lat = result[0].geometry.location.lat();
-    const lng = result[0].geometry.location.lng();
+  // const handleSelect = async (props) => {
+  //   alert("yo");
+  //   const result = await geocodeByPlaceId(props["place_id"]);
+  //   console.log("select", result);
+  //   const lat = result[0].geometry.location.lat();
+  //   const lng = result[0].geometry.location.lng();
 
-    console.log("resultr", result);
+  //   console.log("resultr", result);
 
-    const cordinates = {
-      lat,
-      lng,
-    };
+  //   const cordinates = {
+  //     lat,
+  //     lng,
+  //   };
 
-    setState({ ...state, lat, lng }, () => {
-      handleMarkerPostionChange(cordinates);
-      //state.googleApi.setMarkerPosition(cordinates);
-    });
-  };
-
+  //   setState({ ...state, lat, lng }, () => {
+  //     handleMarkerPostionChange(cordinates);
+  //     //state.googleApi.setMarkerPosition(cordinates);
+  //   });
+  // };
+  useEffect(() => {
+    console.log("complete state is", state);
+  }, [state]);
   const handleGoogleApi = (google) => {
-    setState({ ...state, googleApi: google });
+    if (!state.googleApi) setState({ ...state, googleApi: google });
+
     console.log("api", google);
   };
 
   const handleMarkerPostionChange = async (position) => {
     if (position) {
       const { lat, lng } = position;
+      console.log("position is", position);
+
+      setlatlng(position);
 
       setState({
         ...state,
         errorMessage: false,
-        customerCordinates: {
+        mapCentre: {
           lat,
           lng,
         },
@@ -350,67 +360,79 @@ const ChooseAddress = () => {
 
       console.log("addressComponents", addressComponents);
 
-      for (let i = 0; i < addressComponents.length; i++) {
-        switch (
-          addressComponents[i].types //[i].types[0]
-        ) {
-          case "street_number": {
-            setState({
-              ...state,
-              addressLine1: addressComponents[i].long_name,
-            });
-            console.log(state.addressLine1); //26
-            break;
-          }
-          case "route": {
-            setState((prevState) => ({
-              ...state,
-              addressLine1:
-                addressComponents[i].long_name + " " + prevState.addressLine1,
-            }));
-            console.log("address 1 ", state.addressLine1);
-            break;
-          }
-          case "locality":
-            setState({ ...state, city: addressComponents[i].long_name });
-            console.log("city ", state.city);
+      addressComponents.forEach((element, i) => {
+        let type = element.types[0];
+        console.log("element is", element, element.types[0]);
 
-            break;
-          case "state":
-            setState({ ...state, state: addressComponents[i].long_name });
-            console.log("state", state.state);
-            break;
-          case "country":
-            setState({ ...state, country: addressComponents[i].long_name });
-            let countryShortName = addressComponents[i].short_name;
-            console.log(phonecodetoCountryMaping[countryShortName]);
-            setPhoneCode(phonecodetoCountryMaping[countryShortName]); //check
-            console.log("country", state.country);
-            break;
-          case "postal_code":
-            setState({ zipcode: addressComponents[i].long_name });
-            console.log("zipcode", state.zipcode);
-            break;
-
-          // default: {
-          //   const addr = `${this.state.addressLine1} , ${addressComponents[i].long_name}`.replace(/[\s,]+/, ' ').trim();
-          //   console.log(this.state.addressLine1);
-          //   const finalAddr = addr.split(' , ').reduce((acc, str) => {
-          //     if (!acc.includes(str) && str.trim().length) {
-          //       return [
-          //         acc,
-          //         str,
-          //       ].join(', ');
-          //     }
-
-          //     return acc;
-          //   }, '').split(', ').filter((val) => val.trim().length).join(', ');
-
-          //   this.setState({ addressLine1: finalAddr });
-          //   break;
-          // }
+        if (type == "street_number") {
+          setState({
+            ...state,
+            addressLine1: addressComponents[i].long_name,
+          });
         }
-      }
+      });
+
+      // for (let i = 0; i < addressComponents.length; i++) {
+      //   switch (
+      //     addressComponents[i].types[0] //[i].types[0]
+      //   ) {
+      //     case "street_number": {
+      //       setState({
+      //         ...state,
+      //         addressLine1: addressComponents[i].long_name,
+      //       });
+      //       console.log(state.addressLine1); //26
+      //       break;
+      //     }
+      //     case "route": {
+      //       setState((prevState) => ({
+      //         ...state,
+      //         addressLine1:
+      //           addressComponents[i].long_name + " " + prevState.addressLine1,
+      //       }));
+      //       console.log("address 1 ", state.addressLine1);
+      //       break;
+      //     }
+      //     case "locality":
+      //       setState({ ...state, city: addressComponents[i].long_name });
+      //       console.log("city ", state.city);
+
+      //       break;
+      //     case "state":
+      //       setState({ ...state, state: addressComponents[i].long_name });
+      //       console.log("state", state.state);
+      //       break;
+      //     case "country":
+      //       setState({ ...state, country: addressComponents[i].long_name });
+      //       let countryShortName = addressComponents[i].short_name;
+      //       console.log(phonecodetoCountryMaping[countryShortName]);
+      //       setPhoneCode(phonecodetoCountryMaping[countryShortName]); //check
+      //       console.log("country", state.country);
+      //       break;
+      //     case "postal_code":
+      //       setState({ ...state, zipcode: addressComponents[i].long_name });
+      //       console.log("zipcode", state.zipcode);
+      //       break;
+
+      //     // default: {
+      //     //   const addr = `${this.state.addressLine1} , ${addressComponents[i].long_name}`.replace(/[\s,]+/, ' ').trim();
+      //     //   console.log(this.state.addressLine1);
+      //     //   const finalAddr = addr.split(' , ').reduce((acc, str) => {
+      //     //     if (!acc.includes(str) && str.trim().length) {
+      //     //       return [
+      //     //         acc,
+      //     //         str,
+      //     //       ].join(', ');
+      //     //     }
+
+      //     //     return acc;
+      //     //   }, '').split(', ').filter((val) => val.trim().length).join(', ');
+
+      //     //   this.setState({ addressLine1: finalAddr });
+      //     //   break;
+      //     // }
+      //   }
+      // }
     }
   };
 
@@ -421,7 +443,7 @@ const ChooseAddress = () => {
       // check if distance is inside restaurant deilvery range
       const distance = parseFloat(result.distance / 1000);
       console.log(distance);
-      if (!isDistanceInDeliveryRange(distance, this.props.deliveryRange)) {
+      if (!isDistanceInDeliveryRange(distance, main.deliveryRange)) {
         setState({
           errorMessage:
             "Sorry, We do not provide delivery on selected address.",
@@ -455,14 +477,44 @@ const ChooseAddress = () => {
       setState({ ...state, errorMessage: result.reason });
     }
   };
-  const handleDelivery = () => {
-    console.log("state is", state);
-    state.googleApi.googleApi.calculateDistance(
-      state.restaurantCordinate,
-      state.customerCordinates,
-      handleDistanceCalucationCallback
-    );
-  };
+
+  // const handleDistanceCalucationCallback=(result)=>{
+  //   if (result.status === "SUCCESS") {
+  //     // check if distance is inside restaurant deilvery range
+  //     const distance = parseFloat(result.distance / 1000);
+  //     console.log(distance);
+  //     if (!isDistanceInDeliveryRange(distance, this.props.deliveryRange)) {
+  //       setState({
+  //         errorMessage:
+  //           "Sorry, We do not provide delivery on selected address.",
+  //       });
+  //     } else if (distance) {
+  //       dispatch(setDeliveryOption({
+  //         distance,
+  //         userAddress: {
+  //           address1: state.addressLine1,
+  //           state: state.state,
+  //           city: state.city,
+  //           country: state.country,
+  //           zipcode: state.zipcode,
+  //         },
+  //         option: DELIVERY_TYPE.DEFAULT,
+  //       }));
+  //       // this.props.successCallback && this.props.successCallback();
+  //       // !this.props.modalState.addAddress && this.props.setIsTakeAway(false);
+  //       // this.props.closeModal();
+  //       // this.props.isUserLoggedIn &&
+  //       //   this.props.openModal(modalNames.ADD_ADDRESS, {
+  //       //     selectAddress: true,
+  //       //     existingDefaultAddress:
+  //       //       this.props.modalState.existingDefaultAddress,
+  //       //     editMode: false,
+  //       //   });
+  //     }
+  //   } else {
+  //     setState({ ...state,errorMessage: result.reason });
+  //   }
+  // }
 
   const isDistanceInDeliveryRange = (distance, { range }) => {
     let maxDistance = 0;
@@ -481,6 +533,51 @@ const ChooseAddress = () => {
 
     return false;
   };
+
+  const handleDelivery = () => {
+    console.log("check api", state.googleApi);
+
+    state.googleApi.calculateDistance(
+      state.restaurantCordinate,
+      latlng,
+      handleDistanceCalucationCallback
+    );
+  };
+
+  // const isDistanceInDeliveryRange = (distance, { range }) => {
+  //   let maxDistance = 0;
+
+  //   for (const dist in range) {
+  //     const newDistance = parseFloat(range[dist].range_to);
+
+  //     if (newDistance > maxDistance) {
+  //       maxDistance = newDistance;
+  //     }
+  //   }
+
+  //   if (distance <= maxDistance) {
+  //     return true;
+  //   }
+
+  //   return false;
+  // };
+
+  // const handleChange = (address) => {
+  //   setState({ ...state, address });
+  // };
+
+  // const handleSelect = (address) => {
+  //   geocodeByAddress(address)
+  //     .then((results) => getLatLng(results[0]))
+  //     .then((latLng) => {
+  //       setState({ ...state, address });
+  //       setState({ ...state, mapCentre: latLng });
+  //       handleMarkerPostionChange(state.mapCentre);
+  //       console.log("Success", latLng);
+  //       console.log("state is", state);
+  //     })
+  //     .catch((error) => console.error("Error", error));
+  // };
 
   return (
     <>
@@ -508,6 +605,53 @@ const ChooseAddress = () => {
               </strong>
             </div>
             <div className="content">
+              {/* start */}
+
+              {/* <PlacesAutocomplete
+                value={state.address}
+                onChange={handleChange}
+                onSelect={handleSelect}
+              >
+                {({
+                  getInputProps,
+                  suggestions,
+                  getSuggestionItemProps,
+                  loading,
+                }) => (
+                  <div>
+                    <input
+                      {...getInputProps({
+                        placeholder: "Search Places ...",
+                        className: "location-search-input",
+                      })}
+                    />
+                    <div className="autocomplete-dropdown-container">
+                      {loading && <div>Loading...</div>}
+                      {suggestions.map((suggestion) => {
+                        const className = suggestion.active
+                          ? "suggestion-item--active"
+                          : "suggestion-item";
+                        // inline style for demonstration purpose
+                        const style = suggestion.active
+                          ? { backgroundColor: "#fafafa", cursor: "pointer" }
+                          : { backgroundColor: "#ffffff", cursor: "pointer" };
+                        return (
+                          <div
+                            {...getSuggestionItemProps(suggestion, {
+                              className,
+                              style,
+                            })}
+                          >
+                            <span>{suggestion.description}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </PlacesAutocomplete> */}
+
+              {/* end */}
               {/* <GooglePlacesAutocomplete
                 //defaultValue={state.address}
                 selectProps={{ onChange: handleSelect }}
@@ -522,8 +666,8 @@ const ChooseAddress = () => {
               </PlacesAutocomplete> */}
 
               <GoogleMap
-                lat={state.lat}
-                lng={state.lng}
+                lat={state.mapCentre ? state.mapCentre.lat : null}
+                lng={state.mapCentre ? state.mapCentre.lng : null}
                 address={state.address || main.selectedRestaurant.address}
                 onMarkerPositionChange={handleMarkerPostionChange}
                 googleApi={handleGoogleApi}
