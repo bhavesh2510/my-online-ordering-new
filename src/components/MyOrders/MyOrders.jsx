@@ -19,13 +19,19 @@ import FastfoodIcon from "@material-ui/icons/Fastfood";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import { truncateDecimal } from "../../state-management/menu/utils";
-
+import { notification } from "antd";
+import Footer from "../Footer/Footer";
 import moment from "moment";
 import WaitingOverlay from "../WaitingOverlay/WaitingOverlay";
 import axios from "axios";
+import ManageAddress from "../ManageAddress/ManageAddress";
+import ChooseAddress from "../ChooseAddress/ChooseAddress";
+import AddAddress from "../ChooseAddress/AddAddress";
+import "antd/dist/antd.css";
 
 const MyOrders = React.memo(({ restaurantId }) => {
   const main = useSelector((state) => state.main);
+  //const modal = useSelector((state) => state.modal);
   const user = useSelector((state) => state.user);
   const menu = useSelector((state) => state.menu);
   const dispatch = useDispatch();
@@ -36,11 +42,13 @@ const MyOrders = React.memo(({ restaurantId }) => {
     token: user.user.token,
   });
   const [state, setstate] = useState({
+    showaddress: false,
     showorder: false,
     showprofile: false,
     showOrderDetails: false,
     showpassword: false,
     showloader: false,
+    showpasswordoverlay: false,
     // loadingData: false,
     // showOverlay: false,
     // errorMessage: false,
@@ -85,7 +93,13 @@ const MyOrders = React.memo(({ restaurantId }) => {
   }, [orderList]);
 
   const onProfileClick = () => {
-    setstate({ ...state, showprofile: true, showorder: false });
+    setstate({
+      ...state,
+      showprofile: true,
+      showorder: false,
+      showaddress: false,
+      showpassword: false,
+    });
   };
   const onOrderClick = () => {
     setstate({
@@ -93,6 +107,17 @@ const MyOrders = React.memo(({ restaurantId }) => {
       showprofile: false,
       showorder: true,
       showpassword: false,
+      showaddress: false,
+    });
+  };
+
+  const onAddressClick = () => {
+    setstate({
+      ...state,
+      showprofile: false,
+      showorder: false,
+      showpassword: false,
+      showaddress: true,
     });
   };
   const onChangePasswordClick = () => {
@@ -101,6 +126,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
       showprofile: false,
       showorder: false,
       showpassword: true,
+      showaddress: false,
     });
   };
 
@@ -151,32 +177,56 @@ const MyOrders = React.memo(({ restaurantId }) => {
   const handleConfirmNewPassword = (e) => {
     setpassworddata({ ...passworddata, confirmnewpass: e });
   };
+
   const changePasswordFormSubmit = async () => {
-    //axios.post("https://ciboapp.com/api/clients/v2/client/changePassword").then
-
+    setstate({ ...state, showpasswordoverlay: true });
     var axios = require("axios");
-    var FormData = require("form-data");
-    var data = new FormData();
-    data.append("old_password", `${passworddata.oldpass}`);
-    data.append("new_password", `${passworddata.newpass}`);
-    data.append("token", `${user.user.token}`);
 
-    var config = {
-      method: "post",
-      url: "https://ciboapp.com/api/clients/v2/client/changePassword",
-      data: data,
+    const data = {
+      current_password: passworddata.oldpass,
+      new_password: passworddata.newpass,
     };
-    axios(config)
-      .then(function (response) {
-        console.log("response is", response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
+    console.log("data is", data);
+
+    const token = user.user.token;
+
+    var status;
+
+    const api = "https://ciboapp.com/api/clients/v2/client/changePassword/";
+    axios
+      .post(api, data, { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => {
+        console.log(res.data);
+        //setmsg(res.data.message);
+        status = res.data.success;
+        notification.open({
+          message: res.data.message,
+          style: {
+            marginTop: "50px",
+            color: "rgba(0, 0, 0, 0.65)",
+            border: "1px solid #b7eb8f",
+            backgroundColor: "#f6ffed",
+          },
+        });
       });
+    //console.log("msg is", msg);
+    setstate({ ...state, showpasswordoverlay: false });
+
+    // notification.open({
+    //   message: msg,
+    //   style: {
+    //     marginTop: "50px",
+    //     color: "rgba(0, 0, 0, 0.65)",
+    //     border: "1px solid #b7eb8f",
+    //     backgroundColor: "#f6ffed",
+    //   },
+    // });
   };
   return (
     <>
       {state.showloader ? <WaitingOverlay /> : null}
+      {state.showpasswordoverlay ? <WaitingOverlay /> : null}
+
       <AppHeader />
 
       <section
@@ -212,12 +262,16 @@ const MyOrders = React.memo(({ restaurantId }) => {
               </p>
             </li>
             <li className="tab-current">
-              <a href="#section-2" className="icon-menut-items anchor-parent">
+              <p
+                onClick={onAddressClick}
+                style={{ cursor: "pointer" }}
+                className="icon-menut-items anchor-parent"
+              >
                 <span>
                   Address &nbsp;
                   <HomeIcon />
                 </span>
-              </a>
+              </p>
             </li>
             <li className="tab-current">
               <p
@@ -324,7 +378,12 @@ const MyOrders = React.memo(({ restaurantId }) => {
                             className="button-parent"
                             onClick={() => showModal(currval)}
                           >
-                            <button className="btn-submit">View Detail</button>
+                            <button
+                              className="btn-submit"
+                              style={{ color: "white" }}
+                            >
+                              View Detail
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -431,7 +490,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
 
                         <div className="subtotal">
                           <p className="para-tax">Delivery Charge</p>
-                          <p className="para-tax">EUR 0</p>
+                          <p className="para-tax">{user.delivery_cost}.00</p>
                         </div>
                       </div>
 
@@ -494,6 +553,13 @@ const MyOrders = React.memo(({ restaurantId }) => {
             {state.showprofile ? (
               <>
                 <MyProfile />
+              </>
+            ) : null}
+
+            {state.showaddress ? (
+              <>
+                {" "}
+                <ManageAddress />{" "}
               </>
             ) : null}
 
@@ -566,6 +632,10 @@ const MyOrders = React.memo(({ restaurantId }) => {
           </div>
         </div>
       </div>
+
+      {/* {modal.modal.modalToShow == "findAddress" ? <ChooseAddress /> : null}
+      {modal.modal.modalToShow == "AddAddress" ? <AddAddress /> : null} */}
+      <Footer />
     </>
   );
 });

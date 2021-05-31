@@ -18,12 +18,35 @@ import Geocode from "react-geocode";
 import { Menu } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import GoogleMap from "../../components/GoogleMap/GoogleMap";
+import TextField from "@material-ui/core/TextField";
+import { openModal, closeModal } from "../../state-management/modal/actions";
+import AddAddress from "./AddAddress";
 Geocode.setApiKey("AIzaSyCMTj6FEwu3Kh0tSdgp6hh4QOKgIJF74rs");
 
-const ChooseAddress = () => {
+const ChooseAddress = (props) => {
   const main = useSelector((state) => state.main);
+  const user = useSelector((state) => state.user);
   const menu = useSelector((state) => state.menu);
   const [latlng, setlatlng] = useState();
+  const [addressdetail, setaddressdetail] = useState({
+    address: "",
+    addressLine1: "",
+
+    state: "",
+    city: "",
+    country: "",
+    zipcode: "",
+  });
+
+  const [customersnumber, setcustomersnumber] = useState({
+    address_1: "",
+  });
+  const [customeraddress1, setcustomeraddress1] = useState();
+  const [customerstate, setcustomerstate] = useState();
+  const [customercity, setcustomercity] = useState();
+  const [customercountry, setcustomercountry] = useState();
+  const [customerzipcode, setcustomerzipcode] = useState();
+  const [shownextaddresspage, setshownextaddresspage] = useState(false);
 
   const [state, setState] = useState({
     selectedItem: null,
@@ -296,7 +319,8 @@ const ChooseAddress = () => {
 
   const dispatch = useDispatch();
   const closeLoginModal = () => {
-    dispatch(displayAddressModal(false));
+    // dispatch(displayAddressModal(false));
+    dispatch(closeModal());
   };
 
   // const handleSelect = async (props) => {
@@ -318,9 +342,7 @@ const ChooseAddress = () => {
   //     //state.googleApi.setMarkerPosition(cordinates);
   //   });
   // };
-  useEffect(() => {
-    console.log("complete state is", state);
-  }, [state]);
+
   const handleGoogleApi = (google) => {
     if (!state.googleApi) setState({ ...state, googleApi: google });
 
@@ -354,87 +376,128 @@ const ChooseAddress = () => {
       // get the distance b/w user and restaurant
       // and check if it's in the range of delivery
 
-      setState({ ...state, address });
+      // setState({ ...state, address });
+      //setaddressdetail({ ...addressdetail, address });
       // get address, city, state, country, zipcode.
       const addressComponents = response.results[0].address_components;
 
       console.log("addressComponents", addressComponents);
 
-      addressComponents.forEach((element, i) => {
-        let type = element.types[0];
-        console.log("element is", element, element.types[0]);
+      for (let i = 0; i < addressComponents.length; i++) {
+        switch (addressComponents[i].types[0]) {
+          case "street_number": {
+            // setaddressdetail({
+            //   ...addressdetail,
+            //   addressLine1: addressComponents[i].long_name,
+            // });
+            setcustomersnumber({ address_1: addressComponents[i].long_name });
 
-        if (type == "street_number") {
-          setState({
-            ...state,
-            addressLine1: addressComponents[i].long_name,
-          });
+            break;
+          }
+          case "route": {
+            // setaddressdetail((prevState) => ({
+            //   ...addressdetail,
+            //   addressLine1:
+            //     addressComponents[i].long_name + " " + prevState.addressLine1,
+            // }));
+
+            setcustomersnumber((prevState) => ({
+              address_1:
+                addressComponents[i].long_name + " " + prevState.address_1,
+            }));
+            break;
+          }
+          case "locality": {
+            // setaddressdetail({
+            //   ...addressdetail,
+            //   city: addressComponents[i].long_name,
+            // });
+
+            setcustomercity(addressComponents[i].long_name);
+
+            break;
+          }
+          case "state": {
+            // setaddressdetail({
+            //   ...addressdetail,
+            //   state: addressComponents[i].long_name,
+            // });
+            setcustomerstate(addressComponents[i].long_name);
+
+            break;
+          }
+          case "country": {
+            // setaddressdetail({
+            //   ...addressdetail,
+            //   country: addressComponents[i].long_name,
+            // });
+
+            setcustomercountry(addressComponents[i].long_name);
+            // let countryShortName = addressComponents[i].short_name;
+            // console.log(phonecodetoCountryMaping[countryShortName]);
+            // props.setPhoneCode(phonecodetoCountryMaping[countryShortName]);
+
+            break;
+          }
+          case "postal_code": {
+            // setaddressdetail({
+            //   ...addressdetail,
+            //   zipcode: addressComponents[i].long_name,
+            // });
+            setcustomerzipcode(addressComponents[i].long_name);
+            break;
+          }
+
+          // default: {
+          //   const addr = `${this.state.addressLine1} , ${addressComponents[i].long_name}`.replace(/[\s,]+/, ' ').trim();
+          //   console.log(this.state.addressLine1);
+          //   const finalAddr = addr.split(' , ').reduce((acc, str) => {
+          //     if (!acc.includes(str) && str.trim().length) {
+          //       return [
+          //         acc,
+          //         str,
+          //       ].join(', ');
+          //     }
+
+          //     return acc;
+          //   }, '').split(', ').filter((val) => val.trim().length).join(', ');
+
+          //   this.setState({ addressLine1: finalAddr });
+          //   break;
+          // }
         }
-      });
+      }
 
-      // for (let i = 0; i < addressComponents.length; i++) {
-      //   switch (
-      //     addressComponents[i].types[0] //[i].types[0]
-      //   ) {
-      //     case "street_number": {
-      //       setState({
-      //         ...state,
-      //         addressLine1: addressComponents[i].long_name,
-      //       });
-      //       console.log(state.addressLine1); //26
-      //       break;
-      //     }
-      //     case "route": {
-      //       setState((prevState) => ({
-      //         ...state,
-      //         addressLine1:
-      //           addressComponents[i].long_name + " " + prevState.addressLine1,
-      //       }));
-      //       console.log("address 1 ", state.addressLine1);
-      //       break;
-      //     }
-      //     case "locality":
-      //       setState({ ...state, city: addressComponents[i].long_name });
-      //       console.log("city ", state.city);
+      // addressComponents.forEach((element, i) => {
+      //   console.log("element is", element.types);
 
-      //       break;
-      //     case "state":
-      //       setState({ ...state, state: addressComponents[i].long_name });
-      //       console.log("state", state.state);
-      //       break;
-      //     case "country":
-      //       setState({ ...state, country: addressComponents[i].long_name });
-      //       let countryShortName = addressComponents[i].short_name;
-      //       console.log(phonecodetoCountryMaping[countryShortName]);
-      //       setPhoneCode(phonecodetoCountryMaping[countryShortName]); //check
-      //       console.log("country", state.country);
-      //       break;
-      //     case "postal_code":
-      //       setState({ ...state, zipcode: addressComponents[i].long_name });
-      //       console.log("zipcode", state.zipcode);
-      //       break;
-
-      //     // default: {
-      //     //   const addr = `${this.state.addressLine1} , ${addressComponents[i].long_name}`.replace(/[\s,]+/, ' ').trim();
-      //     //   console.log(this.state.addressLine1);
-      //     //   const finalAddr = addr.split(' , ').reduce((acc, str) => {
-      //     //     if (!acc.includes(str) && str.trim().length) {
-      //     //       return [
-      //     //         acc,
-      //     //         str,
-      //     //       ].join(', ');
-      //     //     }
-
-      //     //     return acc;
-      //     //   }, '').split(', ').filter((val) => val.trim().length).join(', ');
-
-      //     //   this.setState({ addressLine1: finalAddr });
-      //     //   break;
-      //     // }
-      //   }
-      // }
+      // });
     }
   };
+
+  useEffect(() => {
+    console.log("complete state is", customersnumber);
+  }, [customersnumber]);
+
+  // useEffect(() => {
+  //   console.log("complete state is", customeraddress1);
+  // }, [customeraddress1]);
+
+  useEffect(() => {
+    console.log("complete state is", customercity);
+  }, [customercity]);
+
+  useEffect(() => {
+    console.log("complete state is", customerstate);
+  }, [customerstate]);
+
+  useEffect(() => {
+    console.log("complete state is", customerzipcode);
+  }, [customerzipcode]);
+
+  useEffect(() => {
+    console.log("complete state is", customercountry);
+  }, [customercountry]);
 
   const handleDistanceCalucationCallback = (result) => {
     console.log("distance", result);
@@ -445,26 +508,29 @@ const ChooseAddress = () => {
       console.log(distance);
       if (!isDistanceInDeliveryRange(distance, main.deliveryRange)) {
         setState({
+          ...state,
           errorMessage:
             "Sorry, We do not provide delivery on selected address.",
         });
       } else if (distance) {
+        setState({ ...state, errorMessage: false });
         dispatch(
           setDeliveryOption({
             distance,
             userAddress: {
-              address1: state.addressLine1,
-              state: state.state,
-              city: state.city,
-              country: state.country,
-              zipcode: state.zipcode,
+              address1: customersnumber.address_1,
+              state: customerstate,
+              city: customercity,
+              country: customercountry,
+              zipcode: customerzipcode,
             },
             option: "Delivery",
           })
         );
+        setshownextaddresspage(true);
         // this.props.successCallback && this.props.successCallback();
         // !this.props.modalState.addAddress && this.props.setIsTakeAway(false);
-        // this.props.closeModal();
+        //dispatch(closeModal());
         // this.props.isUserLoggedIn &&
         //   this.props.openModal(modalNames.ADD_ADDRESS, {
         //     selectAddress: true,
@@ -477,44 +543,6 @@ const ChooseAddress = () => {
       setState({ ...state, errorMessage: result.reason });
     }
   };
-
-  // const handleDistanceCalucationCallback=(result)=>{
-  //   if (result.status === "SUCCESS") {
-  //     // check if distance is inside restaurant deilvery range
-  //     const distance = parseFloat(result.distance / 1000);
-  //     console.log(distance);
-  //     if (!isDistanceInDeliveryRange(distance, this.props.deliveryRange)) {
-  //       setState({
-  //         errorMessage:
-  //           "Sorry, We do not provide delivery on selected address.",
-  //       });
-  //     } else if (distance) {
-  //       dispatch(setDeliveryOption({
-  //         distance,
-  //         userAddress: {
-  //           address1: state.addressLine1,
-  //           state: state.state,
-  //           city: state.city,
-  //           country: state.country,
-  //           zipcode: state.zipcode,
-  //         },
-  //         option: DELIVERY_TYPE.DEFAULT,
-  //       }));
-  //       // this.props.successCallback && this.props.successCallback();
-  //       // !this.props.modalState.addAddress && this.props.setIsTakeAway(false);
-  //       // this.props.closeModal();
-  //       // this.props.isUserLoggedIn &&
-  //       //   this.props.openModal(modalNames.ADD_ADDRESS, {
-  //       //     selectAddress: true,
-  //       //     existingDefaultAddress:
-  //       //       this.props.modalState.existingDefaultAddress,
-  //       //     editMode: false,
-  //       //   });
-  //     }
-  //   } else {
-  //     setState({ ...state,errorMessage: result.reason });
-  //   }
-  // }
 
   const isDistanceInDeliveryRange = (distance, { range }) => {
     let maxDistance = 0;
@@ -536,6 +564,13 @@ const ChooseAddress = () => {
 
   const handleDelivery = () => {
     console.log("check api", state.googleApi);
+    setState({
+      state,
+      addressLine1: customersnumber.address_1,
+      city: customercity,
+      zipcode: customerzipcode,
+      country: customercountry,
+    });
 
     state.googleApi.calculateDistance(
       state.restaurantCordinate,
@@ -544,23 +579,9 @@ const ChooseAddress = () => {
     );
   };
 
-  // const isDistanceInDeliveryRange = (distance, { range }) => {
-  //   let maxDistance = 0;
-
-  //   for (const dist in range) {
-  //     const newDistance = parseFloat(range[dist].range_to);
-
-  //     if (newDistance > maxDistance) {
-  //       maxDistance = newDistance;
-  //     }
-  //   }
-
-  //   if (distance <= maxDistance) {
-  //     return true;
-  //   }
-
-  //   return false;
-  // };
+  useEffect(() => {
+    console.log("complete state is", state);
+  }, [state]);
 
   // const handleChange = (address) => {
   //   setState({ ...state, address });
@@ -583,7 +604,7 @@ const ChooseAddress = () => {
     <>
       <div id="parent" className="modal-container">
         <div className="align-container-center">
-          <div className="choose-address-box">
+          <div className="choose-address-box" style={{ height: "auto" }}>
             <div className="close">
               <IconButton
                 onClick={closeLoginModal}
@@ -676,7 +697,7 @@ const ChooseAddress = () => {
               <Button
                 onClick={handleDelivery}
                 style={{
-                  marginTop: "5px",
+                  marginTop: "50px",
                   marginLeft: "25%",
                   backgroundColor: "black",
                   color: "white",
@@ -686,11 +707,31 @@ const ChooseAddress = () => {
               >
                 Delivery
               </Button>
+              {state.errorMessage ? (
+                <>
+                  <div style={{ marginTop: "10px" }}>
+                    <p
+                      style={{
+                        textAlign: "center",
+                        color: "red",
+                        fontSize: "20px",
+                      }}
+                    >
+                      {state.errorMessage}
+                    </p>
+                  </div>
+                </>
+              ) : null}
             </div>
-            <div className="login-buttons"> </div>
           </div>
         </div>
       </div>
+
+      {shownextaddresspage ? (
+        <>
+          <AddAddress refetchAddresses={props.refetchAddresses} />
+        </>
+      ) : null}
     </>
   );
 };

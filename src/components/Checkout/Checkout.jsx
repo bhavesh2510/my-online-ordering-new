@@ -18,6 +18,7 @@ import {
 import { addItem, removeItem } from "../../state-management/menu/actions";
 import { TimePicker } from "antd";
 import { notification } from "antd";
+import "antd/dist/antd.css";
 import { getFormattedRequestPayload } from "../Checkout/utils";
 import PaymentForm from "../Checkout/PaymentForm";
 import { placeOrder } from "../../state-management/menu/asyncActions";
@@ -33,6 +34,11 @@ import Footer from "../Footer/Footer";
 const Checkout = () => {
   //const format = "HH:mm";
   const History = useHistory();
+  const [dc, setdc] = useState();
+  useEffect(() => {
+    console.log("dc is", dc);
+  }, [dc]);
+
   const main = useSelector((state) => state.main);
   const menu = useSelector((state) => state.menu);
   const user = useSelector((state) => state.user);
@@ -44,11 +50,11 @@ const Checkout = () => {
     EAT_IN: "EatIn",
   };
   const [data, setdata] = useState({
-    displayloader: false,
+    // displayloader: false,
     deliveryType: user.isTakeAway
       ? DELIVERY_TYPE.TAKE_AWAY
       : DELIVERY_TYPE.HOME_DELIVERY,
-    selectedAddress: user.distance >= 0 ? user.selectedAddress : null,
+    //selectedAddress: user.distance >= 0 ? user.selectedAddress : null,
 
     isAddressesFetched: false,
     paymentMethod: "",
@@ -58,7 +64,7 @@ const Checkout = () => {
     businessHours: main.businessHour,
     isTakeAway: user.isTakeAway,
     orderButtonClicked: false,
-    addresses: [],
+    // addresses: [],
     paymentOptions: [],
     deliveryCharges: "",
     hasDeliveryOption: false,
@@ -87,6 +93,8 @@ const Checkout = () => {
   useEffect(() => {
     if (main.deliveryRange) getDeliveryCharges();
     dispatch(setPickupTime(data.pickupTime));
+    getDeliveryCharges();
+    setdc(getDeliveryCharges);
     console.log("xyz", data.pickupTime);
 
     const deliveryOptions = !(
@@ -274,7 +282,8 @@ const Checkout = () => {
       : finalAmount;
   };
 
-  function getDeliveryCharges() {
+  const getDeliveryCharges = () => {
+    console.log("we are in getd");
     if (!main.deliveryRange) return;
     const cost = main.deliveryRange.cost;
     const range = main.deliveryRange.range;
@@ -324,6 +333,7 @@ const Checkout = () => {
       if (selectedRange) {
         if (selectedRange["delivery_cost"]) {
           dispatch(setDeliveryCost(selectedRange["delivery_cost"]));
+          console.log("range", selectedRange["delivery_cost"]);
         } else {
           dispatch(setDeliveryCost(0));
         }
@@ -336,7 +346,7 @@ const Checkout = () => {
     }
 
     return 0;
-  }
+  };
 
   const handleAddItem = (item) => {
     dispatch(
@@ -349,9 +359,9 @@ const Checkout = () => {
   };
 
   const sendpaymentreq = (type, orderId) => {
-    var errorurl = "http://ciboapp.me/booking/failed";
-    var failedurl = "http://ciboapp.me/booking/failed";
-    var accepturl = `http://ciboapp.me/feedmi/?/restId=30692730/ordersuccess`;
+    var errorurl = `http://ciboapp.me/feedmii/?/${menu.restaurantInfo.restaurant_id}/paymentfailed`;
+    var failedurl = `http://ciboapp.me/feedmii/?/${menu.restaurantInfo.restaurant_id}/paymentfailed`;
+    var accepturl = `http://ciboapp.me/feedmii/?/${menu.restaurantInfo.restaurant_id}/ordersuccess`;
     var mkey = menu.restaurantInfo.merchant_key;
     var sec = menu.restaurantInfo.secret;
     var userid = "123";
@@ -473,7 +483,7 @@ const Checkout = () => {
     const {
       data: { RESULT, message },
     } = response;
-
+    console.log("response is", response);
     console.log("results", RESULT);
     if (RESULT == "SUCCESS") {
       console.log("if statement", deliveryDetails.paymentMethod);
@@ -517,7 +527,10 @@ const Checkout = () => {
       >
         <div className="row" style={{ transform: "none" }}>
           <div className="col-lg-8">
-            <PaymentForm onHandleCheckout={handleCheckout} />
+            <PaymentForm
+              onHandleCheckout={handleCheckout}
+              deliveryCharges={getDeliveryCharges}
+            />
           </div>
 
           <div
@@ -623,7 +636,7 @@ const Checkout = () => {
                         Subtotal{" "}
                         <span className="float-right">{`${
                           menu.restaurantInfo.monetary_symbol
-                        }${getSubTotal()}`}</span>
+                        } ${getSubTotal()}`}</span>
                       </td>
                     </tr>
                     <tr>
@@ -631,13 +644,13 @@ const Checkout = () => {
                         Taxes{" "}
                         <span className="float-right">{`${
                           menu.restaurantInfo.monetary_symbol
-                        }${getSubTaxTotal()}`}</span>
+                        } ${getSubTaxTotal()}`}</span>
                       </td>
                     </tr>
                     <tr>
                       <td>
                         Delivery Charges
-                        <span className="float-right">{`${menu.restaurantInfo.monetary_symbol}${user.delivery_cost}`}</span>
+                        <span className="float-right">{`${menu.restaurantInfo.monetary_symbol} ${user.delivery_cost}`}</span>
                       </td>
                     </tr>
 
@@ -646,7 +659,7 @@ const Checkout = () => {
                         TOTAL{" "}
                         <span className="float-right">{`${
                           menu.restaurantInfo.monetary_symbol
-                        }${getBillAmount()}`}</span>
+                        } ${getBillAmount()}`}</span>
                       </td>
                     </tr>
                   </tbody>

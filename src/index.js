@@ -1,19 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
 // import './index.css';
 import { Provider } from "react-redux";
 import store from "./state-management/store";
-import App from './App';
+import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.scss";
-
-
-import reportWebVitals from './reportWebVitals';
+import "antd/dist/antd.css";
+import reportWebVitals from "./reportWebVitals";
+import { Fragment } from "react";
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <Fragment>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </Fragment>,
   document.getElementById("root")
 );
 

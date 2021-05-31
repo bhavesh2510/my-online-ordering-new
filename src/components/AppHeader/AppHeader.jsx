@@ -39,7 +39,7 @@ const Appheader = () => {
     <header
       className="main-header"
       style={{
-        background: `${navbar ? "#242B2E" : "#242B2E"}`,
+        background: `${navbar ? "#242B2E" : "black"}`,
         boxShadow: "1px 6px 18px -4px #000000",
       }}
     >
@@ -82,23 +82,30 @@ const Appheader = () => {
                     </a>
                   </li>
                 ) : null}
-                <li>
+                <li
+                  style={{ color: "white", cursor: "pointer" }}
+                  onClick={() => History.push("menu")}
+                >
                   <a
-                    href={`?/restId=${menu.restaurantInfo.restaurant_id}/menu`}
+                  // href={`?/restId=${menu.restaurantInfo.restaurant_id}/menu`}
                   >
                     Menu
                   </a>
                 </li>
 
                 {user.user.isUserLoggedIn ? (
-                  <li className="submenu">
+                  <li
+                    className="submenu"
+                    style={{ color: "white", cursor: "pointer" }}
+                    onClick={() => History.push("myOrders")}
+                  >
                     {user.user.isUserLoggedIn ? (
-                      <a href="javascript:void(0);" className="show-submenu">
+                      <a className="show-submenu">
                         {user.user.firstName}
                         <i className="icon-down-open-mini" />
                       </a>
                     ) : (
-                      <a href="javascript:void(0);" className="show-submenu">
+                      <a className="show-submenu">
                         user
                         <i className="icon-down-open-mini" />
                       </a>
@@ -109,30 +116,46 @@ const Appheader = () => {
                   </a> */}
 
                     <ul>
-                      <li>
+                      <li
+                        style={{ color: "white", cursor: "pointer" }}
+                        onClick={() => History.push("myOrders")}
+                      >
                         <a
-                          href={`?/restId=${menu.restaurantInfo.restaurant_id}/myProfile`}
+                          style={{ color: "black", cursor: "pointer" }}
+                          //href={`?/restId=${menu.restaurantInfo.restaurant_id}/myOrders`}
                           //onClick={()=>History.push(`/restId=${menu.restaurantInfo.restaurant_id}/myProfile`)}
                         >
                           Edit Profile
                         </a>
                       </li>
-                      <li>
+                      <li
+                        style={{ color: "black", cursor: "pointer" }}
+                        onClick={() => History.push("myOrders")}
+                      >
                         <a
-                          href={`?/restId=${menu.restaurantInfo.restaurant_id}/manageAddress`}
+                          style={{ color: "black" }}
+                          style={{ color: "black" }}
+                          //href={`?/restId=${menu.restaurantInfo.restaurant_id}/myOrders`}
                         >
                           Manage Addresses
                         </a>
                       </li>
-                      <li>
+                      <li
+                        style={{ color: "white", cursor: "pointer" }}
+                        onClick={() => History.push("myOrders")}
+                      >
                         <a
-                          href={`?/restId=${menu.restaurantInfo.restaurant_id}/myOrders`}
+                          style={{ color: "black" }}
+                          //href={`?/restId=${menu.restaurantInfo.restaurant_id}/myOrders`}
                         >
                           My Orders
                         </a>
                       </li>
                       <li>
-                        <a onClick={callLogout} style={{ cursor: "pointer" }}>
+                        <a
+                          onClick={callLogout}
+                          style={{ color: "black", cursor: "pointer" }}
+                        >
                           Logout
                         </a>
                       </li>

@@ -14,7 +14,7 @@
   flex-wrap: wrap;
 }
 .add-address {
-  margin-left: 50px;
+  margin-left: 70px;
   margin-top: 30px;
   display: flex;
   flex-direction: column;
@@ -22,6 +22,64 @@
   align-items: center;
   border: 2px dotted black;
   padding: 100px;
-  height: auto;
+  height: 220px !important;
   width: 18rem;
+}
+
+.address-section {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  justify-content: space-between;
+  border: 2px solid gainsboro;
+  padding: 15px 20px;
+  background: #f1f1f1;
+  box-shadow: inset;
+  border-radius: 5px;
+  padding-bottom: 5px;
+  margin-left: 70px;
+  width: 18rem;
+  margin-bottom: 3%;
+}
+
+ul {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+  text-decoration: none;
+}
+h5 {
+  font-weight: 700;
+}
+
+.address-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.actions {
+  padding: 5px 10px;
+  cursor: pointer;
+  background: black;
+  border-radius: 10px;
+  margin-bottom: 5px;
+  color: whitesmoke;
+}
+.actions:hover {
+  background-color: green;
+}
+.default {
+  background-color: green;
+}
+
+.address-lines {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+}
+.address_name {
+  font-weight: 700;
 }

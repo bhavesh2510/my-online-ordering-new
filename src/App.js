@@ -6,6 +6,7 @@ import Appheader from "./components/AppHeader/AppHeader";
 import Footer from "./components/Footer/Footer";
 import Checkout from "./components/Checkout/Checkout";
 import { useState } from "react";
+import "antd/dist/antd.css";
 
 function App() {
   const [state, setState] = useState(true);

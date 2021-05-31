@@ -160,20 +160,20 @@ export function getFormattedRequestPayload(
     ? {
         ...payload,
 
-        // // street:
-        // //   delivery.selectedAddress.address1 + delivery.selectedAddress.address2,
-        // delivery_city: delivery.selectedAddress.city,
-        // delivery_state: delivery.selectedAddress.state,
-        // delivery_country: delivery.selectedAddress.country,
-        // delivery_zipcode: delivery.selectedAddress.zipcode,
-        // mobile: delivery.selectedAddress.phone,
-        // delivery_option: delivery.deliveryType.toLowerCase(),
-        // order_location: null,
-        // time_for_delivery: "",
-        // delivery_time: delivery_time,
-        // distance,
-        // delivery_cost: deliveryCharges,
-        // phone: "",
+        street:
+          delivery.selectedAddress.address1 + delivery.selectedAddress.address2,
+        delivery_city: delivery.selectedAddress.city,
+        delivery_state: delivery.selectedAddress.state,
+        delivery_country: delivery.selectedAddress.country,
+        delivery_zipcode: delivery.selectedAddress.zipcode,
+        mobile: delivery.selectedAddress.phone,
+        delivery_option: delivery.deliveryType.toLowerCase(),
+        order_location: null,
+        time_for_delivery: "",
+        delivery_time: user.selectedPickUpTime,
+        distance,
+        delivery_cost: deliveryCharges,
+        phone: "",
       }
     : {
         ...payload,

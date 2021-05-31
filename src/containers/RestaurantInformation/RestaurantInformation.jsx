@@ -39,6 +39,7 @@ import ManageAddress from "../../components/ManageAddress/ManageAddress";
 import Checkout from "../../components/Checkout/Checkout";
 import OrderSuccess from "../../components/OrderSuccess/OrderSuccess";
 import PaymentFailed from "../../components/Checkout/PaymentFailed";
+// import { AppModal } from "../../components/AppModal/AppModal";
 const RestaurantInformation = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -86,6 +87,7 @@ const RestaurantInformation = (props) => {
       {/* {console.log("ResInfo-props", props)} */}
       {/* {console.log("user", user, "menu", menu, "main", main)} */}
       {loading && <LoadingBar />}
+      {/* <AppModal /> */}
       <Switch>
         <Route exact path={`/restId=${props.restaurantId}`}>
           <Redirect to={`/restId=${props.restaurantId}/menu`} />
@@ -106,7 +108,15 @@ const RestaurantInformation = (props) => {
           <MyOrders restaurantId={props.restaurantId} />
         </Route>
         <Route exact path={`/restId=${props.restaurantId}/checkout`}>
-          <Checkout />
+          <Checkout
+            //orderId={generateOrderId()}
+            restaurantInfo={menu.restaurantInfo}
+            deliveryRange={main.deliveryRange}
+            //onAddItem={this.handleAddItem}
+            //onRemoveItem={this.handleRemoveItem}
+            //displayLogin={this.props.showLoginFormMethod}
+            //displayAddressModal={displayAddressModal}
+          />
         </Route>{" "}
         <Route exact path={`/restId=${props.restaurantId}/ordersuccess`}>
           <OrderSuccess />

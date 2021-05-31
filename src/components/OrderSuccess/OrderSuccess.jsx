@@ -8,6 +8,7 @@ import AppHeader from "../AppHeader/AppHeader";
 import Footer from "../Footer/Footer";
 import WaitingOverlay from "../WaitingOverlay/WaitingOverlay";
 import moment from "moment";
+import { truncateDecimal } from "../../state-management/menu/utils";
 
 const OrderSuccess = () => {
   const dispatch = useDispatch();
@@ -123,7 +124,9 @@ const OrderSuccess = () => {
                             </td>
                             <td>
                               <strong className="float-right">
-                                {Number(currval.price) + Number(currval.tax)}
+                                {truncateDecimal(
+                                  Number(currval.subtotal) + Number(currval.tax)
+                                )}
                               </strong>
                             </td>
                           </tr>

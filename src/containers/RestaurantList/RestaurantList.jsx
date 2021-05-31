@@ -35,7 +35,7 @@ class RestaurantList extends React.PureComponent {
   }
 
   async initialize() {
-    const param = window.location.href.split("feedmi/?/")[1];
+    const param = window.location.href.split("feedmii/?/")[1];
 
     if (param) {
       const restOrChainId = param.split("=")[0];

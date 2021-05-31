@@ -232,3 +232,35 @@ input[type="radio"]:checked + .payment-class:before {
   height: 64px;
   overflow: hidden;
 }
+.address-change {
+  float: right;
+  font-size: 15px;
+  font-weight: 1000;
+  text-transform: uppercase;
+  margin-top: -70px;
+  margin-right: 30px;
+}
+.address-change:hover {
+  color: green;
+}
+.address-section-paymentform {
+  margin-top: 30px;
+  display: inline-flex;
+  flex-direction: column;
+  height: auto;
+  /* justify-content: space-between; */
+  border: 1px solid gainsboro;
+  padding: 25px 30px;
+  box-shadow: 2px 2px 8px 8px #f1f1f1;
+  background: white;
+  box-shadow: inset;
+  border-radius: 5px;
+  padding-bottom: 5px;
+  margin-left: 30px;
+  width: 40%;
+  margin-bottom: 3%;
+}
+.checkout-add-address:hover {
+  cursor: pointer;
+  box-shadow: 1px 1px 5px 5px gainsboro;
+}
