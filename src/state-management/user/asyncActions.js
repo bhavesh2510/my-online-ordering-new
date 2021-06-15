@@ -321,3 +321,26 @@ export function fetchLocaltionFromIP() {
     }
   };
 }
+
+export function fetchUserDetails(clientId) {
+  return async (dispatch) => {
+    dispatch(actions.fetchUserDetailsRequest());
+    const url = "https://ciboapp.com/api/clients/v2/ClientApi/getClientById";
+
+    try {
+      let credentials = JSON.stringify({ client_id: clientId });
+      console.log("STRINGIFIED_CRED", credentials);
+      const { data } = await axios.post(url, credentials);
+      // const data = new Promise((res,rej)=>{
+      //     setTimeout(()=>{
+      //       res("12345678")
+      //     },2000)
+      // })
+      console.log("userDetails", data.data);
+      return dispatch(actions.fetchUserDetailsSuccess(data.data));
+    } catch (error) {
+      console.log(error);
+      return dispatch(actions.fetchUserDetailsError(error));
+    }
+  };
+}

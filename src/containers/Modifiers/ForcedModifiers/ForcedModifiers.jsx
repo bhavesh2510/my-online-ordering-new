@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { FormGroup, Input, Label } from "reactstrap";
-import ModifierCategory from "./ModifiersCategory/ModifierCategory";
+import ModifierCategory from "../ForcedModifiers/ModifiersCategory/ModifierCategory";
 
-const ForcedModifiers = ({
+export const ForcedModifier = ({
   forcedModifiers,
   detours,
   currency,
@@ -11,12 +10,12 @@ const ForcedModifiers = ({
 }) => {
   const [selectedForceModifiers, setSelectedForceModifiers] = useState([]);
 
-  const getTotalPrice = (updatedForcedModifiers) => {
+  function getTotalPrice(updatedForcedModifiers) {
     return updatedForcedModifiers.reduce(
       (acc, item) => acc + Number(item.price),
       0
     );
-  };
+  }
 
   const handleSelectionChange = (forceModifier) => {
     let updatedModifiers = [];
@@ -60,32 +59,17 @@ const ForcedModifiers = ({
   };
 
   return (
-    <div style={{ width: "100%" }}>
-      {console.log("comp forcedModifier", forcedModifiers)}
-      {forcedModifiers.map((item) => {
-        if (item) {
-          return (
-            <>
-              <h4>{item.fm_cat_name}</h4>
-              <span>Please select only 1 of the following options</span>
-              {forcedModifiers.map((forceModifier, i) => {
-                return (
-                  <ModifierCategory
-                    key={i}
-                    forceModifier={forceModifier}
-                    detours={detours}
-                    currency={currency}
-                    getModifierPrice={getModifierPrice}
-                    onSelectionChange={handleSelectionChange}
-                  />
-                );
-              })}
-            </>
-          );
-        }
-      })}
-    </div>
+    forcedModifiers &&
+    forcedModifiers.map((forceModifier, i) => (
+      <ModifierCategory
+        key={i}
+        forceModifier={forceModifier}
+        detours={detours}
+        currency={currency}
+        getModifierPrice={getModifierPrice}
+        onSelectionChange={handleSelectionChange}
+      />
+    ))
   );
 };
-
-export default ForcedModifiers;
+export default ForcedModifier;

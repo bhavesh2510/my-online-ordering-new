@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { animateScroll as scroll } from "react-scroll";
 import MenuCategories from "../../../components/MenuCategories/MenuCategories";
@@ -9,7 +9,12 @@ import CreateAccount from "../../../components/CreateAccount/CreateAccount";
 import ForgotPassword from "../../../components/ForgotPassword/ForgotPassword";
 import AppHeader from "../../../components/AppHeader/AppHeader";
 import Footer from "../../../components/Footer/Footer";
-
+import AppModal from "../../../components/AppModal/AppModal";
+import HelpIcon from "@material-ui/icons/Help";
+import HomeSlider from "../../../components/HomeSlider/HomeSlider";
+import moment from "moment";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import LocationOnIcon from "@material-ui/icons/LocationOn";
 const buttonStyle = {
   position: "fixed",
   bottom: "5%",
@@ -27,11 +32,19 @@ const buttonStyle = {
 const Information = (props) => {
   const menu = useSelector((state) => state.menu);
   const user = useSelector((state) => state.user);
+  const main = useSelector((state) => state.main);
   console.log("menu in selector is", menu);
+  const [timings, settimings] = useState();
   const scrollToTop = () => {
     scroll.scrollToTop();
   };
-
+  useEffect(() => {
+    if (main.isClosed) {
+      settimings("closed");
+    } else {
+      settimings(main.businessHour);
+    }
+  }, []);
   const handleAddItem = (item, isHappyHoursActive) => {
     console.log("items in cart is", item);
     // if (item.optional_modifier !== '0' || item.forced_modifier !== '0') {
@@ -78,39 +91,42 @@ const Information = (props) => {
         data-natural-width={1400}
         data-natural-height={470}
       >
-        <button
+        {/* <button
           style={{ zIndex: "1000" }}
           onClick={scrollToTop}
           style={buttonStyle}
         >
           Scroll to Top
-        </button>
+        </button> */}
         <div id="subheader">
           <div id="sub_content">
-            <div id="thumb">
+            {/* <div id="thumb">
               <img src={props.restaurantInfo.logo} alt />
-            </div>
-            {/* <div className="rating">
-              <i className="icon_star voted" />
-              <i className="icon_star voted" />
-              <i className="icon_star voted" />
-              <i className="icon_star voted" />
-              <i className="icon_star" /> (
-              <small>
-                <a href="detail_page_2.html">Read 98 reviews</a>
-              </small>
-              )
             </div> */}
+
             <h1>{props.restaurantInfo.rname}</h1>
             <div>
               <em>{props.restaurantInfo.description}</em>
             </div>
             <div>
-              <i className="icon_pin" />{" "}
+              <LocationOnIcon />{" "}
               {`${props.restaurantInfo.address} - ${props.restaurantInfo.city} - ${props.restaurantInfo.country}`}{" "}
-              <strong>Delivery charge:</strong> free over{" "}
-              {props.restaurantInfo?.monetary_symbol}-
+              <br />
+              <strong>Delivery charge:</strong> free over&nbsp;
+              {menu.restaurantInfo.cost.free_delivery_eligible_amount}&nbsp;
+              {props.restaurantInfo?.monetary_symbol}
               {/* {props.restaurantInfo.cost.free_delivery_eligible_amount}. */}
+              <br />
+              <br />
+              Delivery Options : &nbsp;
+              {menu.restaurantInfo.order_option?.split(",").map((option, i) => {
+                return (
+                  <b style={{ textTransform: "capitalize" }}>
+                    {option}
+                    <CheckCircleOutlineIcon /> &nbsp;
+                  </b>
+                );
+              })}
             </div>
           </div>
           {/* End sub_content */}
@@ -135,7 +151,14 @@ const Information = (props) => {
 
             {/* End box_style_1 */}
             <div className="box_style_2 d-none d-sm-block" id="help">
-              <i className="icon_lifesaver" />
+              <img
+                src="https://i.ibb.co/PwH9KGP/life-saver-icon-2.jpg"
+                height="120px"
+                width="120px"
+                alt="help"
+                border="0"
+              />
+
               <h4>
                 Need <span>Help?</span>
               </h4>
@@ -146,7 +169,11 @@ const Information = (props) => {
               >
                 {props.restaurantInfo.phone}
               </a>
-              <small>Monday to Friday 9.00am - 7.30pm</small>
+              <small>
+                <b>
+                  {`${moment().format("dddd")}`} &nbsp;{timings}
+                </b>
+              </small>
             </div>
           </div>
           {/* End col */}
@@ -193,6 +220,7 @@ const Information = (props) => {
       {user.showLoginForm ? <Login /> : null}
       {user.showRegisterForm ? <CreateAccount /> : null}
       {user.showForgotPasswordForm ? <ForgotPassword /> : null}
+
       <Footer />
     </>
   );

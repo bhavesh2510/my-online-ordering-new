@@ -1,9 +1,15 @@
 .google-map-container {
   position: relative;
-  width: 500px;
-  height:350px;
+  width: 490px;
+  margin-left: -10px;
+  height: 350px;
 }
-
+@media (max-width: 768px) {
+  .google-map-container {
+    width: 310px;
+    margin-left: -10px;
+  }
+}
 .address-info {
   padding: 5px;
   line-height: 1.5;

@@ -15,7 +15,11 @@ import {
   isHappyHourStillActive,
   setTimer,
 } from "../../state-management/menu/utils";
-import { addItem, removeItem } from "../../state-management/menu/actions";
+import {
+  addItem,
+  removeItem,
+  clearMenuState,
+} from "../../state-management/menu/actions";
 import { TimePicker } from "antd";
 import { notification } from "antd";
 import "antd/dist/antd.css";
@@ -34,10 +38,6 @@ import Footer from "../Footer/Footer";
 const Checkout = () => {
   //const format = "HH:mm";
   const History = useHistory();
-  const [dc, setdc] = useState();
-  useEffect(() => {
-    console.log("dc is", dc);
-  }, [dc]);
 
   const main = useSelector((state) => state.main);
   const menu = useSelector((state) => state.menu);
@@ -93,8 +93,8 @@ const Checkout = () => {
   useEffect(() => {
     if (main.deliveryRange) getDeliveryCharges();
     dispatch(setPickupTime(data.pickupTime));
-    getDeliveryCharges();
-    setdc(getDeliveryCharges);
+    //getDeliveryCharges();
+
     console.log("xyz", data.pickupTime);
 
     const deliveryOptions = !(
@@ -192,7 +192,6 @@ const Checkout = () => {
     return menu.cart.length
       ? truncateDecimal(
           menu.cart.reduce((acc, item) => {
-            console.log("item acc is", item);
             if (
               isHappyHourStillActive(item, menu.restaurantInfo.timezone)
                 .isActive &&
@@ -207,8 +206,8 @@ const Checkout = () => {
             }
 
             return (
-              acc + item.qty * Number(item.price)
-              //(item.subTotal ? item.subTotal : item.qty * Number(item.price))
+              acc +
+              (item.subTotal ? item.subTotal : item.qty * Number(item.price))
             );
           }, 0)
         )
@@ -358,6 +357,30 @@ const Checkout = () => {
     dispatch(removeItem(item, item.modifiers || null, 0, menu.restaurantInfo));
   };
 
+  const getSavedAmount = () => {
+    return menu.cart.length
+      ? truncateDecimal(
+          menu.cart.reduce((acc, item) => {
+            if (
+              isHappyHourStillActive(item, menu.restaurantInfo.timezone)
+                .isActive &&
+              item.happyHourItem
+            ) {
+              return (
+                acc +
+                (item.subTotal -
+                  ((item.happyHourItem && item.happyHourItem.subTotal) || 0))
+              );
+            }
+
+            return acc;
+          }, 0)
+        )
+      : "";
+  };
+
+  const savedAmount = Math.abs(getSavedAmount());
+
   const sendpaymentreq = (type, orderId) => {
     var errorurl = `http://ciboapp.me/feedmii/?/${menu.restaurantInfo.restaurant_id}/paymentfailed`;
     var failedurl = `http://ciboapp.me/feedmii/?/${menu.restaurantInfo.restaurant_id}/paymentfailed`;
@@ -401,10 +424,17 @@ const Checkout = () => {
   };
   const handleCheckout = async (deliveryDetails) => {
     console.log("e is ", deliveryDetails);
-    if (data.deliveryType == undefined) {
-      alert("fail");
-    }
-    if (main.isClosed) {
+    if (deliveryDetails.booleanforpaymentmethod == 0) {
+      return notification["warning"]({
+        style: {
+          marginTop: "50px",
+          color: "rgba(0, 0, 0, 0.65)",
+          border: "1px solid #b7eb8f",
+          backgroundColor: "#f6ffed",
+        },
+        message: "Please select payment method",
+      });
+    } else if (main.isClosed) {
       return notification["warning"]({
         description: "Restaurant is closed",
         style: {
@@ -430,71 +460,75 @@ const Checkout = () => {
           backgroundColor: "#f6ffed",
         },
       });
-    }
-    setdata({ ...state, displayloader: true });
+    } else {
+      setdata({ ...state, displayloader: true });
 
-    const orderId = getOrderId();
-    var savedAmount = "1";
-    const response_format = getFormattedRequestPayload(
-      // props.phone_code,
-      user,
-      user.selectedPickUpTime,
-      menu.restaurantInfo,
-      deliveryDetails,
-      orderId,
-      getSubTotal(),
-      getSubTaxTotal(),
-      getBillAmount(),
-      menu.cart,
-      user.distance,
-      savedAmount,
-      //getSavedAmount(),
-      getDeliveryCharges(),
-      user.user.phonecode,
-      user.selectedDeliveryTime
-    );
+      const orderId = getOrderId();
+      var savedAmount = "1";
+      const response_format = getFormattedRequestPayload(
+        // props.phone_code,
+        user,
+        user.selectedPickUpTime,
+        menu.restaurantInfo,
+        deliveryDetails,
+        orderId,
+        getSubTotal(),
+        getSubTaxTotal(),
+        getBillAmount(),
+        menu.cart,
+        user.distance,
+        savedAmount,
+        getSavedAmount(),
+        getDeliveryCharges(),
+        user.user.phonecode,
+        user.selectedDeliveryTime
+      );
 
-    console.log("payload is", response_format);
+      console.log("payload is", response_format);
 
-    const response = await dispatch(
-      placeOrder(
-        getFormattedRequestPayload(
-          // props.phone_code,
-          user,
-          user.user.selectedPickUpTime,
-          menu.restaurantInfo,
-          deliveryDetails,
-          orderId,
-          getSubTotal(),
-          getSubTaxTotal(),
-          getBillAmount(),
-          menu.cart,
-          user.distance,
-          savedAmount,
-          //getSavedAmount(),
-          getDeliveryCharges(),
-          user.user.phonecode,
-          user.user.selectedDeliveryTime
-        ),
-        user.user.token
-      )
-    );
-
-    const {
-      data: { RESULT, message },
-    } = response;
-    console.log("response is", response);
-    console.log("results", RESULT);
-    if (RESULT == "SUCCESS") {
-      console.log("if statement", deliveryDetails.paymentMethod);
-      if (deliveryDetails.paymentMethod == "1") {
-        sendpaymentreq("1", orderId);
-      } else if (deliveryDetails.paymentMethod == "4") {
-        sendpaymentreq("2", orderId);
-      } else {
-        History.push(
-          `/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess`
-        );
+      const response = await dispatch(
+        placeOrder(
+          getFormattedRequestPayload(
+            // props.phone_code,
+            user,
+            user.user.selectedPickUpTime,
+            menu.restaurantInfo,
+            deliveryDetails,
+            orderId,
+            getSubTotal(),
+            getSubTaxTotal(),
+            getBillAmount(),
+            menu.cart,
+            user.distance,
+            savedAmount,
+            //getSavedAmount(),
+            getDeliveryCharges(),
+            user.user.phonecode,
+            user.user.selectedDeliveryTime
+          ),
+          user.user.token
+        )
+      );
+      console.log("reponse is", response);
+      const {
+        data: { RESULT, message },
+      } = response;
+      console.log("response is", response);
+      console.log("results", RESULT);
+      if (RESULT == "SUCCESS") {
+        console.log("if statement", deliveryDetails.paymentMethod);
+        if (deliveryDetails.paymentMethod == "1") {
+          sendpaymentreq("1", orderId);
+          dispatch(clearMenuState());
+        } else if (deliveryDetails.paymentMethod == "4") {
+          sendpaymentreq("2", orderId);
+          dispatch(clearMenuState());
+        } else {
+          dispatch(clearMenuState());
+          History.push(
+            `/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess`
+          );
+        }
       }
     }
   };
@@ -523,10 +557,14 @@ const Checkout = () => {
       <AppHeader />
       <div
         className="container margin_60_35"
-        style={{ transform: "none", marginTop: "50px" }}
+        style={{
+          transform: "none",
+
+          marginTop: "50px",
+        }}
       >
         <div className="row" style={{ transform: "none" }}>
-          <div className="col-lg-8">
+          <div className="col-lg-7">
             <PaymentForm
               onHandleCheckout={handleCheckout}
               deliveryCharges={getDeliveryCharges}
@@ -534,7 +572,7 @@ const Checkout = () => {
           </div>
 
           <div
-            className="col-lg-4"
+            className="col-lg-5"
             id="sidebar"
             style={{
               position: "relative",
@@ -596,7 +634,7 @@ const Checkout = () => {
                               >
                                 <span className="float-right">
                                   {" "}
-                                  EUR
+                                  {`${menu.restaurantInfo.monetary_symbol}`}
                                   {` ${truncateDecimal(
                                     getItemPrice(val, isStillActive)
                                   )}`}
@@ -650,7 +688,7 @@ const Checkout = () => {
                     <tr>
                       <td>
                         Delivery Charges
-                        <span className="float-right">{`${menu.restaurantInfo.monetary_symbol} ${user.delivery_cost}`}</span>
+                        <span className="float-right">{`${menu.restaurantInfo.monetary_symbol} ${user.delivery_cost}  `}</span>
                       </td>
                     </tr>
 
@@ -662,6 +700,26 @@ const Checkout = () => {
                         } ${getBillAmount()}`}</span>
                       </td>
                     </tr>
+                    <br />
+                    {savedAmount ? (
+                      <>
+                        <tr>
+                          <div
+                            className="savings"
+                            style={{ width: "100%", marginLeft: "0px" }}
+                          >
+                            <p
+                              className="para-savings"
+                              style={{ margin: "auto" }}
+                            >
+                              YOU SAVED{" "}
+                              {` ${savedAmount} ${menu.restaurantInfo.monetary_symbol}`}{" "}
+                              ON THE BILL
+                            </p>
+                          </div>
+                        </tr>
+                      </>
+                    ) : null}
                   </tbody>
                 </table>
               </div>

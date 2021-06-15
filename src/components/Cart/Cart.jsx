@@ -10,6 +10,8 @@ import { getTaxes } from "../../state-management/menu/operations";
 import Login from "../../components/Login/Login";
 import { useHistory } from "react-router";
 import ItemList from "./ItemList";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import { suppressDeprecationWarnings } from "moment";
 
 const Cart = (props) => {
   const History = useHistory();
@@ -87,12 +89,12 @@ const Cart = (props) => {
   };
 
   function getSubTotal() {
-    return props.cartlist.length
+    return menu.cart.length
       ? truncateDecimal(
-          props.cartlist.reduce((acc, item) => {
-            console.log("item acc is", item);
+          menu.cart.reduce((acc, item) => {
             if (
-              isHappyHourStillActive(item, props.restinfo.timezone).isActive &&
+              isHappyHourStillActive(item, menu.restaurantInfo.timezone)
+                .isActive &&
               item.happyHourItem
             ) {
               return (
@@ -104,8 +106,8 @@ const Cart = (props) => {
             }
 
             return (
-              acc + item.qty * Number(item.price)
-              //(item.subTotal ? item.subTotal : item.qty * Number(item.price))
+              acc +
+              (item.subTotal ? item.subTotal : item.qty * Number(item.price))
             );
           }, 0)
         )
@@ -128,7 +130,12 @@ const Cart = (props) => {
               );
             }
 
-            return acc + Number(item.tax || 0);
+            return (
+              acc +
+              (item.modifiers
+                ? item.qty * Number(item.tax || 0)
+                : Number(item.tax || 0))
+            );
           }, 0)
         )
       : "";
@@ -265,10 +272,23 @@ const Cart = (props) => {
     dispatch(showLoginFormMethod());
   };
 
+  const [warning, setwarning] = useState(false);
+  const grandTotal = Number(getGrandTotal());
+  const goToCheckout = () => {
+    if (
+      !user.isTakeAway &&
+      grandTotal < Number(main.selectedRestaurant.cost["min_order_amount"])
+    ) {
+      setwarning(true);
+    } else {
+      History.push(`/restId=${menu.restaurantInfo.restaurant_id}/checkout`);
+    }
+  };
+
   return (
     <div id="cart_box">
-      <h3>
-        Your order <i className="icon_cart_alt float-right" />
+      <h3 style={{ backgroundColor: "#6244da", color: "white" }}>
+        Your order <ShoppingCartIcon style={{ float: "right" }} />
       </h3>
 
       <ItemList
@@ -282,6 +302,7 @@ const Cart = (props) => {
         //onAdd={handleAddItem}
         //onDelete={props.removeCartItem}
       />
+
       {/* <div className="row" id="options_2">
         <div className="col-xl-4 col-md-12 col-sm-12 col-4">
           <label>
@@ -375,13 +396,17 @@ const Cart = (props) => {
         </tbody>
       </table>
       <hr />
+      {warning ? (
+        <>
+          <p style={{ color: "red" }}>
+            Minimum cart amount is{" "}
+            {main.selectedRestaurant.cost["min_order_amount"]}
+          </p>
+        </>
+      ) : null}
       {user.user.isUserLoggedIn ? (
         <button
-          onClick={() =>
-            History.push(
-              `/restId=${menu.restaurantInfo.restaurant_id}/checkout`
-            )
-          }
+          onClick={goToCheckout}
           className="btn_full"
           href="cart.html"
           style={{ backgroundColor: "#5B53CD" }}

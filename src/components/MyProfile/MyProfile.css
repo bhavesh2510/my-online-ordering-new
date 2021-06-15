@@ -11,3 +11,33 @@
   height: 300px;
   background: rgba(0, 0, 0, 0.7);
 }
+.profile-container {
+  margin-top: 20px;
+  margin-left: 25%;
+}
+.profile-child-conatiner {
+  margin-left: 20%;
+}
+.profile-textfield {
+  width: 120%;
+}
+.profile-submit-button {
+  width: 120%;
+  color: white;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+@media (max-width: 768px) {
+  .profile-container {
+    margin-left: 2%;
+  }
+  .profile-child-conatiner {
+    margin-left: 0%;
+  }
+  .profile-textfield {
+    width: 70%;
+  }
+  .profile-submit-button {
+    width: 70%;
+  }
+}

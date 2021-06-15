@@ -311,3 +311,40 @@
   overflow-wrap: break-word;
   word-break: break-word;
 }
+.password-parent-container {
+  margin-top: 20px;
+  margin-left: 25%;
+}
+.password-child-conatiner {
+  margin-left: 20%;
+}
+.input-passowrd-texfield {
+  width: 120%;
+}
+.password-submit-button {
+  padding: 15px;
+  width: 120%;
+  margin-bottom: 20px;
+}
+@media (max-width: 768px) {
+  .parent-container {
+    margin-left: 0%;
+  }
+  .password-child-conatiner {
+    margin-left: 0%;
+  }
+  .input-passowrd-texfield {
+    width: 70%;
+  }
+  .password-submit-button {
+    padding: 15px;
+    width: 70%;
+    margin-bottom: 20px;
+  }
+  .box-passowrd-container {
+    margin-left: -80px;
+  }
+  .feature_2 {
+    margin-left: 0px;
+  }
+}

@@ -1,0 +1,7 @@
+.cart-button {
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: transparent;
+  margin-left: -10px;
+  border: none;
+}

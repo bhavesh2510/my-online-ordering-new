@@ -16,7 +16,7 @@ import {
 
 import Address from "../ManageAddress/Address";
 
-const ManageAddress = () => {
+const ManageAddress = (props) => {
   const menu = useSelector((state) => state.menu);
   const user = useSelector((state) => state.user);
   const modal = useSelector((state) => state.modal);
@@ -31,6 +31,12 @@ const ManageAddress = () => {
     name: "",
     addresses: [],
   });
+  useEffect(async () => {
+    const { payload } = await dispatch(fetchAddressesList(user.user.clientId));
+
+    setState({ ...state, addresses: payload.data });
+    props.refetchAddresses(false);
+  }, [props.refetchAddresses]);
   useEffect(() => {
     dispatch(displayAddressModal(false));
     fetchAddressList();
@@ -193,8 +199,12 @@ const ManageAddress = () => {
           })}
         </main>
       </div>
-      {modal.modal.modalToShow == "findAddress" ? <ChooseAddress /> : null}
-      {modal.modal.modalToShow == "AddAddress" ? <AddAddress /> : null}
+      {modal.modal.modalToShow == "findAddress" ? (
+        <ChooseAddress refetchAddresses={props.refetchAddresses} />
+      ) : null}
+      {modal.modal.modalToShow == "AddAddress" ? (
+        <AddAddress refetchAddresses={props.refetchAddresses} />
+      ) : null}
     </>
   );
 };

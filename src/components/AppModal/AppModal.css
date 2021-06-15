@@ -1,0 +1,19 @@
+.app-modal {
+  position: absolute;
+  z-index: 9;
+  background: rgba(0, 0, 0, 0.5);
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  z-index: 1000;
+}
+
+.modal-content {
+  display: flex;
+  position: relative;
+  max-width: calc(100% - 20px);
+  max-height: calc(100% - 20px);
+  overflow: auto;
+  background-color: white;
+  border-radius: 4px;
+}

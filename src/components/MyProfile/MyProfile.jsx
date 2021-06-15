@@ -139,10 +139,7 @@ const MyProfile = () => {
           </div>
         </div>
       </section> */}
-      <div
-        className="col-lg-6"
-        style={{ marginTop: "20px", marginLeft: "25%" }}
-      >
+      <div className="col-lg-6 profile-container">
         <div className="box_style_2" id="main_menu">
           <div
             style={{
@@ -150,10 +147,11 @@ const MyProfile = () => {
               width: "400px",
             }}
           >
-            <div style={{ marginLeft: "20%" }}>
+            <div className="profile-child-conatiner">
               <TextField
+                className="profile-textfield"
                 size="small"
-                style={{ width: "120%" }}
+                // style={{ width: "120%" }}
                 label="First Name"
                 variant="outlined"
                 value={state.firstName}
@@ -163,7 +161,7 @@ const MyProfile = () => {
               <br />
               <TextField
                 size="small"
-                style={{ width: "120%" }}
+                className="profile-textfield"
                 label="Last Name"
                 variant="outlined"
                 value={state.lastName}
@@ -173,7 +171,8 @@ const MyProfile = () => {
               <br />
               <TextField
                 size="small"
-                style={{ width: "120%", backgroundColor: "#f1f1f1" }}
+                className="profile-textfield"
+                style={{ backgroundColor: "#f1f1f1" }}
                 label="Email"
                 variant="outlined"
                 value={state.email}
@@ -183,7 +182,7 @@ const MyProfile = () => {
               <br />
               <TextField
                 size="small"
-                style={{ width: "120%" }}
+                className="profile-textfield"
                 label="Address"
                 variant="outlined"
                 value={state.address}
@@ -193,7 +192,7 @@ const MyProfile = () => {
               <br />
               <TextField
                 size="small"
-                style={{ width: "120%" }}
+                className="profile-textfield"
                 label="City"
                 variant="outlined"
                 value={state.city}
@@ -203,7 +202,7 @@ const MyProfile = () => {
               <br />
               <TextField
                 size="small"
-                style={{ width: "120%" }}
+                className="profile-textfield"
                 label="State"
                 variant="outlined"
                 value={state.state}
@@ -213,7 +212,7 @@ const MyProfile = () => {
               <br />
               <TextField
                 size="small"
-                style={{ width: "120%" }}
+                className="profile-textfield"
                 label="Country"
                 variant="outlined"
                 value={state.country}
@@ -223,7 +222,7 @@ const MyProfile = () => {
               <br />
               <TextField
                 size="small"
-                style={{ width: "120%" }}
+                className="profile-textfield"
                 label="Zipcode"
                 variant="outlined"
                 value={state.zipcode}
@@ -233,7 +232,7 @@ const MyProfile = () => {
               <br />
               <TextField
                 size="small"
-                style={{ width: "120%" }}
+                className="profile-textfield"
                 label="Phone number"
                 variant="outlined"
                 value={state.mobile}
@@ -243,12 +242,10 @@ const MyProfile = () => {
               <br />
               <Button
                 onClick={formSubmit}
+                className="profile-submit-button"
                 style={{
                   backgroundColor: "#6244da",
-                  width: "120%",
                   color: "white",
-                  padding: "15px",
-                  marginBottom: "20px",
                 }}
               >
                 {state.btn}

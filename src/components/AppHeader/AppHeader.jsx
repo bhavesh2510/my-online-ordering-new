@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
-import Logo from "../../assets/img/zottoLogo.png";
+//import Logo from "../../assets/img/zottoLogo.png";
 import {
   setUserLoggedOut,
   showLoginFormMethod,
   showRegisterFormMethod,
 } from "../../state-management/user/actions";
 // import "./AppHeader.scss";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import CloseIcon from "@material-ui/icons/Close";
 
 const Appheader = () => {
   const History = useHistory();
+  const main = useSelector((state) => state.main);
   const menu = useSelector((state) => state.menu);
 
   const [navbar, setNavbar] = useState(false);
@@ -35,6 +38,20 @@ const Appheader = () => {
     );
   };
 
+  const showMobileMenu = () => {
+    var x = document.getElementById("main-menu-id");
+    x.classList.add("show");
+  };
+
+  const showEditProfileOnMobile = () => {
+    var x = document.getElementById("editprofile");
+    x.classList.add("show_normal");
+  };
+  const closemobilemenu = () => {
+    var x = document.getElementById("main-menu-id");
+    x.classList.remove("show");
+  };
+
   return (
     <header
       className="main-header"
@@ -50,21 +67,38 @@ const Appheader = () => {
             style={{ fontSize: "1.2rem", color: "black" }}
           >
             {/* paste logo here */}
-            <img width="100px" height="30px" src={Logo} alt="zotto" />
+            <img
+              style={{ marginTop: "-10px" }}
+              width="150px"
+              height="40px"
+              src={main.selectedRestaurant.logo}
+              alt="zotto"
+            />
           </div>
           <nav className="col-md-8 col-sm-8 col-8">
             <a
               className="cmn-toggle-switch cmn-toggle-switch__htx open_close"
-              href="javascript:void(0);"
+              onClick={showMobileMenu}
             >
               <span>Menu mobile</span>
             </a>
-            <div className="main-menu">
-              <div id="header_menu">
-                <img src="img/logo.png" width={190} height={23} alt />
+
+            <div className="main-menu" id="main-menu-id">
+              <div id="header_menu" style={{ backgroundColor: "black" }}>
+                <img
+                  src={main.selectedRestaurant.logo}
+                  width="150px"
+                  height="50px"
+                  alt
+                />
               </div>
-              <a href="#" className="open_close" id="close_in">
-                <i className="icon_close" />
+              <a
+                href="#"
+                className="open_close"
+                id="close_in"
+                onClick={closemobilemenu}
+              >
+                <CloseIcon style={{ color: "white" }} />
               </a>
               <ul>
                 {Number(menu.restaurantInfo["chain_owner_id"]) ? (
@@ -97,17 +131,20 @@ const Appheader = () => {
                   <li
                     className="submenu"
                     style={{ color: "white", cursor: "pointer" }}
-                    onClick={() => History.push("myOrders")}
+                    onClick={showEditProfileOnMobile}
                   >
                     {user.user.isUserLoggedIn ? (
                       <a className="show-submenu">
                         {user.user.firstName}
-                        <i className="icon-down-open-mini" />
+                        <ExpandMoreIcon
+                          fontSize="small"
+                          style={{ float: "right" }}
+                        />
                       </a>
                     ) : (
                       <a className="show-submenu">
                         user
-                        <i className="icon-down-open-mini" />
+                        <ExpandMoreIcon fontSize="small" />
                       </a>
                     )}
                     {/* <a href="javascript:void(0);" className="show-submenu">
@@ -115,9 +152,12 @@ const Appheader = () => {
                     <i className="icon-down-open-mini" />
                   </a> */}
 
-                    <ul>
+                    <ul className="" id="editprofile">
                       <li
-                        style={{ color: "white", cursor: "pointer" }}
+                        style={{
+                          color: "white",
+                          cursor: "pointer",
+                        }}
                         onClick={() => History.push("myOrders")}
                       >
                         <a
@@ -163,26 +203,49 @@ const Appheader = () => {
                   </li>
                 ) : null}
 
-                <li>
-                  <a
-                    style={{ color: "white", cursor: "pointer" }}
-                    onClick={() => dispatch(showLoginFormMethod())}
-                    data-toggle="modal"
-                    data-target="#login_2"
-                  >
-                    Login
-                  </a>
-                </li>
-                <li>
-                  <a
-                    style={{ color: "white", cursor: "pointer" }}
-                    onClick={() => dispatch(showRegisterFormMethod())}
-                    data-toggle="modal"
-                    data-target="#login_2"
-                  >
-                    Register
-                  </a>
-                </li>
+                {!user.user.isUserLoggedIn ? (
+                  <>
+                    <li>
+                      <a
+                        style={{ color: "white", cursor: "pointer" }}
+                        onClick={() => {
+                          var x = document.getElementById("main-menu-id");
+                          x.classList.remove("show");
+                          dispatch(showLoginFormMethod());
+                        }}
+                        data-toggle="modal"
+                        data-target="#login_2"
+                      >
+                        Login
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        style={{ color: "white", cursor: "pointer" }}
+                        onClick={() => {
+                          var x = document.getElementById("main-menu-id");
+                          x.classList.remove("show");
+                          dispatch(showRegisterFormMethod());
+                        }}
+                        data-toggle="modal"
+                        data-target="#login_2"
+                      >
+                        Register
+                      </a>
+                    </li>
+                  </>
+                ) : (
+                  <li>
+                    <a
+                      style={{ color: "white", cursor: "pointer" }}
+                      // onClick={() => dispatch(showRegisterFormMethod())}
+                      data-toggle="modal"
+                      data-target="#login_2"
+                    >
+                      Help
+                    </a>
+                  </li>
+                )}
               </ul>
             </div>
             {/* End main-menu */}

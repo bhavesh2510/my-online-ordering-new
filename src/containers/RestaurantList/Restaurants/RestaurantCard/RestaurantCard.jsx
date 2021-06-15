@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 // import "./RestaurantCard.scss";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import { useSelector, useDispatch } from "react-redux";
 
 const RestaurantCard = ({ restaurant }) => {
   return (
@@ -25,14 +27,18 @@ const RestaurantCard = ({ restaurant }) => {
         <div className="location">
           {restaurant.address} {restaurant.city}
           {restaurant.zipcode}
-          <span className="opening">Opens at 17:00</span>
+          <br />
+          <span className="opening">Opens at </span>
         </div>
         <ul>
           {restaurant?.order_option?.split(",").map((option, i) => {
             return (
               <li key={i} style={{ textTransform: "capitalize" }}>
-                {option}
-                <i className="icon_check_alt2 ok" />
+                {option} &nbsp;
+                <CheckCircleOutlineIcon
+                  style={{ color: "green" }}
+                  fontSize="small"
+                />
               </li>
             );
           })}

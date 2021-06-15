@@ -50,8 +50,8 @@ td {
   color: white;
 }
 .btn_radio {
-  padding-left: 70px;
-  padding-right: 70px;
+  padding-left: 50px;
+  padding-right: 50px;
   padding-top: 12px;
   padding-bottom: 12px;
   margin: 20px;
@@ -263,4 +263,78 @@ input[type="radio"]:checked + .payment-class:before {
 .checkout-add-address:hover {
   cursor: pointer;
   box-shadow: 1px 1px 5px 5px gainsboro;
+}
+.text-add-address {
+  margin: 20px;
+  font-size: 25px;
+  padding-left: 20px;
+  padding-top: 18px;
+  text-transform: uppercase;
+}
+.delivery-tick-img {
+  height: 50px;
+  width: 50px;
+}
+.address-add-change {
+  float: right;
+
+  font-size: 15px;
+  font-weight: 1000;
+  text-transform: uppercase;
+  margin-top: -70px;
+  margin-right: 0px;
+}
+@media (max-width: 768px) {
+  .address-section-paymentform {
+    width: 90%;
+    margin-left: 15px;
+  }
+  .text-add-address {
+    margin: 10px;
+    font-size: 20px;
+    padding-left: 15px;
+    padding-top: 18px;
+    text-transform: uppercase;
+  }
+  .btn_radio {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    margin: 10px;
+    margin-left: -5px;
+    cursor: pointer;
+    border-radius: 5px;
+    /* width: 100%; */
+  }
+  .delivery-head {
+    font-size: 29px;
+  }
+  .address-change {
+    float: right;
+
+    font-size: 15px;
+    font-weight: 1000;
+    text-transform: uppercase;
+    margin-top: 120px;
+    margin-right: 0px;
+  }
+  .delivery-tick-img {
+    height: 30px;
+    width: 30px;
+  }
+  .payment-class {
+    position: relative;
+    cursor: pointer;
+    color: black;
+    font-size: 20px;
+    /* border: 2px solid black; */
+    border-radius: 5px;
+    padding: 0px 20px;
+    display: flex;
+    align-items: center;
+  }
+  .address-add-change {
+    margin-top: -100px;
+  }
 }

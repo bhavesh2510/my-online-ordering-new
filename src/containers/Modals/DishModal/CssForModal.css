@@ -1,0 +1,74 @@
+/* .modal-header {
+  padding: 5px 10px;
+  font-size: 18px;
+  font-weight: 700;
+}
+span {
+  flex: 1;
+  text-align: center;
+}
+.header-content {
+  width: 100%;
+  margin-bottom: 5px;
+}
+.title {
+  text-align: left;
+}
+
+.separator {
+  width: 100%;
+  height: 1px;
+  background: grey;
+}
+
+.close-button {
+  height: 2.5rem;
+  cursor: pointer;
+}
+
+button {
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  border: border;
+
+  color: white;
+  line-height: 1;
+  background: black;
+  cursor: pointer;
+}
+
+.modal-footer {
+  padding: 5px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  border-top: border;
+  user-select: none;
+}
+
+
+
+.button {
+  width: 100%;
+  border: border;
+  padding: 0.6em;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1em;
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  outline: none;
+}
+
+.button:hover {
+  background: black;
+  color: white;
+} */
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.7;
+}

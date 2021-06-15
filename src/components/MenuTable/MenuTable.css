@@ -1,0 +1,19 @@
+.button-menutable {
+  cursor: pointer;
+  background-color: #5b53cd;
+  color: whitesmoke;
+  font-size: 1rem;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  outline: none;
+  /* paddingTop: "-15px; */
+  display: flex;
+  justify-content: center;
+  z-index: 99;
+}
+
+.main-menu {
+  left: -40px;
+}

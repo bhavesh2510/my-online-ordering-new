@@ -1,7 +1,10 @@
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import MenuTable from "../../components/MenuTable/MenuTable";
+import PizzaMenuTable from "../../components/MenuTable/PizzaMenuTable";
 import { getTaxes } from "../../state-management/menu/operations";
+import { getFilterredList } from "../../state-management/menu/selectors";
+
 const MenuItems = React.memo(
   ({
     categories,
@@ -19,18 +22,23 @@ const MenuItems = React.memo(
 
     //? Need to filter Pizzas and HappyHours based on isActive and isOnline
     const menu = useSelector((state) => state.menu);
+    const state = useSelector((state) => state);
+
     const allforcedModifiers = menu.allForcedModifier;
+
     const findCategory = (selectedCategoryId) => {
       console.log("memoized value");
-      return menuItems.filter(
+
+      return menu.menuItems.filter(
         ({ category_id: cid, online }) =>
           cid === selectedCategoryId && online === "1"
       );
     };
 
-    const filteredIems = useMemo(() => findCategory(selectedCategoryId), [
-      selectedCategoryId,
-    ]);
+    const filteredIems = useMemo(
+      () => findCategory(selectedCategoryId),
+      [selectedCategoryId]
+    );
 
     function getSelectedCategoryName() {
       if (
@@ -166,18 +174,20 @@ const MenuItems = React.memo(
             list={filteredIems}
           />
         ) : null}
-        {selectedCategoryId === -2 ? (
-          <MenuTable
+        {console.log("items in menuitem before pizza", pizzas)}
+        {menu.selectedCategoryId === -2 ? (
+          <PizzaMenuTable
             symbol={restaurantInfo.monetary_symbol}
             category_name="Pizza"
             list={pizzas}
           />
         ) : null}
+
         {selectedCategoryId === -1 ? (
           <MenuTable
             symbol={restaurantInfo.monetary_symbol}
             category_name="Happy Hours"
-            list={happyhours}
+            list={(menuItems = getFilterredList(state))}
           />
         ) : null}
       </>

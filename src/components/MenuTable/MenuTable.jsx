@@ -4,18 +4,84 @@ import { Button } from "react-scroll";
 //import AddIcon from "@material-ui/icons/Add";
 import { useSelector, useDispatch } from "react-redux";
 import { openModal, closeModal } from "../../state-management/modal/actions";
-import MenuModal from "../../containers/Modals/MenuModal";
+import MenuModal from "../../containers/Modals/DishModal/DishModal";
 import { addItem } from "../../state-management/menu/actions";
-import { isHappyHourStillActive } from "../../state-management/menu/utils";
+import {
+  isHappyHourStillActive,
+  setTimer,
+} from "../../state-management/menu/utils";
+import DishModal from "../../containers/Modals/DishModal/DishModal";
+import AccessTimeIcon from "@material-ui/icons/AccessTime";
+import { getTaxes } from "../../state-management/menu/operations";
+import "./MenuTable.css";
 
 const MenuTable = ({ category_name, list, symbol, actualPrice }) => {
   const dispatch = useDispatch();
   const menu = useSelector((state) => state.menu);
-  const addToCart = (item) => {
+  const modal = useSelector((state) => state.modal);
+  const modalNames = {
+    DISH_MODAL: "DishModal",
+    INTERMEDIATE_ADD_MODAL: "IntermediateAddModal",
+    PIZZA_MODAL: "PizzaModal",
+  };
+
+  var refIndex = -1;
+  var timeOutRef = Array.from({ length: 1000 }, () => React.createRef());
+
+  const addToCart = (item, isHappyHoursActive) => {
     console.log("items at the time of add", item);
+
+    if (item.optional_modifier !== "0" || item.forced_modifier !== "0") {
+      // if (item.qty >= 1) {
+      //   dispatch(
+      //     openModal(modalNames.INTERMEDIATE_ADD_MODAL, {
+      //       item: {
+      //         ...item,
+      //         isHappyHoursActive,
+      //       },
+      //     })
+      //   );
+      // } else {
+      dispatch(
+        openModal(modalNames.DISH_MODAL, {
+          item: {
+            ...item,
+            isHappyHoursActive,
+          },
+        })
+      );
+      // }
+
+      return;
+    }
+
+    //this.props.addItem(item, null, 0, this.props.restaurantInfo);
 
     dispatch(addItem(item, item.modifiers || null, 0, menu.restaurantInfo));
   };
+
+  const isPriceWithoutTax = () => {
+    console.log(
+      "price without tax",
+      menu.restaurantInfo["price_without_tax_flag"]
+    );
+    return Number(menu.restaurantInfo["price_without_tax_flag"]);
+  };
+
+  const getActualPrice = (item) => {
+    if (menu.restaurantInfo) {
+      // console.log("actual price", typeof(this.isPriceWithoutTax()));
+      return isPriceWithoutTax()
+        ? item.price
+        : (
+            Number(item.price) +
+            Number(getTaxes(item, item.price, menu.restaurantInfo).tax)
+          ).toFixed(2);
+    }
+
+    return 0;
+  };
+
   return (
     <>
       <h3
@@ -46,6 +112,25 @@ const MenuTable = ({ category_name, list, symbol, actualPrice }) => {
         <tbody>
           {console.log("list is", list)}
           {list.map((item) => {
+            let isStillActive = false;
+            console.log("menuItems in this file", item);
+
+            if (item.isHappyHourActive) {
+              const result = isHappyHourStillActive(
+                item,
+                menu.restaurantInfo.timezone
+              );
+
+              isStillActive = result.isActive;
+              if (isStillActive) {
+                refIndex++;
+                setTimer(result.distance, timeOutRef[refIndex]);
+              }
+            }
+            const minQty =
+              Number(item.min_qty) === 0 ? 0 : Number(item.min_qty);
+
+            console.log("items in menutable", item);
             return (
               <tr>
                 <td>
@@ -56,76 +141,66 @@ const MenuTable = ({ category_name, list, symbol, actualPrice }) => {
                       alt="thumb"
                     />
                   </figure>
+
                   <h5 style={{ marginTop: "20px" }}>
                     {item.cname || item.name || item.title}
                   </h5>
+
+                  <br />
+                  {/* <p>happ hour start</p> */}
+
+                  {item.isHappyHourActive && isStillActive ? (
+                    <>
+                      <p style={{ color: "red", fontWeight: "700" }}>
+                        {item.happyHourDetail.happyHourDisplayText}
+                      </p>
+                      <div>
+                        <AccessTimeIcon style={{ color: "red" }} /> &nbsp;{" "}
+                        <span
+                          style={{ color: "red", fontWeight: "700" }}
+                          ref={timeOutRef[refIndex]}
+                        />
+                      </div>
+                    </>
+                  ) : null}
+
+                  {/* <p>happ hour end</p> */}
                   <p>{item?.description || item.happyHourDisplayText}</p>
                 </td>
+
                 {item.forced_modifier > 0 ? (
                   <td>
                     <strong>-</strong>
                   </td>
                 ) : (
                   <td>
-                    <strong>{`${symbol} ${
-                      actualPrice ? actualPrice(item) : item.price
-                    }`}</strong>
+                    <strong>
+                      {`${symbol} ${
+                        actualPrice ? getActualPrice(item) : item.price
+                      }`}
+                    </strong>
                   </td>
                 )}
-                {/* <td>
-                  <strong>{`${symbol} ${
-                    actualPrice ? actualPrice(item) : item.price
-                  }`}</strong>
-                </td> */}
+
                 <td className="options">
-                  {item.forced_modifier > 0 ? (
-                    <MenuModal item={item} />
-                  ) : (
-                    <>
-                      <div style={{ display: "flex" }}>
-                        {!item.qty && (
-                          <button
-                            style={{
-                              background: "#5B53CD",
-                              color: "whitesmoke",
-                              fontSize: "1.3rem",
-                              width: "30px",
-                              height: "30px",
-                              borderRadius: "50%",
-                              border: "none",
-                              outline: "none",
-                              display: "flex",
-                              justifyContent: "center",
-                            }}
-                            onClick={() => addToCart(item)}
-                          >
-                            <span style={{ display: "block" }}>+</span>
-                          </button>
-                        )}
-                        {item.qty ? (
-                          <button
-                            style={{
-                              background: "#5B53CD",
-                              color: "whitesmoke",
-                              fontSize: "1.3rem",
-                              width: "30px",
-                              height: "30px",
-                              borderRadius: "50%",
-                              border: "none",
-                              outline: "none",
-                              display: "flex",
-                              justifyContent: "center",
-                            }}
-                            onClick={() => addToCart(item)}
-                          >
-                            <span style={{ display: "block" }}>+</span>
-                          </button>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                    </>
-                  )}
+                  <>
+                    <div style={{ display: "flex" }}>
+                      <button
+                        className="button-menutable"
+                        onClick={() =>
+                          addToCart(
+                            item,
+                            isHappyHourStillActive(
+                              item,
+                              menu.restaurantInfo.timezone
+                            ).isActive
+                          )
+                        }
+                      >
+                        <span style={{ display: "block" }}>+</span>
+                      </button>
+                    </div>
+                  </>
                 </td>
               </tr>
             );

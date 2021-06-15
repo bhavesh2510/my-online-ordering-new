@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../Login/login.css";
 import { notification } from "antd";
 import "antd/dist/antd.css";
@@ -20,6 +20,7 @@ import {
   postSocialRegisterForm,
   postSocialLoginForm,
   updateProfile,
+  fetchUserDetails,
 } from "../../state-management/user/asyncActions";
 import GoogleLogin from "react-google-login";
 
@@ -66,6 +67,7 @@ const Login = (props) => {
     setState({ ...state, password: value });
   };
 
+  var checkphnfornormalemail = "";
   const onFormSubmit = async () => {
     setState({
       ...state,
@@ -92,8 +94,8 @@ const Login = (props) => {
           client_id: clientId,
         },
       } = payload;
-
-      //console.log("check", payload);
+      checkphnfornormalemail = payload.data.mobile;
+      console.log("payload of normal mail", payload);
 
       // const va = {
       //   token: payload.token,
@@ -115,7 +117,8 @@ const Login = (props) => {
         email,
         clientId,
       });
-      if (!state.mobile) {
+      console.log("phn for normal email", checkphnfornormalemail);
+      if (!checkphnfornormalemail) {
         const phoneNumber = getPhoneNumber();
         // console.log("input from prompt", phoneNumber);
         console.log("MERCHANT", menu.restaurantInfo.merchant_key);
@@ -182,6 +185,9 @@ const Login = (props) => {
     }
   };
 
+  useEffect(() => {
+    console.log("state in menu", state);
+  }, [state]);
   const getPhoneNumber = () => {
     let phoneNumber = prompt("please enter phoneNumber");
     if (phoneNumber == null || phoneNumber === "") {
@@ -191,14 +197,23 @@ const Login = (props) => {
     }
   };
 
+  var checkphno = "";
+
   const responseFacebook = async (res) => {
-    // check popup window is closed by user
-    // then simply return
     if (res.status !== undefined && res.status === "unknown") {
       return;
     }
 
-    let newState = {
+    // setState({
+    //   socialLoginId: res.userID,
+    //   socialType: "facebook",
+    //   profileImage: res.picture.data.url,
+    //   email: res.email,
+    //   firstName: res.name.split(" ")[0],
+    //   lastName: res.name.split(" ")[1],
+    //   showLoader: true,
+    // });
+    const newState = {
       socialLoginId: res.userID,
       socialType: "facebook",
       profileImage: res.picture.data.url,
@@ -207,53 +222,102 @@ const Login = (props) => {
       lastName: res.name.split(" ")[1],
       showLoader: true,
     };
-    setState(newState);
-
     // First check if this user exist in database
-    //const { payload } = await this.props.postSocialLoginForm(state);
-
-    const resp = await dispatch(postSocialLoginForm(newState));
-    const { payload } = await resp;
+    const { payload } = await dispatch(postSocialLoginForm(newState));
 
     if (payload.success) {
-      // user logged In
+      // payload.data.mobile ? alert("Please enter Mobile Number") : alert("Mobile number is present")
+      //   // user logged In
+      //  setState({
+      //     clientId: payload.data.client_id,
+      //     token: payload.token,
+      //     showLoader: false,
+      //     firstName: payload.data.firstname,
+      //     lastName: payload.data.lastname,
+      //     mobile: payload.data.mobile,
+      //   });
       const newStateAgain = {
+        socialLoginId: res.userID,
+        socialType: "facebook",
+        profileImage: res.picture.data.url,
+        email: res.email,
+        firstName: res.name.split(" ")[0],
+        lastName: res.name.split(" ")[1],
+        showLoader: true,
         clientId: payload.data.client_id,
         token: payload.token,
         showLoader: false,
+        firstName: payload.data.firstname,
+        lastName: payload.data.lastname,
         mobile: payload.data.mobile,
       };
-      setState(newStateAgain);
-      //this.props.setUserLoggedIn(this.state);
-      dispatch(postSocialLoginForm(newStateAgain));
+      checkphno = payload.data.mobile;
+      // this.props.fetchUserDetails(payload.data.client_id);
+      //check if mobile exists in db after
+      if (!newStateAgain.mobile) {
+        const phoneNumber = getPhoneNumber();
+        // console.log("input from prompt", phoneNumber);
+        console.log("MERCHANT", this.props.menu.restaurantInfo.merchant_key);
+        const updateCred = {
+          client_id: payload.data.client_id,
+          merchant_id: this.props.menu.restaurantInfo.merchant_key,
+          phone: phoneNumber,
+        };
+        const {
+          payload: { success, message },
+        } = await dispatch(updateProfile(updateCred));
+        console.log("UPDATE_PROFILE", payload);
+        if (success) {
+          alert("Phonenumber Added succesfully");
+        } else {
+          alert("Some Error has occured! please check My Profile");
+        }
+      }
+      dispatch(setUserLoggedIn(newStateAgain));
+      dispatch(fetchUserDetails(payload.data.client_id));
     } else {
-      const newStateAgain = {
-        clientId: payload.data.client_id,
-        token: payload.token,
-        showLoader: false,
-        mobile: payload.data.mobile,
-      };
       // create an account
-      const resp = await dispatch(postSocialRegisterForm(newStateAgain));
-      const { payload } = await resp;
-
-      const newStateAgain2 = {
-        clientId: payload.data.client_id,
-        token: payload.token,
-        showLoader: false,
-      };
+      const { payload } = await dispatch(postSocialRegisterForm(newState));
 
       if (payload.success) {
-        this.setState(newStateAgain2);
-        // this.props.setUserLoggedIn(this.state);
-        dispatch(setUserLoggedIn(state));
+        // this.setState({
+        //   clientId: payload.data.client_id,
+        //   token: payload.token,
+        //   showLoader: false,
+        // });
+        const newStateAgain2 = {
+          clientId: payload.data.client_id,
+          token: payload.token,
+          showLoader: false,
+        };
+        if (!checkphno) {
+          const phoneNumber = getPhoneNumber();
+          const updateCred = {
+            client_id: payload.data.client_id,
+            merchant_id: this.props.menu.restaurantInfo.merchant_key,
+            phone: phoneNumber,
+          };
+          const {
+            payload: { success, message },
+          } = await dispatch(updateProfile(updateCred));
+          console.log("UPDATE_PROFILE", payload);
+          if (success) {
+            alert("Phonenumber Added succesfully");
+          } else {
+            alert("Some Error has occured! please check My Profile");
+          }
+          //setState({ mobile: phoneNumber });
+        }
+        dispatch(setUserLoggedIn(newStateAgain2));
       } else {
         // some error has occured
+        return;
       }
     }
   };
 
   //google
+  var checkphnforgoogle = "";
   const responseGoogle = async (res) => {
     if (res.error) {
       return;
@@ -289,11 +353,12 @@ const Login = (props) => {
         mobile: payload.data.mobile,
         showLoader: false,
       };
+      checkphnforgoogle = payload.data.mobile;
       setState(newStateAgain);
 
       //ask phn no
-
-      if (!state.mobile) {
+      console.log("phn of google", checkphnforgoogle);
+      if (!checkphnforgoogle) {
         const phoneNumber = getPhoneNumber();
         // console.log("input from prompt", phoneNumber);
         console.log("MERCHANT", menu.restaurantInfo.merchant_key);

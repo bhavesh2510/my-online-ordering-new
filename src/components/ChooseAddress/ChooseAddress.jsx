@@ -16,11 +16,12 @@ import PlacesAutocomplete, {
 import { setPhoneCode } from "../../state-management/user/actions";
 import Geocode from "react-geocode";
 import { Menu } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
+//import Button from "@material-ui/core/Button";
 import GoogleMap from "../../components/GoogleMap/GoogleMap";
 import TextField from "@material-ui/core/TextField";
 import { openModal, closeModal } from "../../state-management/modal/actions";
 import AddAddress from "./AddAddress";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 Geocode.setApiKey("AIzaSyCMTj6FEwu3Kh0tSdgp6hh4QOKgIJF74rs");
 
 const ChooseAddress = (props) => {
@@ -37,6 +38,9 @@ const ChooseAddress = (props) => {
     country: "",
     zipcode: "",
   });
+  useEffect(() => {
+    console.log(" address details", addressdetail);
+  }, [addressdetail]);
 
   const [customersnumber, setcustomersnumber] = useState({
     address_1: "",
@@ -600,132 +604,55 @@ const ChooseAddress = (props) => {
   //     .catch((error) => console.error("Error", error));
   // };
 
+  const toggle = () => {
+    dispatch(closeModal());
+  };
+
   return (
     <>
-      <div id="parent" className="modal-container">
-        <div className="align-container-center">
-          <div className="choose-address-box" style={{ height: "auto" }}>
-            <div className="close">
-              <IconButton
-                onClick={closeLoginModal}
-                style={
-                  {
-                    //   backgroundColor: "#6244da",
-                    //   marginRight: "-45px",
-                    //   marginTop: "-35px",
-                  }
-                }
-              >
-                {" "}
-                <CloseIcon style={{ color: "Black" }} />{" "}
-              </IconButton>
-            </div>
-            <div className="header" style={{ marginLeft: "24%" }}>
-              <strong style={{ color: "#5d5e5e", fontSize: "20px" }}>
-                SELECT DELIVERY AREA
-              </strong>
-            </div>
-            <div className="content">
-              {/* start */}
-
-              {/* <PlacesAutocomplete
-                value={state.address}
-                onChange={handleChange}
-                onSelect={handleSelect}
-              >
-                {({
-                  getInputProps,
-                  suggestions,
-                  getSuggestionItemProps,
-                  loading,
-                }) => (
-                  <div>
-                    <input
-                      {...getInputProps({
-                        placeholder: "Search Places ...",
-                        className: "location-search-input",
-                      })}
-                    />
-                    <div className="autocomplete-dropdown-container">
-                      {loading && <div>Loading...</div>}
-                      {suggestions.map((suggestion) => {
-                        const className = suggestion.active
-                          ? "suggestion-item--active"
-                          : "suggestion-item";
-                        // inline style for demonstration purpose
-                        const style = suggestion.active
-                          ? { backgroundColor: "#fafafa", cursor: "pointer" }
-                          : { backgroundColor: "#ffffff", cursor: "pointer" };
-                        return (
-                          <div
-                            {...getSuggestionItemProps(suggestion, {
-                              className,
-                              style,
-                            })}
-                          >
-                            <span>{suggestion.description}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </PlacesAutocomplete> */}
-
-              {/* end */}
-              {/* <GooglePlacesAutocomplete
-                //defaultValue={state.address}
-                selectProps={{ onChange: handleSelect }}
-                // apiKey={process.env.REACT_APP_GOOGLE_API_KEY}
-              /> */}
-              {/* <PlacesAutocomplete
-                value={state.address}
-                //onChange={this.handleChange}
-                onSelect={handleSelect}
-              >
-                {renderFunc}
-              </PlacesAutocomplete> */}
-
-              <GoogleMap
-                lat={state.mapCentre ? state.mapCentre.lat : null}
-                lng={state.mapCentre ? state.mapCentre.lng : null}
-                address={state.address || main.selectedRestaurant.address}
-                onMarkerPositionChange={handleMarkerPostionChange}
-                googleApi={handleGoogleApi}
-              />
-
-              <Button
-                onClick={handleDelivery}
-                style={{
-                  marginTop: "50px",
-                  marginLeft: "25%",
-                  backgroundColor: "black",
-                  color: "white",
-                  paddingLeft: "80px",
-                  paddingRight: "80px",
-                }}
-              >
-                Delivery
-              </Button>
-              {state.errorMessage ? (
-                <>
-                  <div style={{ marginTop: "10px" }}>
-                    <p
-                      style={{
-                        textAlign: "center",
-                        color: "red",
-                        fontSize: "20px",
-                      }}
-                    >
-                      {state.errorMessage}
-                    </p>
-                  </div>
-                </>
-              ) : null}
-            </div>
-          </div>
-        </div>
-      </div>
+      <Modal isOpen={true} toggle={toggle} style={{ top: "10%", left: "2%" }}>
+        <ModalHeader toggle={toggle}> SELECT DELIVERY AREA</ModalHeader>
+        <ModalBody>
+          <GoogleMap
+            lat={state.mapCentre ? state.mapCentre.lat : null}
+            lng={state.mapCentre ? state.mapCentre.lng : null}
+            address={state.address || main.selectedRestaurant.address}
+            onMarkerPositionChange={handleMarkerPostionChange}
+            googleApi={handleGoogleApi}
+          />
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            onClick={handleDelivery}
+            style={{
+              marginTop: "20px",
+              width: "100%",
+              // marginLeft: "25%",
+              backgroundColor: "black",
+              color: "white",
+              paddingLeft: "80px",
+              paddingRight: "80px",
+            }}
+          >
+            Delivery
+          </Button>
+          {state.errorMessage ? (
+            <>
+              <div style={{ marginTop: "10px" }}>
+                <p
+                  style={{
+                    textAlign: "center",
+                    color: "red",
+                    fontSize: "20px",
+                  }}
+                >
+                  {state.errorMessage}
+                </p>
+              </div>
+            </>
+          ) : null}
+        </ModalFooter>
+      </Modal>
 
       {shownextaddresspage ? (
         <>

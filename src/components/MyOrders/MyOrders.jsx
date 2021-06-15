@@ -28,6 +28,10 @@ import ManageAddress from "../ManageAddress/ManageAddress";
 import ChooseAddress from "../ChooseAddress/ChooseAddress";
 import AddAddress from "../ChooseAddress/AddAddress";
 import "antd/dist/antd.css";
+import {
+  isHappyHourStillActive,
+  setTimer,
+} from "../../state-management/menu/utils";
 
 const MyOrders = React.memo(({ restaurantId }) => {
   const main = useSelector((state) => state.main);
@@ -64,6 +68,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
     tax: "",
     gtotal: "",
   });
+  const [handleadd, sethandleadd] = useState(false);
   const [orderList, setorderList] = useState([]);
   const [currentorderData, setcurrentorderData] = useState([]);
   const [product, setproduct] = useState([]);
@@ -222,6 +227,30 @@ const MyOrders = React.memo(({ restaurantId }) => {
     //   },
     // });
   };
+
+  const getSavedAmount = () => {
+    return menu.cart.length
+      ? truncateDecimal(
+          menu.cart.reduce((acc, item) => {
+            if (
+              isHappyHourStillActive(item, menu.restaurantInfo.timezone)
+                .isActive &&
+              item.happyHourItem
+            ) {
+              return (
+                acc +
+                (item.subTotal -
+                  ((item.happyHourItem && item.happyHourItem.subTotal) || 0))
+              );
+            }
+
+            return acc;
+          }, 0)
+        )
+      : "";
+  };
+
+  const savedAmount = Math.abs(getSavedAmount());
   return (
     <>
       {state.showloader ? <WaitingOverlay /> : null}
@@ -246,14 +275,17 @@ const MyOrders = React.memo(({ restaurantId }) => {
           </div>
         </div>
       </section>
-      <div className="container margin_60">
+      <div
+        className="container margin_60"
+        style={{ backgroundColor: "#f9f9f9f", border: "1px solid #f1f1f1" }}
+      >
         <nav className="nav-parent">
           <ul className="ul-parent">
             <li className="tab-current">
               <p
                 onClick={onOrderClick}
                 className="icon-profile anchor-parent"
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", backgroundColor: "#f1f1f1" }}
               >
                 <span>
                   Orders &nbsp;
@@ -264,7 +296,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
             <li className="tab-current">
               <p
                 onClick={onAddressClick}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", backgroundColor: "#f1f1f1" }}
                 className="icon-menut-items anchor-parent"
               >
                 <span>
@@ -276,7 +308,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
             <li className="tab-current">
               <p
                 onClick={onProfileClick}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", backgroundColor: "#f1f1f1" }}
                 className="icon-settings anchor-parent"
               >
                 <span>
@@ -288,7 +320,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
             <li className="tab-current">
               <p
                 onClick={onChangePasswordClick}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", backgroundColor: "#f1f1f1" }}
                 className="icon-settings anchor-parent"
               >
                 <span>
@@ -494,10 +526,14 @@ const MyOrders = React.memo(({ restaurantId }) => {
                         </div>
                       </div>
 
-                      <div className="savings">
-                        <p className="para-savings">YOU SAVED</p>
-                        <p className="para-savings">EUR 10</p>
-                      </div>
+                      {savedAmount ? (
+                        <>
+                          <div className="savings">
+                            <p className="para-savings">YOU SAVED</p>
+                            <p className="para-savings">EUR 10</p>
+                          </div>
+                        </>
+                      ) : null}
                       <hr style={{ width: "90%", backgroundColor: "black" }} />
                       <div
                         className="subtotal"
@@ -559,27 +595,28 @@ const MyOrders = React.memo(({ restaurantId }) => {
             {state.showaddress ? (
               <>
                 {" "}
-                <ManageAddress />{" "}
+                <ManageAddress refetchAddresses={sethandleadd} />{" "}
               </>
             ) : null}
 
             {state.showpassword ? (
               <>
-                <div
-                  className="col-lg-6"
-                  style={{ marginTop: "20px", marginLeft: "25%" }}
-                >
-                  <div className="box_style_2" id="main_menu">
+                <div className="col-lg-6 password-parent-container">
+                  <div
+                    className="box_style_2 box-passowrd-container"
+                    id="main_menu"
+                  >
                     <div
                       style={{
                         height: "auto",
                         width: "400px",
                       }}
                     >
-                      <div style={{ marginLeft: "20%" }}>
+                      <div className="password-child-conatiner">
                         <TextField
                           size="small"
-                          style={{ width: "120%" }}
+                          className="input-passowrd-texfield"
+                          // style={{ width: "120%" }}
                           label="Old Password"
                           variant="outlined"
                           value={passworddata.oldpass}
@@ -589,7 +626,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
                         <br />
                         <TextField
                           size="small"
-                          style={{ width: "120%" }}
+                          className="input-passowrd-texfield"
                           label="New Password"
                           variant="outlined"
                           value={passworddata.newpass}
@@ -599,7 +636,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
                         <br />
                         <TextField
                           size="small"
-                          style={{ width: "120%" }}
+                          className="input-passowrd-texfield"
                           label="New Password"
                           variant="outlined"
                           value={passworddata.confirmnewpass}
@@ -612,12 +649,11 @@ const MyOrders = React.memo(({ restaurantId }) => {
 
                         <Button
                           onClick={changePasswordFormSubmit}
+                          className="password-submit-button"
                           style={{
                             backgroundColor: "#6244da",
-                            width: "120%",
+
                             color: "white",
-                            padding: "15px",
-                            marginBottom: "20px",
                           }}
                         >
                           Submit

@@ -39,7 +39,7 @@ import ManageAddress from "../../components/ManageAddress/ManageAddress";
 import Checkout from "../../components/Checkout/Checkout";
 import OrderSuccess from "../../components/OrderSuccess/OrderSuccess";
 import PaymentFailed from "../../components/Checkout/PaymentFailed";
-// import { AppModal } from "../../components/AppModal/AppModal";
+import AppModal from "../../components/AppModal/AppModal";
 const RestaurantInformation = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -87,7 +87,7 @@ const RestaurantInformation = (props) => {
       {/* {console.log("ResInfo-props", props)} */}
       {/* {console.log("user", user, "menu", menu, "main", main)} */}
       {loading && <LoadingBar />}
-      {/* <AppModal /> */}
+      <AppModal />
       <Switch>
         <Route exact path={`/restId=${props.restaurantId}`}>
           <Redirect to={`/restId=${props.restaurantId}/menu`} />

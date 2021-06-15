@@ -6,7 +6,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import WorkIcon from "@material-ui/icons/Work";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
+//import Button from "@material-ui/core/Button";
 import { displayAddressModal } from "../../state-management/menu/actions";
 import {
   postAddAddress,
@@ -15,8 +15,11 @@ import {
 import { setSelectedAddress } from "../../state-management/user/actions";
 import { openModal, closeModal } from "../../state-management/modal/actions";
 import { ContactsOutlined } from "@material-ui/icons";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import WaitingOverlay from "../WaitingOverlay/WaitingOverlay";
 const AddAddress = (props) => {
   const main = useSelector((state) => state.main);
+  const menu = useSelector((state) => state.menu);
   const user = useSelector((state) => state.user);
   const modal = useSelector((state) => state.modal);
   const dispatch = useDispatch();
@@ -31,6 +34,8 @@ const AddAddress = (props) => {
     state: "",
     country: "",
     zipcode: "",
+    phone: user.user.mobile,
+    phonecode: menu.restaurantInfo.phone_code,
     // country: user.deliveryOption.userAddress.country,
     // zipcode: user.deliveryOption.userAddress.zipcode,
     // //phone: this.props.user.mobile,
@@ -122,9 +127,10 @@ const AddAddress = (props) => {
           modal.modal.state.editMode
         )
       );
-      if (payload.success) {
-        props.refetchAddresses(true);
-      }
+      if (!modal.modal.state.editMode)
+        if (payload.success) {
+          props.refetchAddresses(true);
+        }
 
       console.log("payload on post", payload);
       setState({ ...state, payload });
@@ -144,266 +150,207 @@ const AddAddress = (props) => {
   useEffect(() => {
     console.log("state in add address", state);
   }, [state]);
+
+  const toggle = () => {
+    dispatch(closeModal());
+  };
   return (
     <>
-      <div id="parent" className="modal-container">
-        <div className="align-container-center">
-          <div className="choose-address-box" style={{ height: "auto" }}>
-            <div className="close" style={{ marginTop: "10px" }}>
-              <IconButton
-                onClick={closeLoginModal}
-                style={
-                  {
-                    //   backgroundColor: "#6244da",
-                    //   marginRight: "-45px",
-                    //   marginTop: "-35px",
-                  }
-                }
-              >
-                {" "}
-                <CloseIcon style={{ color: "Black" }} />{" "}
-              </IconButton>
-            </div>
-            <div
-              className="header"
-              style={{ marginLeft: "35%", marginTop: "30px" }}
-            >
-              <strong style={{ color: "#5d5e5e", fontSize: "20px" }}>
-                {modal.modal.state.editMode ? "Edit Address" : "Add Address"}
-              </strong>
-            </div>
-            <div className="content" style={{ marginTop: "-10px" }}>
-              <div
-                style={{
-                  width: "90%",
-
-                  marginLeft: "30px",
-                }}
-              >
-                <Input
-                  size="medium"
-                  placeholder="Full Name"
-                  style={{ borderRadius: "5px" }}
-                  value={state.name || null}
-                  onChange={(e) => handleNameChange(e.target.value)}
-                />
-              </div>
-              <div
-                style={{
-                  width: "90%",
-
-                  marginLeft: "30px",
-                  marginTop: "10px",
-                }}
-              >
-                <Input
-                  size="medium"
-                  placeholder="Address Line 2"
-                  style={{ borderRadius: "5px" }}
-                  value={state.address1 || null}
-                  //onChange={(e) => this.handleAddress2Change(e.target.value)}
-                />
-              </div>
-              <div
-                style={{
-                  width: "90%",
-
-                  marginLeft: "30px",
-                  marginTop: "10px",
-                }}
-              >
-                <Input
-                  size="medium"
-                  placeholder="Address Line 2"
-                  style={{ borderRadius: "5px" }}
-                  value={state.address2}
-                  onChange={(e) => handleAddress2Change(e.target.value)}
-                />
-              </div>
-              <div
-                style={{
-                  width: "90%",
-
-                  marginLeft: "30px",
-                  marginTop: "10px",
-                }}
-              >
-                <Input
-                  disabled
-                  size="medium"
-                  placeholder="Address Line 2"
-                  style={{ borderRadius: "5px" }}
-                  value={state.city || null}
-                  //onChange={(e) => this.handleAddress2Change(e.target.value)}
-                />
-              </div>
-              <div
-                style={{
-                  width: "90%",
-
-                  marginLeft: "30px",
-                  marginTop: "10px",
-                }}
-              >
-                <Input
-                  size="medium"
-                  placeholder="state"
-                  style={{ borderRadius: "5px" }}
-                  value={state.state || null}
-                  onChange={(e) => handleStateChange(e.target.value)}
-                />
-              </div>
-              <div
-                style={{
-                  width: "90%",
-
-                  marginLeft: "30px",
-                  marginTop: "10px",
-                }}
-              >
-                <Input
-                  disabled
-                  size="medium"
-                  placeholder="Address Line 2"
-                  style={{ borderRadius: "5px" }}
-                  value={state.zipcode || null}
-                  //onChange={(e) => this.handleAddress2Change(e.target.value)}
-                />
-              </div>
-              <div
-                style={{
-                  width: "90%",
-
-                  marginLeft: "30px",
-                  marginTop: "10px",
-                }}
-              >
-                <Input
-                  disabled
-                  size="medium"
-                  placeholder="Address Line 2"
-                  style={{ borderRadius: "5px" }}
-                  value={state.country || null}
-                  //onChange={(e) => this.handleAddress2Change(e.target.value)}
-                />
-              </div>
-              <div
-                style={{
-                  width: "90%",
-
-                  display: "flex",
-                  marginLeft: "30px",
-                  marginTop: "10px",
-                }}
-              >
-                <Input
-                  size="medium"
-                  placeholder="Address Line 2"
-                  style={{ width: "25%", borderRadius: "5px" }}
-                  //value={this.state.address2 || null}
-                  //onChange={(e) => this.handleAddress2Change(e.target.value)}
-                />
-                &nbsp;
-                <Input
-                  size="medium"
-                  placeholder="Address Line 2"
-                  style={{ width: "75%", borderRadius: "5px" }}
-                  //value={this.state.address2 || null}
-                  //onChange={(e) => this.handleAddress2Change(e.target.value)}
-                />
-              </div>
-
-              <div
-                className="address-type"
-                style={{
-                  marginLeft: "15px",
-                  // marginTop: "5px",
-                }}
-              >
-                <input
-                  className="check_payment"
-                  type="radio"
-                  name="delivery_type"
-                  id="home"
-                  value="home"
-                  onChange={(e) => locationOfDelivery(e.target.value)}
-                />
-                <label
-                  //onClick={paymentoptioncardClick}
-                  for="home"
-                  class="btn_radio_type"
-                >
-                  Home &nbsp;
-                  <HomeIcon />
-                </label>
-
-                <input
-                  className="check_payment"
-                  type="radio"
-                  name="delivery_type"
-                  id="work"
-                  value="work"
-                  onChange={(e) => locationOfDelivery(e.target.value)}
-                />
-                <label
-                  //onClick={paymentoptioncardClick}
-                  for="work"
-                  class="btn_radio_type"
-                >
-                  Work &nbsp; <WorkIcon />
-                </label>
-
-                <input
-                  className="check_payment"
-                  type="radio"
-                  name="delivery_type"
-                  id="others"
-                  value="others"
-                  onChange={(e) => locationOfDelivery(e.target.value)}
-                />
-                <label
-                  //onClick={paymentoptioncardClick}
-                  for="others"
-                  class="btn_radio_type"
-                >
-                  Others &nbsp; <HomeIcon />
-                </label>
-              </div>
-
-              <div className="set-default" style={{ marginLeft: "30px" }}>
-                <Checkbox
-                  checked={state["is_default"] === "1"}
-                  onChange={(e) => onChangeSetDefault(e.target.value)}
-                >
-                  {state["is_default"] === "1" ? "Default" : "Set To Default?"}
-                </Checkbox>
-              </div>
-
-              <div
-                style={{
-                  width: "100%",
-                  marginLeft: "25px",
-                  marginBottom: "10px",
-                  marginTop: "10px",
-                }}
-              >
-                <Button
-                  onClick={onFormSubmit}
-                  style={{
-                    backgroundColor: "black",
-                    padding: "7px",
-                    color: "white",
-                    width: "90%",
-                    borderRadius: "10px",
-                  }}
-                >
-                  Submit
-                </Button>
-              </div>
-            </div>
+      <Modal isOpen={true} toggle={toggle} style={{ top: "10%", left: "2%" }}>
+        <ModalHeader toggle={toggle}>
+          {" "}
+          {modal.modal.state.editMode ? "Edit Address" : "Add Address"}
+        </ModalHeader>
+        <ModalBody>
+          {/* {state.waitingOverlay ? <WaitingOverlay /> : null} */}
+          <div className="input-addd-address">
+            <Input
+              size="medium"
+              placeholder="Full Name"
+              style={{ borderRadius: "5px" }}
+              value={state.name || null}
+              onChange={(e) => handleNameChange(e.target.value)}
+            />
           </div>
-        </div>
-      </div>
+          <div className="input-addd-address">
+            <Input
+              size="medium"
+              placeholder="Address Line 2"
+              style={{ borderRadius: "5px" }}
+              value={state.address1 || null}
+              //onChange={(e) => this.handleAddress2Change(e.target.value)}
+            />
+          </div>
+          <div className="input-addd-address">
+            <Input
+              size="medium"
+              placeholder="Address Line 2"
+              style={{ borderRadius: "5px" }}
+              value={state.address2}
+              onChange={(e) => handleAddress2Change(e.target.value)}
+            />
+          </div>
+          <div className="input-addd-address">
+            <Input
+              disabled
+              size="medium"
+              placeholder="Address Line 2"
+              style={{ borderRadius: "5px" }}
+              value={state.city || null}
+              //onChange={(e) => this.handleAddress2Change(e.target.value)}
+            />
+          </div>
+          <div className="input-addd-address">
+            <Input
+              size="medium"
+              placeholder="state"
+              style={{ borderRadius: "5px" }}
+              value={state.state || null}
+              onChange={(e) => handleStateChange(e.target.value)}
+            />
+          </div>
+          <div className="input-addd-address">
+            <Input
+              disabled
+              size="medium"
+              placeholder="Address Line 2"
+              style={{ borderRadius: "5px" }}
+              value={state.zipcode || null}
+              //onChange={(e) => this.handleAddress2Change(e.target.value)}
+            />
+          </div>
+          <div className="input-addd-address">
+            <Input
+              disabled
+              size="medium"
+              placeholder="Address Line 2"
+              style={{ borderRadius: "5px" }}
+              value={state.country || null}
+              //onChange={(e) => this.handleAddress2Change(e.target.value)}
+            />
+          </div>
+          <div className="input-addd-address-contact">
+            <Input
+              size="medium"
+              placeholder="phonecode"
+              style={{ width: "25%", borderRadius: "5px" }}
+              value={menu.restaurantInfo.phone_code || null}
+              //onChange={(e) => this.handleAddress2Change(e.target.value)}
+            />
+            &nbsp;
+            <Input
+              size="medium"
+              placeholder="phone number"
+              style={{ width: "75%", borderRadius: "5px" }}
+              value={state.phone || null}
+              //onChange={(e) => this.handleAddress2Change(e.target.value)}
+            />
+          </div>
+
+          <div
+            className="address-type"
+            style={{
+              marginLeft: "15px",
+              // marginTop: "5px",
+            }}
+          >
+            <input
+              className="check_payment"
+              type="radio"
+              name="delivery_type"
+              id="home"
+              value="home"
+              onChange={(e) => locationOfDelivery(e.target.value)}
+            />
+            <label
+              //onClick={paymentoptioncardClick}
+              for="home"
+              class="btn_radio_type"
+            >
+              Home &nbsp;
+              <HomeIcon className="icon-delivery-address" />
+            </label>
+
+            <input
+              className="check_payment"
+              type="radio"
+              name="delivery_type"
+              id="work"
+              value="work"
+              onChange={(e) => locationOfDelivery(e.target.value)}
+            />
+            <label
+              //onClick={paymentoptioncardClick}
+              for="work"
+              class="btn_radio_type"
+            >
+              Work &nbsp; <WorkIcon className="icon-delivery-address" />
+            </label>
+
+            <input
+              className="check_payment"
+              type="radio"
+              name="delivery_type"
+              id="others"
+              value="others"
+              onChange={(e) => locationOfDelivery(e.target.value)}
+            />
+            <label
+              //onClick={paymentoptioncardClick}
+              for="others"
+              class="btn_radio_type"
+            >
+              Others &nbsp; <HomeIcon className="icon-delivery-address" />
+            </label>
+          </div>
+
+          <div className="set-default">
+            <Checkbox
+              checked={state["is_default"] === "1"}
+              onChange={(e) => onChangeSetDefault(e.target.value)}
+            >
+              {state["is_default"] === "1" ? "Default" : "Set To Default?"}
+            </Checkbox>
+          </div>
+
+          <div
+            style={{
+              width: "100%",
+            }}
+          >
+            <Button
+              className="add-address-button"
+              style={{ backgroundColor: "black" }}
+              onClick={onFormSubmit}
+            >
+              Submit
+            </Button>
+          </div>
+        </ModalBody>
+        {/* <ModalFooter>
+          <div
+          style={{
+            width: "100%",
+            marginLeft: "25px",
+            marginBottom: "10px",
+            marginTop: "10px",
+          }}
+          >
+            <Button
+              onClick={onFormSubmit}
+              style={{
+                backgroundColor: "black",
+                padding: "7px",
+                color: "white",
+                width: "90%",
+                borderRadius: "10px",
+              }}
+            >
+              Submit
+            </Button>
+          </div>
+        </ModalFooter> */}
+      </Modal>
     </>
   );
 };

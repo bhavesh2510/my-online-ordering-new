@@ -416,3 +416,22 @@ export function setDefaultAddress(defaultAddress) {
     defaultAddress,
   };
 }
+
+export function fetchUserDetailsRequest() {
+  return {
+    type: actionTypes.FETCH_USER_DETAILS_REQUEST,
+  };
+}
+
+export function fetchUserDetailsSuccess(payload) {
+  return {
+    type: actionTypes.FETCH_USER_DETAILS_SUCCESS,
+    payload,
+  };
+}
+export function fetchUserDetailsError(payload) {
+  return {
+    type: actionTypes.FETCH_USER_DETAILS_ERROR,
+    payload,
+  };
+}

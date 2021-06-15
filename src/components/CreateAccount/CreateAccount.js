@@ -13,9 +13,11 @@ import PhoneAndroidIcon from "@material-ui/icons/PhoneAndroid";
 import { showLoginFormMethod } from "../../state-management/user/actions";
 import { hideRegisterFormMethod } from "../../state-management/user/actions";
 import { postRegisterForm } from "../../state-management/user/asyncActions";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 import { notification } from "antd";
-import WaitingOverlay from "../../components/WaitingOverlay/WaitingOverlay";
+import WaitingOverlay from "../WaitingOverlay/WaitingOverlay";
 const CreateAccount = (props) => {
   const menu = useSelector((state) => state.menu);
   const user = useSelector((state) => state.user);
@@ -37,7 +39,7 @@ const CreateAccount = (props) => {
     requestSuccess: null,
     successMessage: "Your account has been successfully created.",
     showLoader: false,
-    countryCode: "+91",
+    countryCode: "",
     showloginscreen: false,
   });
 
@@ -223,7 +225,19 @@ const CreateAccount = (props) => {
                   />
                   <br />
                   <br />
-                  <TextField
+
+                  <PhoneInput
+                    value={state.mobile}
+                    onChange={(e) => onMobileChange(e)}
+                    className="resp_tf"
+                    country={"dk"}
+                    enableSearch={true}
+                    name="phn"
+                    placeholder="Phone Number"
+                  />
+                  <br />
+
+                  {/* <TextField
                     size="small"
                     value={state.mobile}
                     onChange={(e) => onMobileChange(e.target.value)}
@@ -239,9 +253,8 @@ const CreateAccount = (props) => {
                         </InputAdornment>
                       ),
                     }}
-                  />
-                  <br />
-                  <br />
+                  /> */}
+
                   <TextField
                     size="small"
                     value={state.password}
@@ -254,7 +267,7 @@ const CreateAccount = (props) => {
                     variant="outlined"
                   />
                   <br />
-                  <br />
+                  {/* <br /> */}
                   {!state.requestSuccess ? <p>{state.errorMessage}</p> : null}
                   <Button
                     onClick={onSubmit}

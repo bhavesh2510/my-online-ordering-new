@@ -1,0 +1,12 @@
+.text-pizzamodal {
+  text-transform: uppercase;
+  font-size: 1rem;
+  letter-spacing: 0.2rem;
+  margin: 0px;
+  font-weight: 500;
+  color: rgb(105, 105, 105);
+}
+.custom-pizza-modal {
+  width: 1000px !important;
+  background-color: red;
+}

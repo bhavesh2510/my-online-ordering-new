@@ -6,6 +6,8 @@ import {
   displayPizzas,
 } from "../../state-management/menu/actions";
 import { Link as ScrollLink, animateScroll as scroll } from "react-scroll";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+
 const MenuCategories = React.memo(({ categories }) => {
   const menu = useSelector((state) => state.menu);
   const dispatch = useDispatch();
@@ -43,6 +45,7 @@ const MenuCategories = React.memo(({ categories }) => {
                 }}
               >
                 Happy hours <span> ({menu?.happyHours?.length}) </span>
+                <ChevronRightIcon fontSize="small" style={{ float: "right" }} />
               </ScrollLink>
             </li>
           ) : null}
@@ -55,7 +58,11 @@ const MenuCategories = React.memo(({ categories }) => {
               offset={-70}
               onClick={onDishClick}
             >
-              Dishes <span>({categories[0]?.sub_category.length})</span>{" "}
+              Dishes <span>({categories[0]?.sub_category.length})</span>
+              <ChevronRightIcon
+                fontSize="small"
+                style={{ float: "right" }}
+              />{" "}
             </ScrollLink>
           </li>
           {categories.map((category, i) => {
@@ -77,7 +84,8 @@ const MenuCategories = React.memo(({ categories }) => {
               offset={-70}
               onClick={onDrinksClick}
             >
-              Drinks<span>({categories[1]?.sub_category.length})</span>
+              Drinks<span>({categories[1]?.sub_category.length})</span>{" "}
+              <ChevronRightIcon fontSize="small" style={{ float: "right" }} />
             </ScrollLink>
           </li>
           {categories.map((category, i) => {
@@ -101,7 +109,8 @@ const MenuCategories = React.memo(({ categories }) => {
                 offset={-70}
                 onClick={() => dispatch(displayPizzas())}
               >
-                Pizza's <span> ({isPizzaAvailable}) </span>
+                Pizza's <span> ({isPizzaAvailable}) </span>{" "}
+                <ChevronRightIcon fontSize="small" style={{ float: "right" }} />
               </ScrollLink>
             </li>
           ) : null}
@@ -127,7 +136,10 @@ const MenuSubCategory = React.memo(
           style={{ cursor: "pointer" }}
           onClick={(e) => handleClick(e, s_category)}
         >
-          <a style={{ color: "#5B53CD" }}>{s_category?.cname}</a>
+          <a style={{ color: "#5B53CD" }}>
+            {s_category?.cname}{" "}
+            <ChevronRightIcon fontSize="small" style={{ float: "right" }} />
+          </a>
         </li>
       );
     });

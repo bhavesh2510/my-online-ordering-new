@@ -15,7 +15,7 @@ import {
 } from "../../state-management/user/actions";
 import { TimePicker } from "antd";
 import { notification } from "antd";
-import { PinDropSharp } from "@material-ui/icons";
+import { NaturePeopleOutlined, PinDropSharp } from "@material-ui/icons";
 import Address from "../ManageAddress/Address";
 import { fetchAddressesList } from "../../state-management/user/asyncActions";
 import GoogleMap from "../GoogleMap/GoogleMap";
@@ -30,6 +30,8 @@ import {
 import ChooseAddress from "../ChooseAddress/ChooseAddress";
 import { openModal, closeModal } from "../../state-management/modal/actions";
 import { displayAddressModal } from "../../state-management/menu/actions";
+import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+import CreditCardIcon from "@material-ui/icons/CreditCard";
 Geocode.setApiKey("AIzaSyCMTj6FEwu3Kh0tSdgp6hh4QOKgIJF74rs");
 
 const PaymentForm = (props) => {
@@ -72,6 +74,7 @@ const PaymentForm = (props) => {
 
     isAddressesFetched: false,
     paymentMethod: "",
+    booleanforpaymentmethod: 0,
     // I wonder why we need these 3 states - this needs a lot of refactoring
     openingBusinesHours: main.opening,
     closingBusinesHours: main.closing,
@@ -85,6 +88,7 @@ const PaymentForm = (props) => {
     hasEatInOption: false,
     hasPickupOption: false,
     pickupTime: settime(),
+
     showChangeAddress: false,
 
     address_error: "",
@@ -104,6 +108,7 @@ const PaymentForm = (props) => {
     showAddress: false,
     deliveryType: "",
   });
+  const [headingfornoaddress, setheadingfornoaddress] = useState(false);
 
   const handleGoogleApi = (google) => {
     //if (!state.googleApi) setState({ ...state, googleApi: google });
@@ -122,11 +127,12 @@ const PaymentForm = (props) => {
       dispatch(setPickupTime(data.pickupTime));
       fetchAddresses();
       //getDeliveryCharges();
+      console.log("api is", api);
     }
   }, [api]);
 
   useEffect(() => {
-    dispatch(setSelectedAddress(user.defaultAddress));
+    // dispatch(setSelectedAddress(user.defaultAddress));
 
     const deliveryOptions = !(
       main.selectedRestaurant.order_option === "" ||
@@ -156,9 +162,12 @@ const PaymentForm = (props) => {
     setState({ ...state, showAddress: true });
     setdata({ ...data, deliveryType: type, showAddress: true });
     dispatch(setIsTakeAway(type === DELIVERY_TYPE.TAKE_AWAY));
-    //getDeliveryCharges();
+    if (headingfornoaddress) {
+      getDeliveryCharges(user.distance);
+    }
   };
   const deliveryTypeEatinClick = (type) => {
+    dispatch(setDeliveryCost(0));
     setState({ ...state, showAddress: false });
     setdata({
       ...data,
@@ -169,6 +178,7 @@ const PaymentForm = (props) => {
     dispatch(setIsTakeAway(type === DELIVERY_TYPE.TAKE_AWAY));
   };
   const deliveryTypePickupClick = (type) => {
+    dispatch(setDeliveryCost(0));
     setState({ ...state, showAddress: false });
     setdata({
       ...data,
@@ -180,7 +190,7 @@ const PaymentForm = (props) => {
     dispatch(setIsTakeAway(type === DELIVERY_TYPE.TAKE_AWAY));
   };
   const paymentOptionChange = (e) => {
-    setdata({ ...data, paymentMethod: e });
+    setdata({ ...data, paymentMethod: e, booleanforpaymentmethod: 1 });
     console.log("payment data", data);
   };
 
@@ -303,6 +313,7 @@ const PaymentForm = (props) => {
     var arr = [];
     arr.push(payload.data);
     setadd({ ...add, addresses: payload.data });
+    setdata({ ...data, addresses: payload.data });
     //setdata({ ...data, addresses: payload, isAddressesFetched: true });
     console.log("dtdtd", data);
 
@@ -310,15 +321,25 @@ const PaymentForm = (props) => {
       (address) => address.is_default === "1",
       [0]
     );
-    console.log("defaultAddress from fetchaddress: ", defaultAddress);
-    dispatch(setDefaultAddress(defaultAddress));
-    handleDefautAddress(defaultAddress);
+    console.log("default ebe", defaultAddress);
 
-    if (!data.selectedAddress) {
-      console.log("passed");
-      handleDefautAddress(defaultAddress);
-      //  setdata({ ...data, selectedAddress: defaultAddress }); // ? will run only after refresh and no address is selected
+    console.log("length or default address", user.defaultAddress);
+
+    console.log("defaultAddress from fetchaddress: ", defaultAddress);
+    if (payload.success) {
+      if (defaultAddress.length > 0) {
+        dispatch(setDefaultAddress(defaultAddress));
+        dispatch(setSelectedAddress(defaultAddress));
+        handleDefautAddress(defaultAddress);
+        setheadingfornoaddress(true);
+      }
     }
+
+    // if (!data.selectedAddress) {
+    //   console.log("passed");
+    //   handleDefautAddress(defaultAddress);
+    //   //  setdata({ ...data, selectedAddress: defaultAddress }); // ? will run only after refresh and no address is selected
+    // }
 
     console.log("Selecetd Address: ", data.selectedAddress);
     // this.props.setSelectedAddress(defaultAddress)
@@ -357,8 +378,7 @@ const PaymentForm = (props) => {
       const distance = parseFloat(result.distance / 1000);
 
       dispatch(setDeliveryDistance(distance));
-
-      //getDeliveryCharges();
+      getDeliveryCharges(distance);
     } else {
       console.log("error: ", result.reason);
       setdata({ ...data, address_error: result.reason });
@@ -383,6 +403,7 @@ const PaymentForm = (props) => {
     });
     setState({ ...state, showAddress: true });
     handleChangeDefautAddress(address);
+    setheadingfornoaddress(true);
 
     //  getDeliveryCharges();
 
@@ -419,6 +440,7 @@ const PaymentForm = (props) => {
     if (result.status === "SUCCESS") {
       const distance = parseFloat(result.distance / 1000);
       dispatch(setDeliveryDistance(distance));
+      getDeliveryCharges(distance);
     } else {
       console.log("error: ", result.reason);
       setdata({ ...data, address_error: result.reason });
@@ -426,12 +448,12 @@ const PaymentForm = (props) => {
   };
 
   const grandTotal = Number(getGrandTotal());
-  const getDeliveryCharges = () => {
+  const getDeliveryCharges = (dist) => {
     if (!main.deliveryRange) return;
     const cost = main.deliveryRange.cost;
     const range = main.deliveryRange.range;
     const isTakeAway = user.isTakeAway;
-    const distance = user.distance;
+    const distance = dist;
     console.log("distance range", range);
 
     const freeDeliveryRangeAmount = cost["free_delivery_eligible_amount"];
@@ -566,7 +588,7 @@ const PaymentForm = (props) => {
 
   return (
     <>
-      <div className="box_style_2">
+      <div className="box_style_2 delivery-container">
         <h2 className="delivery-head">Select Delivery type</h2>
         {data.hasDeliveryOption ? (
           <>
@@ -631,23 +653,87 @@ const PaymentForm = (props) => {
           onClick={showAddressModal}
         >
           <div>
-            <h2 className="delivery-head">
-              Delivery Address{" "}
-              <img
-                src="https://i.ibb.co/TmCnRTh/Tick-Mark-Dark-512.png"
-                height="50px"
-                width="50px"
-              />
-            </h2>
+            {headingfornoaddress ? (
+              <>
+                <h2 className="delivery-head">
+                  Delivery Address{" "}
+                  <img
+                    className="delivery-tick-img"
+                    src="https://i.ibb.co/TmCnRTh/Tick-Mark-Dark-512.png"
+                  />
+                </h2>
 
-            <span class="address-change" onClick={onChangeAddressCall}>
-              Change
-            </span>
+                <span class="address-change" onClick={onChangeAddressCall}>
+                  Change
+                </span>
+              </>
+            ) : (
+              <>
+                <h2 className="delivery-head">
+                  Add Delivery Address{" "}
+                  <img
+                    src="https://i.ibb.co/TmCnRTh/Tick-Mark-Dark-512.png"
+                    height="50px"
+                    width="50px"
+                  />
+                </h2>
+
+                <span class="address-add-change" onClick={onChangeAddressCall}>
+                  ADD
+                </span>
+              </>
+            )}
 
             <>
               {console.log("address is", data.selectedAddress)}
 
               <>
+                <>
+                  {headingfornoaddress && !data.changeaddress ? (
+                    <>
+                      <p
+                        style={{
+                          textTransform: "uppercase",
+                          fontWeight: "700",
+                          fontSize: "20px",
+                        }}
+                      >
+                        {user.defaultAddress
+                          ? user.defaultAddress[0].name
+                          : null}
+                      </p>
+                      <p style={{ fontSize: "15px" }}>
+                        {user.defaultAddress
+                          ? user.defaultAddress[0].address1
+                          : null}
+                        , &nbsp;{" "}
+                        {user.defaultAddress
+                          ? user.defaultAddress[0].address2
+                          : null}{" "}
+                        &nbsp;
+                        {user.defaultAddress
+                          ? user.defaultAddress[0].state
+                          : null}
+                        , &nbsp;
+                      </p>
+
+                      <p style={{ fontSize: "15px" }}>
+                        {user.defaultAddress
+                          ? user.defaultAddress[0].city
+                          : null}{" "}
+                        - &nbsp;
+                        {user.defaultAddress
+                          ? user.defaultAddress[0].zipcode
+                          : null}{" "}
+                        , &nbsp;{" "}
+                        {user.defaultAddress
+                          ? user.defaultAddress[0].country
+                          : null}
+                      </p>
+                    </>
+                  ) : null}
+                </>
+
                 {data.changeaddress ? (
                   <>
                     <p
@@ -671,30 +757,7 @@ const PaymentForm = (props) => {
                       {data.changeaddress.country}
                     </p>
                   </>
-                ) : (
-                  <>
-                    <p
-                      style={{
-                        textTransform: "uppercase",
-                        fontWeight: "700",
-                        fontSize: "20px",
-                      }}
-                    >
-                      {user.defaultAddress[0].name}
-                    </p>
-                    <p style={{ fontSize: "15px" }}>
-                      {user.defaultAddress[0].address1}, &nbsp;{" "}
-                      {user.defaultAddress[0].address2} &nbsp;
-                      {user.defaultAddress[0].state}, &nbsp;
-                    </p>
-
-                    <p style={{ fontSize: "15px" }}>
-                      {user.defaultAddress[0].city} - &nbsp;
-                      {user.defaultAddress[0].zipcode} , &nbsp;{" "}
-                      {user.defaultAddress[0].country}
-                    </p>
-                  </>
-                )}
+                ) : null}
               </>
 
               {}
@@ -788,15 +851,7 @@ const PaymentForm = (props) => {
                 cursor: "pointer",
               }}
             >
-              <p
-                style={{
-                  margin: "20px",
-                  fontSize: "25px",
-                  paddingLeft: "20px",
-                  paddingTop: "18px",
-                  textTransform: "uppercase",
-                }}
-              >
+              <p className="text-add-address">
                 <AddIcon />
                 &nbsp; Add New Address
               </p>
@@ -873,8 +928,7 @@ const PaymentForm = (props) => {
                     onChange={(e) => paymentOptionChange("1")}
                   />
                   <label className="payment-class" for="card">
-                    Pay With Card &nbsp;
-                    <AccountBalanceWalletIcon />
+                    Pay With Card &nbsp; <CreditCardIcon />
                   </label>
                 </div>
               </>
@@ -891,25 +945,7 @@ const PaymentForm = (props) => {
                     onChange={(e) => paymentOptionChange("2")}
                   />
                   <label className="payment-class" for="cashondelivery">
-                    cash on delivery
-                    <AccountBalanceWalletIcon />
-                  </label>
-                </div>
-              </>
-            );
-          } else if (val == "3") {
-            return (
-              <>
-                <div className="payment_select">
-                  <input
-                    type="radio"
-                    name="payment"
-                    id="cardondelievry"
-                    value="3"
-                    onChange={(e) => paymentOptionChange("3")}
-                  />
-                  <label className="payment-class" for="cardondelivery">
-                    Card On Delivery&nbsp;
+                    cash on delivery &nbsp;
                     <AccountBalanceWalletIcon />
                   </label>
                 </div>
@@ -928,7 +964,7 @@ const PaymentForm = (props) => {
                   />
                   <label className="payment-class" for="paywithpoints">
                     Open Banking &nbsp;
-                    <AccountBalanceWalletIcon />
+                    <AccountBalanceIcon />
                   </label>
                 </div>
               </>

@@ -1,5 +1,6 @@
 import moment from "moment";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const DELIVERY_TYPE = {
   DEFAULT: "Delivery",
@@ -109,6 +110,7 @@ export function getFormattedRequestPayload(
 ) {
   // const menu = useSelector((state) => state.menu);
   console.log("arguments", cartList);
+  //const user1 = useSelector((state) => state.user);
 
   const formattedItems = getFormmatedItems(cartList, restaurant);
 
@@ -161,12 +163,19 @@ export function getFormattedRequestPayload(
         ...payload,
 
         street:
-          delivery.selectedAddress.address1 + delivery.selectedAddress.address2,
-        delivery_city: delivery.selectedAddress.city,
-        delivery_state: delivery.selectedAddress.state,
-        delivery_country: delivery.selectedAddress.country,
-        delivery_zipcode: delivery.selectedAddress.zipcode,
-        mobile: delivery.selectedAddress.phone,
+          delivery.selectedAddress.address1 +
+            delivery.selectedAddress.address2 ||
+          delivery.selectedAddress[0].address1 +
+            delivery.selectedAddress[0].address2,
+        delivery_city:
+          user.selectedAddress.city || user.selectedAddress[0].city,
+        delivery_state:
+          user.selectedAddress.state || user.selectedAddress[0].state,
+        delivery_country:
+          user.selectedAddress.country || user.selectedAddress[0].country,
+        delivery_zipcode:
+          user.selectedAddress.zipcode || user.selectedAddress[0].zipcode,
+        mobile: user.selectedAddress.phone || user.selectedAddress[0].phone,
         delivery_option: delivery.deliveryType.toLowerCase(),
         order_location: null,
         time_for_delivery: "",

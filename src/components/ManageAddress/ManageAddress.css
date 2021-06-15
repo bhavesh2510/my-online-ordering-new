@@ -83,3 +83,11 @@ h5 {
 .address_name {
   font-weight: 700;
 }
+@media (max-width: 768px) {
+  .add-address {
+    margin-left: 35px;
+  }
+  .address-section {
+    margin-left: 35px;
+  }
+}
