@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { removeItem } from "../../state-management/menu/actions";
+import { removeItem, addItem } from "../../state-management/menu/actions";
 import {
   isHappyHourStillActive,
   setTimer,
@@ -265,7 +265,13 @@ const Cart = (props) => {
 
   const removeFromCart = (item) => {
     // dispatch(removeItem(item, item.modifiers, 0, menu.restaurantInfo));
-    dispatch(removeItem(item, null, 0, menu.restaurantInfo));
+    dispatch(removeItem(item, item.modifiers || null, 0, menu.restaurantInfo));
+  };
+
+  const addItemToCart = (item) => {
+    dispatch(
+      addItem(item, item.modifiers || 0, item.subTotal, menu.restaurantInfo)
+    );
   };
 
   const callLoginForm = () => {
@@ -275,14 +281,7 @@ const Cart = (props) => {
   const [warning, setwarning] = useState(false);
   const grandTotal = Number(getGrandTotal());
   const goToCheckout = () => {
-    if (
-      !user.isTakeAway &&
-      grandTotal < Number(main.selectedRestaurant.cost["min_order_amount"])
-    ) {
-      setwarning(true);
-    } else {
-      History.push(`/restId=${menu.restaurantInfo.restaurant_id}/checkout`);
-    }
+    History.push(`/restId=${menu.restaurantInfo.restaurant_id}/checkout`);
   };
 
   return (
@@ -299,7 +298,7 @@ const Cart = (props) => {
         }
         timezone={menu.restaurantInfo.timezone}
         onRemove={removeFromCart}
-        //onAdd={handleAddItem}
+        onAdd={addItemToCart}
         //onDelete={props.removeCartItem}
       />
 
@@ -396,14 +395,14 @@ const Cart = (props) => {
         </tbody>
       </table>
       <hr />
-      {warning ? (
+      {/* {warning ? (
         <>
           <p style={{ color: "red" }}>
             Minimum cart amount is{" "}
             {main.selectedRestaurant.cost["min_order_amount"]}
           </p>
         </>
-      ) : null}
+      ) : null} */}
       {user.user.isUserLoggedIn ? (
         <button
           onClick={goToCheckout}

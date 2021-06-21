@@ -27,6 +27,7 @@ import axios from "axios";
 import ManageAddress from "../ManageAddress/ManageAddress";
 import ChooseAddress from "../ChooseAddress/ChooseAddress";
 import AddAddress from "../ChooseAddress/AddAddress";
+import PaginationOrderList from "./PaginationOrderList";
 import "antd/dist/antd.css";
 import {
   isHappyHourStillActive,
@@ -67,6 +68,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
     stotal: "",
     tax: "",
     gtotal: "",
+    delivery_time: "",
   });
   const [handleadd, sethandleadd] = useState(false);
   const [orderList, setorderList] = useState([]);
@@ -87,10 +89,19 @@ const MyOrders = React.memo(({ restaurantId }) => {
 
     setstate({
       ...state,
-      showorder: true,
+      showorder: false,
+      showaddress: true,
       showprofile: false,
       showpassword: false,
     });
+    var x = document.getElementById("nav-parent-id-2");
+    // var y = document.getElementById("nav-parent-id-2");
+    // var z = document.getElementById("nav-parent-id-3");
+    // var a = document.getElementById("nav-parent-id-4");
+    // a.classList.remove("add-color");
+    // y.classList.remove("add-color");
+    // z.classList.remove("add-color");
+    x.classList.add("add-color");
   }, []);
 
   useEffect(() => {
@@ -98,6 +109,14 @@ const MyOrders = React.memo(({ restaurantId }) => {
   }, [orderList]);
 
   const onProfileClick = () => {
+    var x = document.getElementById("nav-parent-id-2");
+    var y = document.getElementById("nav-parent-id");
+    var z = document.getElementById("nav-parent-id-3");
+    var a = document.getElementById("nav-parent-id-4");
+    x.classList.remove("add-color");
+    y.classList.remove("add-color");
+    z.classList.remove("add-color");
+    a.classList.add("add-color");
     setstate({
       ...state,
       showprofile: true,
@@ -114,9 +133,27 @@ const MyOrders = React.memo(({ restaurantId }) => {
       showpassword: false,
       showaddress: false,
     });
+
+    var x = document.getElementById("nav-parent-id");
+    var y = document.getElementById("nav-parent-id-2");
+    var z = document.getElementById("nav-parent-id-3");
+    var a = document.getElementById("nav-parent-id-4");
+    a.classList.remove("add-color");
+    y.classList.remove("add-color");
+    z.classList.remove("add-color");
+    x.classList.add("add-color");
   };
 
   const onAddressClick = () => {
+    var x = document.getElementById("nav-parent-id-2");
+    var y = document.getElementById("nav-parent-id");
+    var z = document.getElementById("nav-parent-id-3");
+    var a = document.getElementById("nav-parent-id-4");
+    a.classList.remove("add-color");
+    y.classList.remove("add-color");
+    z.classList.remove("add-color");
+
+    x.classList.add("add-color");
     setstate({
       ...state,
       showprofile: false,
@@ -126,6 +163,14 @@ const MyOrders = React.memo(({ restaurantId }) => {
     });
   };
   const onChangePasswordClick = () => {
+    var x = document.getElementById("nav-parent-id-2");
+    var y = document.getElementById("nav-parent-id");
+    var z = document.getElementById("nav-parent-id-3");
+    var a = document.getElementById("nav-parent-id-4");
+    a.classList.remove("add-color");
+    x.classList.remove("add-color");
+    y.classList.remove("add-color");
+    z.classList.add("add-color");
     setstate({
       ...state,
       showprofile: false,
@@ -139,24 +184,46 @@ const MyOrders = React.memo(({ restaurantId }) => {
     setmodal(false);
   };
 
+  const [extradetails, setextradetails] = useState();
+  const [pickuptime, setpickuptime] = useState();
+  const [deliverytime, setdeliverytime] = useState();
+  const [paymethod, setpaymethod] = useState();
+
   const showModal = async (currentitem) => {
     setstate({ ...state, showloader: true });
     //console.log("orderid of modal", orderid);
+    if (currentitem.pay_method === "2") {
+      setpaymethod("Cash");
+    } else if (currentitem.pay_method == "1") {
+      setpaymethod("Card");
+    } else {
+      setpaymethod("Bank");
+    }
     setcurrentdata({
       ...currentdata,
       orderid: currentitem.order_id,
       date: currentitem.order_date,
-      paymentmethod: currentitem.pay_method,
+      // paymentmethod: currentitem.pay_method,
       type: currentitem.delivery_option,
       tax: currentitem.tax,
       gtotal: currentitem.grand_total,
     });
 
     const response = await dispatch(fetchMyOrderDetails(currentitem.order_id));
+    console.log("response of order details", response);
+    var formatted = moment(
+      response.payload.data[0].delivery_time,
+      "HH:mm"
+    ).format("HH:mm A");
+    setextradetails(response.payload.data[0].order_time);
+    setpickuptime(response.payload.data[0].delivery_time);
+    setdeliverytime(formatted);
+
     setcurrentorderData(response.payload.data);
     setsubtotal(response.payload.data[0].subtotal);
     setproduct(response.payload.data[0].products);
     setmodal(true);
+
     setstate({ ...state, showloader: false });
   };
   useEffect(() => {
@@ -168,8 +235,8 @@ const MyOrders = React.memo(({ restaurantId }) => {
   }, [product]);
 
   useEffect(() => {
-    console.log("current order  is", currentdata);
-  }, [currentdata]);
+    console.log("current order  is", extradetails);
+  }, [setextradetails]);
 
   const handleOldPassword = (e) => {
     setpassworddata({ ...passworddata, oldpass: e });
@@ -259,7 +326,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
       <AppHeader />
 
       <section
-        className="parallax-window_myprofile "
+        //className="parallax-window_myprofile "
         data-parallax="scroll"
         // data-image-src="https://cutt.ly/Kkb7BY9"
         style={{
@@ -277,15 +344,15 @@ const MyOrders = React.memo(({ restaurantId }) => {
       </section>
       <div
         className="container margin_60"
-        style={{ backgroundColor: "#f9f9f9f", border: "1px solid #f1f1f1" }}
+        style={{ backgroundColor: "#f9f9f9", border: "1px solid #f1f1f1" }}
       >
         <nav className="nav-parent">
           <ul className="ul-parent">
             <li className="tab-current">
               <p
+                id="nav-parent-id"
                 onClick={onOrderClick}
-                className="icon-profile anchor-parent"
-                style={{ cursor: "pointer", backgroundColor: "#f1f1f1" }}
+                className="anchor-parent"
               >
                 <span>
                   Orders &nbsp;
@@ -295,9 +362,9 @@ const MyOrders = React.memo(({ restaurantId }) => {
             </li>
             <li className="tab-current">
               <p
+                id="nav-parent-id-2"
                 onClick={onAddressClick}
-                style={{ cursor: "pointer", backgroundColor: "#f1f1f1" }}
-                className="icon-menut-items anchor-parent"
+                className="anchor-parent"
               >
                 <span>
                   Address &nbsp;
@@ -307,9 +374,9 @@ const MyOrders = React.memo(({ restaurantId }) => {
             </li>
             <li className="tab-current">
               <p
+                id="nav-parent-id-4"
                 onClick={onProfileClick}
-                style={{ cursor: "pointer", backgroundColor: "#f1f1f1" }}
-                className="icon-settings anchor-parent"
+                className=" anchor-parent"
               >
                 <span>
                   Profile &nbsp;
@@ -319,9 +386,9 @@ const MyOrders = React.memo(({ restaurantId }) => {
             </li>
             <li className="tab-current">
               <p
+                id="nav-parent-id-3"
                 onClick={onChangePasswordClick}
-                style={{ cursor: "pointer", backgroundColor: "#f1f1f1" }}
-                className="icon-settings anchor-parent"
+                className="anchor-parent"
               >
                 <span>
                   Change Password
@@ -341,87 +408,17 @@ const MyOrders = React.memo(({ restaurantId }) => {
           <div className="row">
             {state.showorder ? (
               <>
-                {orderList.map((currval) => {
+                <>
+                  <PaginationOrderList
+                    orderList={orderList}
+                    showModal={showModal}
+                  />
+                </>
+                {/* {orderList.map((currval) => {
                   return (
-                    <>
-                      <div
-                        className="col-md-4 wow fadeIn animated"
-                        // data-wow-delay="0.1s"
-                        style={{
-                          visibility: "visible",
-                          animationDelay: "0.1s",
-                          animationName: "fadeIn",
-                          marginTop: "10px",
-                          // marginLeft: "10px",
-                        }}
-                      >
-                        <div
-                          className="feature_2"
-                          style={{
-                            height: "350px",
-                            padding: "20px",
-                            marginLeft: "10px",
-                            marginRight: "10px",
-                            borderRadius: "10px",
-                            border: "1px dotted black",
-                          }}
-                        >
-                          <div style={{ marginBottom: "-0.5rem" }}>
-                            <p
-                              className="para"
-                              style={{ fontSize: "25px", color: "black" }}
-                            >
-                              {currval.rname}
-                            </p>
-                            <p
-                              className="number"
-                              style={{
-                                color: "rgb(156, 156, 156)",
-                              }}
-                            >
-                              {menu.restaurantInfo.city},{" "}
-                              {menu.restaurantInfo.country}
-                            </p>
-                          </div>
-                          {/* <img
-                      src="https://b.zmtcdn.com/data/pictures/3/19621183/7aa88b8e8c19157eb1b01319a72ab569_featured_v2.jpg"
-                      style={{ float: "right" }}
-                      height="60px"
-                      width="60px"
-                    /> */}
-                          <hr />
-                          <div style={{ marginBottom: "1rem" }}>
-                            <p className="para">Order Number</p>
-                            <p className="number">{currval.order_id}</p>
-                          </div>
-                          <br />
-                          <div style={{ marginBottom: "1rem" }}>
-                            <p className="para">Total Amount</p>
-                            <p className="number">
-                              {currval.currency} &nbsp; {currval.grand_total}
-                            </p>
-                          </div>
-                          <br />
-                          <div style={{ marginBottom: "1rem" }}>
-                            <p className="para">Order On</p>
-                            <p className="number">{currval.order_date}</p>
-                          </div>
-                          <div
-                            className="button-parent"
-                            onClick={() => showModal(currval)}
-                          >
-                            <button
-                              className="btn-submit"
-                              style={{ color: "white" }}
-                            >
-                              View Detail
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </>
+                  
                   );
-                })}
+                })} */}
               </>
             ) : null}
 
@@ -558,9 +555,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
                         <div className="payment-opted">
                           <div className="pay-opt">Payment</div>
                           <div className="pay-name">
-                            <div className="pay-method">
-                              {currentdata.paymentmethod}
-                            </div>
+                            <div className="pay-method">{paymethod}</div>
                           </div>
                         </div>
                         <br />
@@ -571,7 +566,34 @@ const MyOrders = React.memo(({ restaurantId }) => {
                         </div>
                         <br />
                         <br />
-                        <div className="pay-opt">Delivery type</div>
+                        <div className="pay-opt">Order Time</div>
+                        <div className="pay-name">
+                          <div className="pay-method">{extradetails}</div>
+                        </div>
+                        <br />
+                        <br />
+                        {currentdata.type == "pickup" ? (
+                          <>
+                            <div className="pay-opt">Pickup Time</div>
+                            <div className="pay-name">
+                              <div className="pay-method">{pickuptime}</div>
+                            </div>
+                            <br />
+                            <br />
+                          </>
+                        ) : null}
+                        {currentdata.type == "delivery" ? (
+                          <>
+                            <div className="pay-opt">Delivery Time</div>
+                            <div className="pay-name">
+                              <div className="pay-method">{deliverytime}</div>
+                            </div>
+                            <br />
+                            <br />
+                          </>
+                        ) : null}
+
+                        <div className="pay-opt">Order type</div>
                         <div className="pay-name">
                           <div className="pay-method">{currentdata.type}</div>
                         </div>

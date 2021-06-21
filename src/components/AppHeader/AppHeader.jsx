@@ -56,7 +56,7 @@ const Appheader = () => {
     <header
       className="main-header"
       style={{
-        background: `${navbar ? "#242B2E" : "black"}`,
+        background: `${navbar ? "black" : "black"}`,
         boxShadow: "1px 6px 18px -4px #000000",
       }}
     >
@@ -68,9 +68,9 @@ const Appheader = () => {
           >
             {/* paste logo here */}
             <img
-              style={{ marginTop: "-10px" }}
-              width="150px"
-              height="40px"
+              style={{ marginTop: "-12px" }}
+              width="130px"
+              height="50px"
               src={main.selectedRestaurant.logo}
               alt="zotto"
             />
@@ -165,10 +165,10 @@ const Appheader = () => {
                           //href={`?/restId=${menu.restaurantInfo.restaurant_id}/myOrders`}
                           //onClick={()=>History.push(`/restId=${menu.restaurantInfo.restaurant_id}/myProfile`)}
                         >
-                          Edit Profile
+                          My Profile
                         </a>
                       </li>
-                      <li
+                      {/* <li
                         style={{ color: "black", cursor: "pointer" }}
                         onClick={() => History.push("myOrders")}
                       >
@@ -179,8 +179,8 @@ const Appheader = () => {
                         >
                           Manage Addresses
                         </a>
-                      </li>
-                      <li
+                      </li> */}
+                      {/* <li
                         style={{ color: "white", cursor: "pointer" }}
                         onClick={() => History.push("myOrders")}
                       >
@@ -190,7 +190,7 @@ const Appheader = () => {
                         >
                           My Orders
                         </a>
-                      </li>
+                      </li> */}
                       <li>
                         <a
                           onClick={callLogout}

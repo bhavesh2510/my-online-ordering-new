@@ -15,6 +15,7 @@ const ItemList = ({
   isPriceWithoutTax,
   timezone,
   onRemove,
+  onAdd,
 }) => {
   const timeOutRef = Array.from({ length: 100 }, () => React.createRef());
   const menu = useSelector((state) => state.menu);
@@ -104,21 +105,24 @@ const ItemList = ({
   }
 
   function getItemPrice(item, isStillActive) {
-    if (item.modifiers) {
-      if (item.happyHourItem && isStillActive) {
-        return isPriceWithoutTax
-          ? truncateDecimal(item.happyHourItem.subTotal)
-          : truncateDecimal(item.happyHourItem.grandTotal);
-      } else if (item.subTotal && item.grandTotal) {
-        return isPriceWithoutTax ? item.grandTotal : item.grandTotal;
-      }
-    }
+    console.log("items in itemlits", item);
+    // if (item.modifiers !== null) {
+    //   if (item.modifiers && item.happyHourItem && isStillActive) {
+    //     return isPriceWithoutTax
+    //       ? truncateDecimal(item.happyHourItem.subTotal)
+    //       : truncateDecimal(item.happyHourItem.grandTotal);
+    //   } else if (item.modifiers !== null && item.subTotal && item.grandTotal) {
+    //     alert("now we re in subtotal dishes");
+    //     return isPriceWithoutTax ? item.grandTotal : item.grandTotal;
+    //   }
+    // }
+
     if (item.happyHourItem && isStillActive) {
       if (item.similarItems && item.similarItems.length > 0) {
         let totalPrice = 0;
 
         for (let i = 0; i < item.similarItems.length; i++) {
-          totalPrice += this.isPriceWithoutTax()
+          totalPrice += isPriceWithoutTax()
             ? item.similarItems[i].happyHourItem.subTotal
             : item.similarItems[i].happyHourItem.grandTotal;
         }
@@ -148,11 +152,11 @@ const ItemList = ({
           "log",
           isPriceWithoutTax()
             ? item.subTotal || item.price
-            : item.grandTotal || this.getActualPrice(item)
+            : item.grandTotal || getActualPrice(item)
         );
         return isPriceWithoutTax()
           ? item.subTotal || item.price
-          : item.grandTotal || this.getActualPrice(item);
+          : item.grandTotal || getActualPrice(item);
       }
     }
   }
@@ -190,6 +194,95 @@ const ItemList = ({
 
     return 0;
   }
+
+  function renderPizzaDetails(item) {
+    let defaultToppings = "";
+
+    let optionalToppings = "";
+
+    let halfAndHalf = "";
+
+    for (let i = 0; i < item.defaultToppings.length; i++) {
+      defaultToppings += `, ${item.defaultToppings[i].topping_name}`;
+    }
+    defaultToppings = defaultToppings.replace(/[\s,]+/, " ").trim();
+
+    for (let i = 0; i < item.optionalToppings.length; i++) {
+      optionalToppings += ` ,${item.optionalToppings[i].topping_name}`;
+    }
+    optionalToppings = optionalToppings.replace(/[\s,]+/, " ").trim();
+
+    if (item.firstHalf !== null) {
+      halfAndHalf = `First Half: ${item.firstHalf.topping_name},`;
+      halfAndHalf += ` Second Half: ${item.secondHalf.topping_name}`;
+    }
+
+    return (
+      <>
+        <section
+          className="size-and-base-section"
+          style={{ marginTop: "10px" }}
+        >
+          <label style={{ fontSize: "12px" }}>Size & Base:&nbsp; </label>
+          <span
+            style={{
+              fontSize: "12px",
+            }}
+          >
+            {item.selectedBase.name}
+          </span>
+        </section>
+        <section className="toppings-list">
+          {defaultToppings !== "" ? (
+            <label style={{ fontSize: "12px", lineHeight: "0" }}>
+              Default Toppings:&nbsp;{" "}
+            </label>
+          ) : null}
+          <span
+            style={{
+              textTransform: "lowercase",
+              fontSize: "12px",
+              lineHeight: "0",
+            }}
+          >
+            {defaultToppings}
+          </span>
+
+          {optionalToppings !== "" ? (
+            <label style={{ fontSize: "12px", lineHeight: "0" }}>
+              Optional Toppings:{" "}
+            </label>
+          ) : null}
+          <span
+            style={{
+              textTransform: "lowercase",
+              fontSize: "12px",
+              lineHeight: "0",
+            }}
+          >
+            {optionalToppings}
+          </span>
+        </section>
+        <section className="toppings-list">
+          {halfAndHalf !== "" ? (
+            <label style={{ fontSize: "12px", lineHeight: "0" }}>
+              Half And Half Choice:{" "}
+            </label>
+          ) : null}
+          <span
+            style={{
+              textTransform: "lowercase",
+              fontSize: "12px",
+              lineHeight: "0",
+            }}
+          >
+            {halfAndHalf}
+          </span>
+        </section>
+      </>
+    );
+  }
+
   return (
     <>
       <table className="table table_summary">
@@ -214,43 +307,39 @@ const ItemList = ({
                       className="cart-button"
                     >
                       <i className="icon_minus_alt" />
-                    </button>{" "}
+                    </button>
+                    {/* <button onClick={() => onAdd(item)} className="cart-button">
+                      <i className="icon_plus_alt" />
+                    </button>{" "}  */}
                     <strong>{item.qty}x</strong>
                     <strong>{item.name} &nbsp;</strong>
+                    <br />
+                    {item.modifiers ? (
+                      <>
+                        <p
+                          style={{
+                            // marginTop: "10px",
+                            marginLeft: "5px",
+                            fontSize: "10px",
+                          }}
+                        >
+                          <RenderModifiers modifier={item.modifiers} />
+                        </p>
+                      </>
+                    ) : null}
+                    {item.productType == "Pizza"
+                      ? renderPizzaDetails(item)
+                      : null}
                   </td>
                   {console.log("items in itemlist", item)}
                   <td>
-                    {item.productType == "Pizza" ? (
-                      <strong style={{ marginRight: "-20px" }}>
-                        <span style={{ fontSize: "10px" }}>{currency}</span>
-                        {` ${truncateDecimal(
-                          getPizzaItemPrice(item, isStillActive)
-                        )}`}
-                      </strong>
-                    ) : (
-                      <p style={{ textAlign: "right" }}>
-                        {`${currency} ${
-                          truncateDecimal(getItemPrice(item, isStillActive)) ||
-                          truncateDecimal(
-                            item.qty * Number(item.price).toFixed(2)
-                          )
-                        }`}
-                      </p>
-                    )}
+                    <p style={{ textAlign: "right" }}>
+                      {`${currency} ${truncateDecimal(
+                        getItemPrice(item, isStillActive)
+                      )}`}
+                    </p>
                   </td>
                 </tr>
-                <br />
-                {item.modifiers ? (
-                  <div
-                    style={{
-                      marginTop: "-40px",
-                      marginLeft: "5px",
-                      fontSize: "10px",
-                    }}
-                  >
-                    <RenderModifiers modifier={item.modifiers} />
-                  </div>
-                ) : null}
               </>
             );
           })}

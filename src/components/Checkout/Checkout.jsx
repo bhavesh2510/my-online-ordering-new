@@ -1,6 +1,6 @@
 import Appheader from "../AppHeader/AppHeader";
 import "../Checkout/Checkout.css";
-import Button from "@material-ui/core/Button";
+// import Button from "@material-ui/core/Button";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
@@ -34,6 +34,9 @@ import { getTaxes } from "../../state-management/menu/operations";
 import WaitingOverlay from "../WaitingOverlay/WaitingOverlay";
 import AppHeader from "../AppHeader/AppHeader";
 import Footer from "../Footer/Footer";
+import RenderModifiers from "../../containers/Modifiers/RenderModifiers";
+import { modalNames } from "../AppModal/constants";
+import { closeModal, openModal } from "../../state-management/modal/actions";
 
 const Checkout = () => {
   //const format = "HH:mm";
@@ -423,7 +426,7 @@ const Checkout = () => {
     return new Date().getTime().toString();
   };
   const handleCheckout = async (deliveryDetails) => {
-    console.log("e is ", deliveryDetails);
+    console.log("deliveryDetails is ", deliveryDetails);
     if (deliveryDetails.booleanforpaymentmethod == 0) {
       return notification["warning"]({
         style: {
@@ -501,7 +504,7 @@ const Checkout = () => {
             menu.cart,
             user.distance,
             savedAmount,
-            //getSavedAmount(),
+            getSavedAmount(),
             getDeliveryCharges(),
             user.user.phonecode,
             user.user.selectedDeliveryTime
@@ -532,6 +535,16 @@ const Checkout = () => {
       }
     }
   };
+
+  function showPizzaDetails(pizza) {
+    dispatch(
+      openModal(modalNames.RENDER_PIZZADETAILS_CHECKOUT, {
+        item: {
+          ...pizza,
+        },
+      })
+    );
+  }
 
   return (
     <>
@@ -594,21 +607,52 @@ const Checkout = () => {
                 <h3 className="cart-head">
                   Your order <i class="icon_cart_alt float-right"></i>
                 </h3>
-                <table className="table table_summary">
+                <table
+                  className="table table_summary"
+                  style={{ width: "100%" }}
+                >
                   <tbody>
                     {menu.cart.map((val) => {
                       let isStillActive = false;
                       return (
                         <>
                           <tr>
-                            <td>
+                            <td style={{ width: "47%" }}>
                               <div
                                 style={{ marginTop: "5px", fontSize: "15px" }}
                               >
-                                {val.name}
+                                <b>{val.name}</b>
+                                <br />
+                                {val.modifiers ? (
+                                  <>
+                                    <div style={{ fontSize: "12px" }}>
+                                      <RenderModifiers
+                                        modifier={val.modifiers}
+                                      />
+                                    </div>
+                                  </>
+                                ) : null}
+
+                                {val.productType == "Pizza" ? (
+                                  <>
+                                    <p
+                                      className="text-pizzamodal"
+                                      style={{
+                                        marginTop: "10px",
+                                        cursor: "pointer",
+                                        fontSize: "10px",
+                                        color: "black",
+                                      }}
+                                      onClick={() => showPizzaDetails(val)}
+                                    >
+                                      view details
+                                    </p>
+                                  </>
+                                ) : null}
                               </div>
+                              <br />
                             </td>
-                            <td>
+                            <td className="qty-table" style={{ width: "30%" }}>
                               <div className="main-qty">
                                 <div
                                   className="plus"

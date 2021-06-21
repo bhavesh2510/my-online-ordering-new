@@ -79,13 +79,14 @@
   padding: 0 1.25em;
   font-weight: 500;
   white-space: nowrap;
-  background-color: #fff;
+  background-color: #f1f1f1;
   -webkit-border-top-left-radius: 3px;
   -webkit-border-top-right-radius: 3px;
   -moz-border-radius-topleft: 3px;
   -moz-border-radius-topright: 3px;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
+  cursor: pointer;
 }
 //
 
@@ -346,5 +347,96 @@
   }
   .feature_2 {
     margin-left: 0px;
+  }
+}
+
+.add-color {
+  background-color: #6244da;
+  color: white;
+}
+
+.pagination {
+  display: inline-flex;
+  justify-content: space-between;
+  list-style: none;
+  cursor: pointer;
+  margin-left: 40px;
+}
+
+.pagination a {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #6c7ac9;
+  color: #6c7ac9;
+}
+
+.pagination__link {
+  font-weight: bold;
+}
+
+.pagination__link--active a {
+  color: #fff;
+  background: #6c7ac9;
+}
+
+.pagination__link--disabled a {
+  color: rgb(198, 197, 202);
+  border: 1px solid rgb(198, 197, 202);
+}
+.pagination-button-container {
+  margin-left: 100%;
+  display: flex;
+}
+.pagination-button-li {
+  width: 150px;
+}
+.pagination-button-a {
+  padding: 15px;
+  text-align: center;
+}
+.page-link:hover {
+  background-color: #6244da !important;
+}
+.pagination a {
+  text-align: center;
+  font-size: 17px;
+}
+.pagination a:hover {
+  color: whitesmoke !important;
+  text-align: center;
+}
+.body-container {
+  width: 300px;
+  height: 370px;
+}
+@media (max-width: 768px) {
+  .pagination-button-container {
+    margin-left: 0%;
+  }
+  .pagination-button-li {
+    width: 100px;
+  }
+  .pagination-button-a {
+    padding: 10px;
+    text-align: center;
+  }
+  .body-container {
+    width: 290px !important;
+    height: 350px;
+  }
+  .btn-submit {
+    min-width: 20px !important;
+    min-height: 20px;
+    display: inline-flex;
+    // -webkit-box-align: stretch;
+    // align-items: stretch;
+    border-radius: 0.6rem;
+    background: transparent;
+    padding: 0px;
+    border: none;
+  }
+  .pl-5,
+  .px-5 {
+    padding: 1rem !important;
   }
 }

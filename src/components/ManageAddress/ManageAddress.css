@@ -20,9 +20,9 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 2px dotted black;
+  border: 2px dotted #6244da;
   padding: 100px;
-  height: 220px !important;
+  height: 265px !important;
   width: 18rem;
 }
 
@@ -62,16 +62,17 @@ h5 {
 .actions {
   padding: 5px 10px;
   cursor: pointer;
-  background: black;
+  background: #6244da;
   border-radius: 10px;
   margin-bottom: 5px;
   color: whitesmoke;
 }
 .actions:hover {
-  background-color: green;
+  background-color: #6244da;
+  color: white;
 }
 .default {
-  background-color: green;
+  background-color: black;
 }
 
 .address-lines {

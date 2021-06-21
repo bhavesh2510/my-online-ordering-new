@@ -9,4 +9,5 @@ export const modalNames = {
   FIND_ADDRESS: "findAddress",
   PIZZA_MODAL: "PizzaModal",
   PIZZA_INTERMEDIATE_ADD_MODAL: "pizzaIntermediateAddModal",
+  RENDER_PIZZADETAILS_CHECKOUT: "renderPizzaDetailsCheckout",
 };

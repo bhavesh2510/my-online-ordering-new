@@ -110,14 +110,17 @@ const Information = (props) => {
             </div>
             <div>
               <LocationOnIcon />{" "}
-              {`${props.restaurantInfo.address} - ${props.restaurantInfo.city} - ${props.restaurantInfo.country}`}{" "}
+              {`${props.restaurantInfo.address} - ${props.restaurantInfo.city} - ${props.restaurantInfo.country}- ${props.restaurantInfo.zipcode}`}{" "}
               <br />
-              <strong>Delivery charge:</strong> free over&nbsp;
-              {menu.restaurantInfo.cost.free_delivery_eligible_amount}&nbsp;
-              {props.restaurantInfo?.monetary_symbol}
-              {/* {props.restaurantInfo.cost.free_delivery_eligible_amount}. */}
-              <br />
-              <br />
+              {menu.restaurantInfo.cost.free_delivery_eligible_amount > 0 ? (
+                <>
+                  <strong>Delivery charge:</strong> free over&nbsp;
+                  {menu.restaurantInfo.cost.free_delivery_eligible_amount}&nbsp;
+                  {props.restaurantInfo?.monetary_symbol}
+                  {/* {props.restaurantInfo.cost.free_delivery_eligible_amount}. */}
+                  <br />
+                </>
+              ) : null}
               Delivery Options : &nbsp;
               {menu.restaurantInfo.order_option?.split(",").map((option, i) => {
                 return (
@@ -190,6 +193,8 @@ const Information = (props) => {
                 searchQuery={menu.searchQuery}
                 categories={menu.categoriesList}
                 happyhours={menu.happyHours}
+                onAddItem={props.onAddItem}
+                onRemoveItem={props.onRemoveItem}
               />
             </div>
             {/* End box_style_1 */}
@@ -201,7 +206,8 @@ const Information = (props) => {
               style={{ position: "sticky", top: "65px" }}
             >
               <Cart
-                addItem={handleAddItem}
+                //addItem={handleAddItem}
+                addItem={props.onAddItem}
                 restinfo={menu.restaurantInfo}
                 cartlist={menu.cart}
               />

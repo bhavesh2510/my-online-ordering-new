@@ -40,16 +40,10 @@ const RenderModifiers = ({ modifier }) => {
 
     return (
       <div className="modifiers-container">
-        <span
-          className="forced-modifiers text-pizzamodal"
-          style={{ fontSize: "10px" }}
-        >
+        <span className="forced-modifiers " style={{ fontSize: "12px" }}>
           {getRenderableForcedModifiersModifiers(forcedModifiers)}
         </span>
-        <span
-          className="optional-modifiers text-pizzamodal"
-          style={{ fontSize: "10px" }}
-        >
+        <span className="optional-modifiers " style={{ fontSize: "12px" }}>
           {getRenderableOptionalModifiers(optionalModifiers)}
         </span>
       </div>

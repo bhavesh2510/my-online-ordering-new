@@ -169,12 +169,22 @@ const ManageAddress = (props) => {
                   <ul className="address-actions">
                     <li onClick={() => callAddressModal(true, address)}>
                       <span>
-                        <h5 className="actions">Edit</h5>
+                        <h5
+                          className="actions"
+                          style={{ backgroundColor: "#6244da" }}
+                        >
+                          Edit
+                        </h5>
                       </span>
                     </li>
                     <li onClick={() => handleRemove(address)}>
                       <span>
-                        <h5 className="actions">Remove</h5>
+                        <h5
+                          className="actions"
+                          style={{ backgroundColor: "#6244da" }}
+                        >
+                          Remove
+                        </h5>
                       </span>
                     </li>
                     <li>

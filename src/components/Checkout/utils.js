@@ -138,6 +138,7 @@ export function getFormattedRequestPayload(
     lastname: user.user.lastName,
     email: user.user.email,
     mobile: user.user.mobile,
+    delivery_phone: user.user.mobile,
     total: subTotal,
     tax: subTaxTotal,
     grand_total: grandTotal,
@@ -176,9 +177,11 @@ export function getFormattedRequestPayload(
         delivery_zipcode:
           user.selectedAddress.zipcode || user.selectedAddress[0].zipcode,
         mobile: user.selectedAddress.phone || user.selectedAddress[0].phone,
+        delivery_phone:
+          user.selectedAddress.phone || user.selectedAddress[0].phone,
         delivery_option: delivery.deliveryType.toLowerCase(),
         order_location: null,
-        time_for_delivery: "",
+        time_for_delivery: user.selectedDeliveryTime,
         delivery_time: user.selectedPickUpTime,
         distance,
         delivery_cost: deliveryCharges,
@@ -197,6 +200,8 @@ export function getFormattedRequestPayload(
         delivery_time: user.selectedPickUpTime,
         distance: "",
         phone: "",
+        delivery_phone:
+          user.selectedAddress.phone || user.selectedAddress[0].phone,
       };
 }
 //console.log("check", getFormattedRequestPayload());

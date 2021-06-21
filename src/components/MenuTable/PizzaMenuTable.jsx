@@ -220,7 +220,7 @@ class PizzaMenuTable extends React.PureComponent {
                                   fontSize: "1rem",
                                   width: "30px",
                                   height: "30px",
-                                  borderRadius: "50%",
+                                  borderRadius: "20%",
                                   border: "none",
                                   outline: "none",
                                   //paddingTop: "-15px",

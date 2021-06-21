@@ -1,7 +1,7 @@
 import React from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { addItem } from "../../../state-management/menu/actions";
-import { openModal } from "../../../state-management/modal/actions";
+import { openModal, closeModal } from "../../../state-management/modal/actions";
 
 //import "./IntermediateAddModal.scss";
 import { ADD_NEW, REPEATE_LAST, HEADER_TITLE, EXTRAS } from "../constants";
@@ -16,9 +16,7 @@ class IntermediateAddModal extends React.PureComponent {
 
     this.state = { item: props.modalState.item };
   }
-  toggle() {
-    this.props.onCloseModal();
-  }
+
   handleAddNew = () => {
     this.props.onCloseModal();
     if (this.state.item.isPizza) {
@@ -27,6 +25,10 @@ class IntermediateAddModal extends React.PureComponent {
       this.props.openModal(modalNames.DISH_MODAL, { item: this.state.item });
     }
   };
+
+  // toggle() {
+  //   this.props.toggle();
+  // }
 
   handleRepeatLast = () => {
     const { item } = this.state;
@@ -120,20 +122,30 @@ class IntermediateAddModal extends React.PureComponent {
       <>
         <Modal
           isOpen={true}
-          toggle={this.toggle}
+          toggle={this.props.onCloseModal}
           style={{ top: "10%", left: "2%" }}
         >
-          <ModalHeader toggle={this.toggle}>Header</ModalHeader>
+          <ModalHeader toggle={this.props.onCloseModal}>
+            {this.state.item.name}
+          </ModalHeader>
           <ModalBody style={{ maxHeight: "400px", overflowY: "scroll" }}>
             {this.state.item.isPizza
               ? this.renderPizzaDetails()
               : this.renderModifiers()}
           </ModalBody>
           <ModalFooter>
-            <button className="add-new" onClick={this.handleAddNew}>
+            <button
+              style={{ backgroundColor: "black", color: "white" }}
+              className="add-new"
+              onClick={this.handleAddNew}
+            >
               ADD NEW
             </button>
-            <button className="repeat-last" onClick={this.handleRepeatLast}>
+            <button
+              style={{ backgroundColor: "black", color: "white" }}
+              className="repeat-last"
+              onClick={this.handleRepeatLast}
+            >
               REPEAT LAST
             </button>
           </ModalFooter>

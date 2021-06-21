@@ -13,6 +13,8 @@ import { notification } from "antd";
 import WaitingOverlay from "../../components/WaitingOverlay/WaitingOverlay";
 import AppHeader from "../AppHeader/AppHeader";
 import Footer from "../Footer/Footer";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const MyProfile = () => {
   const user = useSelector((state) => state.user.user);
@@ -230,14 +232,16 @@ const MyProfile = () => {
               />
               <br />
               <br />
+
               <TextField
                 size="small"
                 className="profile-textfield"
-                label="Phone number"
+                label="Country Code"
                 variant="outlined"
                 value={state.mobile}
                 onChange={(e) => handlePhoneNumber(e.target.value)}
               />
+
               <br />
               <br />
               <Button

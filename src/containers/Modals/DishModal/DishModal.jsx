@@ -66,16 +66,16 @@ const DishModal = () => {
 
     console.log("modifiers in handleAddItem", modifier);
     console.log("item in modifier", item);
-    if (item.qty > 1) {
-      dispatch(
-        openModal(modalNames.INTERMEDIATE_ADD_MODAL, {
-          item: {
-            ...item,
-            // isHappyHoursActive,
-          },
-        })
-      );
-    }
+    // if (item.qty) {
+    //   dispatch(
+    //     openModal(modalNames.INTERMEDIATE_ADD_MODAL, {
+    //       item: {
+    //         ...item,
+    //         // isHappyHoursActive,
+    //       },
+    //     })
+    //   );
+    // }
     dispatch(addItem(item, modifier, subTotal, menu.restaurantInfo));
     dispatch(closeModal());
 

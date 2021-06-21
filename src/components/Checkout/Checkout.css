@@ -46,7 +46,7 @@ td {
 }
 
 .check_payment:checked + label {
-  background-color: black;
+  background-color: #6244da;
   color: white;
 }
 .btn_radio {
@@ -70,15 +70,16 @@ td {
 }
 .main-qty {
   display: inline-block;
-  margin-left: 40px;
+  margin-left: 20px;
   height: 30px;
-  width: 83px;
+
   border: 1px solid #d4d5d9;
   color: black;
-  font-size: 0.9rem;
-  font-weight: 600;
+  /* font-size: 0.9rem; */
+  /* font-weight: 600; */
   line-height: 30px;
   position: relative;
+
   text-align: center;
   background-color: #fff;
   width: 70px !important;

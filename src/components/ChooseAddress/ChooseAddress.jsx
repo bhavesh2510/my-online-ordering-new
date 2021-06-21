@@ -504,7 +504,7 @@ const ChooseAddress = (props) => {
   }, [customercountry]);
 
   const handleDistanceCalucationCallback = (result) => {
-    console.log("distance", result);
+    console.log("distance", result.distance);
 
     if (result.status === "SUCCESS") {
       // check if distance is inside restaurant deilvery range
@@ -556,6 +556,7 @@ const ChooseAddress = (props) => {
 
       if (newDistance > maxDistance) {
         maxDistance = newDistance;
+        console.log("new distance is", newDistance);
       }
     }
 

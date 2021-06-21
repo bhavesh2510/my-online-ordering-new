@@ -15,7 +15,14 @@ import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import { getTaxes } from "../../state-management/menu/operations";
 import "./MenuTable.css";
 
-const MenuTable = ({ category_name, list, symbol, actualPrice }) => {
+const MenuTable = ({
+  onAddItem,
+  onRemoveItem,
+  category_name,
+  list,
+  symbol,
+  actualPrice,
+}) => {
   const dispatch = useDispatch();
   const menu = useSelector((state) => state.menu);
   const modal = useSelector((state) => state.modal);
@@ -28,37 +35,39 @@ const MenuTable = ({ category_name, list, symbol, actualPrice }) => {
   var refIndex = -1;
   var timeOutRef = Array.from({ length: 1000 }, () => React.createRef());
 
-  const addToCart = (item, isHappyHoursActive) => {
-    console.log("items at the time of add", item);
+  // const addToCart = (item, isHappyHoursActive) => {
+  //   const menuItems = menu.menuItems;
+  //   const itemsinmenu = menuItems.find(({ id }) => item.id === id);
+  //   console.log("items at the time of add", itemsinmenu);
 
-    if (item.optional_modifier !== "0" || item.forced_modifier !== "0") {
-      // if (item.qty >= 1) {
-      //   dispatch(
-      //     openModal(modalNames.INTERMEDIATE_ADD_MODAL, {
-      //       item: {
-      //         ...item,
-      //         isHappyHoursActive,
-      //       },
-      //     })
-      //   );
-      // } else {
-      dispatch(
-        openModal(modalNames.DISH_MODAL, {
-          item: {
-            ...item,
-            isHappyHoursActive,
-          },
-        })
-      );
-      // }
+  //   if (item.optional_modifier !== "0" || item.forced_modifier !== "0") {
+  //     if (itemsinmenu.qty) {
+  //       dispatch(
+  //         openModal(modalNames.INTERMEDIATE_ADD_MODAL, {
+  //           item: {
+  //             ...item,
+  //             isHappyHoursActive,
+  //           },
+  //         })
+  //       );
+  //     } else {
+  //       dispatch(
+  //         openModal(modalNames.DISH_MODAL, {
+  //           item: {
+  //             ...item,
+  //             isHappyHoursActive,
+  //           },
+  //         })
+  //       );
+  //     }
 
-      return;
-    }
+  //     return;
+  //   }
 
-    //this.props.addItem(item, null, 0, this.props.restaurantInfo);
+  //   //this.props.addItem(item, null, 0, this.props.restaurantInfo);
 
-    dispatch(addItem(item, item.modifiers || null, 0, menu.restaurantInfo));
-  };
+  //   dispatch(addItem(item, item.modifiers || null, 0, menu.restaurantInfo));
+  // };
 
   const isPriceWithoutTax = () => {
     console.log(
@@ -188,7 +197,7 @@ const MenuTable = ({ category_name, list, symbol, actualPrice }) => {
                       <button
                         className="button-menutable"
                         onClick={() =>
-                          addToCart(
+                          onAddItem(
                             item,
                             isHappyHourStillActive(
                               item,
@@ -199,6 +208,22 @@ const MenuTable = ({ category_name, list, symbol, actualPrice }) => {
                       >
                         <span style={{ display: "block" }}>+</span>
                       </button>
+
+                      {/* <button
+                        className="button-menutable"
+                        style={{ marginLeft: "20px" }}
+                        onClick={() =>
+                          onRemoveItem(
+                            item,
+                            isHappyHourStillActive(
+                              item,
+                              menu.restaurantInfo.timezone
+                            ).isActive
+                          )
+                        }
+                      >
+                        <span style={{ display: "block" }}>-</span>
+                      </button> */}
                     </div>
                   </>
                 </td>

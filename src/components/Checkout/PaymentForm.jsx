@@ -10,6 +10,7 @@ import {
   setSelectedAddress,
   setIsTakeAway,
   setPickupTime,
+  setDeliveryTime,
   setDefaultAddress,
   setDeliveryDistance,
 } from "../../state-management/user/actions";
@@ -88,6 +89,7 @@ const PaymentForm = (props) => {
     hasEatInOption: false,
     hasPickupOption: false,
     pickupTime: settime(),
+    deliveryTime: settime(),
 
     showChangeAddress: false,
 
@@ -125,6 +127,7 @@ const PaymentForm = (props) => {
     // if (main.deliveryRange) getDeliveryCharges();
     if (api) {
       dispatch(setPickupTime(data.pickupTime));
+      dispatch(setDeliveryTime(data.deliveryTime));
       fetchAddresses();
       //getDeliveryCharges();
       console.log("api is", api);
@@ -209,9 +212,90 @@ const PaymentForm = (props) => {
     console.log("from", businessHoursFrom);
     console.log("To", businessHoursTo);
 
-    if (selectedTime > businessHoursFrom && selectedTime < businessHoursTo) {
+    if (selectedTime < moment().add(30, "minute")) {
+      console.log("1 level");
+      var formatted = moment(data.pickupTime, "HH:mm").format("hh:mm A");
+
+      notification["warning"]({
+        message: `Please select time more than or equal to ${formatted}`,
+        style: {
+          marginTop: "50px",
+
+          color: "rgba(0, 0, 0, 0.65)",
+          border: "1px solid #b7eb8f",
+          backgroundColor: "#f6ffed",
+        },
+        placement: "topLeft",
+      });
+    } else if (
+      selectedTime > businessHoursFrom &&
+      selectedTime < businessHoursTo
+    ) {
       setdata({ ...data, pickupTime: selectedTime });
       dispatch(setPickupTime(timeString));
+      notification["success"]({
+        message: "Time changed Successfully",
+        style: {
+          marginTop: "50px",
+
+          color: "rgba(0, 0, 0, 0.65)",
+          border: "1px solid #b7eb8f",
+          backgroundColor: "#f6ffed",
+        },
+        placement: "topLeft",
+      });
+    } else {
+      setdata({ ...data, pickupTime: null });
+      notification["warning"]({
+        message: "Sorry, Please select time between business hours",
+        style: {
+          marginTop: "50px",
+
+          color: "rgba(0, 0, 0, 0.65)",
+          border: "1px solid #b7eb8f",
+          backgroundColor: "#f6ffed",
+        },
+        placement: "topLeft",
+      });
+    }
+  };
+
+  const onDeliveryTimeChange = (time, timeString) => {
+    // if (!data.businessHours) {
+    //   setdata({ ...data, pickupTime: null });
+
+    //   return false;
+    // }
+    // we are moving in circles here, we have separate opening and closing object, this is unnecessary code.
+    const selectedTime = moment(time, "HH:mm");
+    console.log("selected time", selectedTime);
+    const businessHoursFromTo = data.businessHours.split(" - ");
+    const businessHoursFrom = moment(businessHoursFromTo[0], "HH:mm");
+    const businessHoursTo = moment(businessHoursFromTo[1], "HH:mm");
+    console.log("from", businessHoursFrom);
+    console.log("To", businessHoursTo);
+
+    if (selectedTime < moment().add(30, "minute")) {
+      console.log("1 level");
+      var formatted = moment(data.deliveryTime, "HH:mm").format("hh:mm A");
+
+      notification["warning"]({
+        message: `Please select time more than or equal to ${formatted}`,
+        style: {
+          marginTop: "50px",
+
+          color: "rgba(0, 0, 0, 0.65)",
+          border: "1px solid #b7eb8f",
+          backgroundColor: "#f6ffed",
+        },
+        placement: "topLeft",
+      });
+    } else if (
+      selectedTime > businessHoursFrom &&
+      selectedTime < businessHoursTo
+    ) {
+      setdata({ ...data, pickupTime: selectedTime });
+      dispatch(setDeliveryTime(timeString));
       notification["success"]({
         message: "Time changed Successfully",
         style: {
@@ -878,6 +962,32 @@ const PaymentForm = (props) => {
                 defaultValue={data.pickupTime}
                 disabledHours={getDisabledHours}
                 onChange={onPickupTimeChange}
+                format="HH:mm"
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {state.showAddress ? (
+        <div
+          className="box_style_2"
+          style={{ cursor: "pointer" }}
+          onClick={showAddressModal}
+        >
+          <div className="pickup-details" style={{ height: "30px" }}>
+            <div
+              className="address-details"
+              style={{
+                color: "black",
+                fontWeight: "600",
+              }}
+            >
+              Selected Delivery Time : &nbsp;
+              <TimePicker
+                defaultValue={data.pickupTime}
+                disabledHours={getDisabledHours}
+                onChange={onDeliveryTimeChange}
                 format="HH:mm"
               />
             </div>

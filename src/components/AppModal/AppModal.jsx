@@ -10,6 +10,9 @@ const DishModal = React.lazy(() =>
 const IntermediateAddModal = React.lazy(() =>
   import("../../containers/Modals/DishModal/IntermediateAddModal")
 );
+const PizzaDetailsForChekout = React.lazy(() =>
+  import("../Checkout/PizzaDetailsForCheckout")
+);
 // const IntermediateRemoveItemsModal = React.lazy(() =>
 //   import("../Modals/IntermediateRemoveItemsModal")
 // );
@@ -44,6 +47,8 @@ export class AppModal extends React.Component {
         return DishModal;
       case modalNames.INTERMEDIATE_ADD_MODAL:
         return IntermediateAddModal;
+      case modalNames.RENDER_PIZZADETAILS_CHECKOUT:
+        return PizzaDetailsForChekout;
       //   case modalNames.INTERMEDIATE_REMOVE_ITEMS_MODAL:
       //     return IntermediateRemoveItemsModal;
       //   case modalNames.ADD_CARDS:
@@ -83,6 +88,7 @@ export class AppModal extends React.Component {
                   <ModalContent
                     modalState={this.props.modalState}
                     onCloseModal={this.props.closeModal}
+                    toggle={this.props.closeModal}
                     successCallback={this.props.successCallback}
                     failureCallback={this.props.failureCallback}
                   />

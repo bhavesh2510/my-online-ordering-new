@@ -7,6 +7,8 @@ import { getFilterredList } from "../../state-management/menu/selectors";
 
 const MenuItems = React.memo(
   ({
+    onAddItem,
+    onRemoveItem,
     categories,
     pizzas,
     happyhours,
@@ -91,53 +93,53 @@ const MenuItems = React.memo(
       return 0;
     };
 
-    const getItemPrice = (item, isStillActive) => {
-      if (item.happyHourItem && isStillActive) {
-        if (item.similarItems && item.similarItems.length > 0) {
-          let totalPrice = 0;
+    // const getItemPrice = (item, isStillActive) => {
+    //   if (item.happyHourItem && isStillActive) {
+    //     if (item.similarItems && item.similarItems.length > 0) {
+    //       let totalPrice = 0;
 
-          for (let i = 0; i < item.similarItems.length; i++) {
-            totalPrice += this.isPriceWithoutTax()
-              ? item.similarItems[i].happyHourItem.subTotal
-              : item.similarItems[i].happyHourItem.grandTotal;
-          }
+    //       for (let i = 0; i < item.similarItems.length; i++) {
+    //         totalPrice += this.isPriceWithoutTax()
+    //           ? item.similarItems[i].happyHourItem.subTotal
+    //           : item.similarItems[i].happyHourItem.grandTotal;
+    //       }
 
-          return Number(totalPrice).toFixed(2);
-        } else {
-          console.log("sub", Number(item.happyHourItem.subTotal).toFixed(2));
-          console.log(
-            "grand",
-            Number(item.happyHourItem.grandTotal).toFixed(2)
-          );
-          return this.isPriceWithoutTax()
-            ? Number(item.happyHourItem.subTotal).toFixed(2)
-            : Number(item.happyHourItem.grandTotal).toFixed(2);
-        }
-      } else if (item.subTotal && item.grandTotal) {
-        if (item.similarItems && item.similarItems.length > 0) {
-          let totalPrice = 0;
+    //       return Number(totalPrice).toFixed(2);
+    //     } else {
+    //       console.log("sub", Number(item.happyHourItem.subTotal).toFixed(2));
+    //       console.log(
+    //         "grand",
+    //         Number(item.happyHourItem.grandTotal).toFixed(2)
+    //       );
+    //       return this.isPriceWithoutTax()
+    //         ? Number(item.happyHourItem.subTotal).toFixed(2)
+    //         : Number(item.happyHourItem.grandTotal).toFixed(2);
+    //     }
+    //   } else if (item.subTotal && item.grandTotal) {
+    //     if (item.similarItems && item.similarItems.length > 0) {
+    //       let totalPrice = 0;
 
-          for (let i = 0; i < item.similarItems.length; i++) {
-            totalPrice += this.isPriceWithoutTax()
-              ? item.similarItems[i].subTotal || item.similarItems[i].price
-              : item.similarItems[i].grandTotal ||
-                this.getActualPrice(item.similarItems[i]);
-          }
+    //       for (let i = 0; i < item.similarItems.length; i++) {
+    //         totalPrice += this.isPriceWithoutTax()
+    //           ? item.similarItems[i].subTotal || item.similarItems[i].price
+    //           : item.similarItems[i].grandTotal ||
+    //             this.getActualPrice(item.similarItems[i]);
+    //       }
 
-          return Number(totalPrice).toFixed(2);
-        } else {
-          console.log(
-            "log",
-            this.isPriceWithoutTax()
-              ? item.subTotal || item.price
-              : item.grandTotal || this.getActualPrice(item)
-          );
-          return this.isPriceWithoutTax()
-            ? item.subTotal || item.price
-            : item.grandTotal || this.getActualPrice(item);
-        }
-      }
-    };
+    //       return Number(totalPrice).toFixed(2);
+    //     } else {
+    //       console.log(
+    //         "log",
+    //         this.isPriceWithoutTax()
+    //           ? item.subTotal || item.price
+    //           : item.grandTotal || this.getActualPrice(item)
+    //       );
+    //       return this.isPriceWithoutTax()
+    //         ? item.subTotal || item.price
+    //         : item.grandTotal || this.getActualPrice(item);
+    //     }
+    //   }
+    // };
 
     return (
       <>
@@ -172,6 +174,8 @@ const MenuItems = React.memo(
             actualPrice={getActualPrice}
             category_name={getSelectedCategoryName()}
             list={filteredIems}
+            onAddItem={onAddItem}
+            onRemoveItem={onRemoveItem}
           />
         ) : null}
         {console.log("items in menuitem before pizza", pizzas)}
@@ -188,6 +192,7 @@ const MenuItems = React.memo(
             symbol={restaurantInfo.monetary_symbol}
             category_name="Happy Hours"
             list={(menuItems = getFilterredList(state))}
+            onAddItem={onAddItem}
           />
         ) : null}
       </>

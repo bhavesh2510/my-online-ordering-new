@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { openModal, closeModal } from "../../state-management/modal/actions";
+import { modalNames } from "../../components/AppModal/constants";
 import {
   fetchCategories,
   fetchMenuItems,
@@ -40,6 +42,10 @@ import Checkout from "../../components/Checkout/Checkout";
 import OrderSuccess from "../../components/OrderSuccess/OrderSuccess";
 import PaymentFailed from "../../components/Checkout/PaymentFailed";
 import AppModal from "../../components/AppModal/AppModal";
+import {
+  isHappyHourStillActive,
+  setTimer,
+} from "../../state-management/menu/utils";
 const RestaurantInformation = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -64,8 +70,49 @@ const RestaurantInformation = (props) => {
   }, [props.restaurantId]);
 
   // console.log("user",user, "menu",menu, "main", main);
-  const handleAddItem = (item) => {};
-  const handleRemoveItem = () => {};
+  const handleAddItem = (item, isHappyHoursActive) => {
+    const menuItems = menu.menuItems;
+    const itemsinmenu = menuItems.find(({ id }) => item.id === id);
+    console.log("items at the time of add", itemsinmenu);
+
+    if (item.optional_modifier !== "0" || item.forced_modifier !== "0") {
+      if (itemsinmenu.qty) {
+        dispatch(
+          openModal(modalNames.INTERMEDIATE_ADD_MODAL, {
+            item: {
+              ...item,
+              isHappyHoursActive,
+            },
+          })
+        );
+      } else {
+        dispatch(
+          openModal(modalNames.DISH_MODAL, {
+            item: {
+              ...item,
+              isHappyHoursActive,
+            },
+          })
+        );
+      }
+
+      return;
+    }
+
+    //this.props.addItem(item, null, 0, this.props.restaurantInfo);
+
+    dispatch(
+      addItem(
+        itemsinmenu,
+        itemsinmenu.modifiers || null,
+        0,
+        menu.restaurantInfo
+      )
+    );
+  };
+  const handleRemoveItem = (item) => {
+    dispatch(removeItem(item, item.modifiers || null, 0, menu.restaurantInfo));
+  };
   const renderMenuItems = () => {
     return (
       <Information
