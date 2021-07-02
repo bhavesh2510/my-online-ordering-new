@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 import { connect } from "react-redux";
 import { addItem, removeItem } from "../../../state-management/menu/actions";
 import { truncateDecimal } from "../../../state-management/menu/utils";
-import ForcedModifier from "../../Modifiers/ForcedModifiers/ForcedModifiers";
-import OptionalModifier from "../../Modifiers/OptionalModifiers/OptionalModifiers";
+import ForcedModifiers from "../../Modifiers/ForcedModifiers/ForcedModifiers";
+import OptionalModifiers from "../../Modifiers/OptionalModifiers/OptionalModifiers";
 // import ModalHeader from "./ModalHeader";
 import FooterModifier from "./FooterModifier";
 import "./DishModal.css";
@@ -54,7 +54,16 @@ const DishModal = () => {
     return [];
   };
 
+  const [detourid, setdetourid] = useState();
+
+  useEffect(() => {
+    console.log("check id", setdetourid);
+  });
   const handleAddItem = () => {
+    const current_item = modal.modal.state.item;
+    const similarItems = menu.cart.filter(({ id }) => current_item.id === id);
+
+    console.log("similar item in dish modal", similarItems);
     const menuItems = menu.menuItems;
     const item = menuItems.find(({ id }) => state.item.id === id);
     const { forcedPrice, optionalPrice } = state;
@@ -63,19 +72,16 @@ const DishModal = () => {
       optionalModifier: state.selectedOptionalModifier,
     };
     const subTotal = forcedPrice + optionalPrice + Number(item.price);
+    console.log("modifier in dish modal", modifier);
 
     console.log("modifiers in handleAddItem", modifier);
     console.log("item in modifier", item);
-    // if (item.qty) {
-    //   dispatch(
-    //     openModal(modalNames.INTERMEDIATE_ADD_MODAL, {
-    //       item: {
-    //         ...item,
-    //         // isHappyHoursActive,
-    //       },
-    //     })
-    //   );
+    console.log("subtotal in dish", subTotal);
+
+    // if (modifier.forcedModifier[0].optionalModifiers[0].id) {
+    //   setdetourid(modifier.forcedModifier[0].optionalModifiers[0].id);
     // }
+
     dispatch(addItem(item, modifier, subTotal, menu.restaurantInfo));
     dispatch(closeModal());
 
@@ -184,7 +190,11 @@ const DishModal = () => {
     "Optional modifiers with Detours ",
     state.selectedOptionalModifier
   );
-  console.log("Detours ", state.item.detour_ids);
+  console.log("Detours ", state.item.omCats);
+
+  useEffect(() => {
+    console.log("omCats", state.item);
+  }, [state]);
 
   const toggle = () => {
     setModalM(!modalM);
@@ -195,7 +205,7 @@ const DishModal = () => {
       <Modal isOpen={true} toggle={toggle} style={{ top: "10%", left: "2%" }}>
         <ModalHeader toggle={toggle}>{state.item.name}</ModalHeader>
         <ModalBody style={{ maxHeight: "400px", overflowY: "scroll" }}>
-          <ForcedModifier
+          <ForcedModifiers
             currency={menu.restaurantInfo.currency}
             isPriceWithoutTax={isPriceWithoutTax()}
             item={state.item}
@@ -204,7 +214,8 @@ const DishModal = () => {
             getModifierPrice={getModifierPrice}
             onSelectionChange={handleForcedModifierSelectionChange}
           />
-          <OptionalModifier
+          {console.log("detour id", state.item.detour_ids)}
+          <OptionalModifiers
             getModifierPrice={getModifierPrice}
             currency={menu.restaurantInfo.currency}
             optionalModifier={getOptionModifiers()}

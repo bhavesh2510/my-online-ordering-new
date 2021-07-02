@@ -338,7 +338,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
       >
         <div id="subheader_myprofile">
           <div id="sub_content">
-            <h1>Profile</h1>
+            <h1>My Profile</h1>
           </div>
         </div>
       </section>
@@ -348,18 +348,6 @@ const MyOrders = React.memo(({ restaurantId }) => {
       >
         <nav className="nav-parent">
           <ul className="ul-parent">
-            <li className="tab-current">
-              <p
-                id="nav-parent-id"
-                onClick={onOrderClick}
-                className="anchor-parent"
-              >
-                <span>
-                  Orders &nbsp;
-                  <FastfoodIcon />
-                </span>
-              </p>
-            </li>
             <li className="tab-current">
               <p
                 id="nav-parent-id-2"
@@ -372,6 +360,19 @@ const MyOrders = React.memo(({ restaurantId }) => {
                 </span>
               </p>
             </li>
+            <li className="tab-current">
+              <p
+                id="nav-parent-id"
+                onClick={onOrderClick}
+                className="anchor-parent"
+              >
+                <span>
+                  Orders &nbsp;
+                  <FastfoodIcon />
+                </span>
+              </p>
+            </li>
+
             <li className="tab-current">
               <p
                 id="nav-parent-id-4"
@@ -576,7 +577,9 @@ const MyOrders = React.memo(({ restaurantId }) => {
                           <>
                             <div className="pay-opt">Pickup Time</div>
                             <div className="pay-name">
-                              <div className="pay-method">{pickuptime}</div>
+                              <div className="pay-method">
+                                {user.selectedPickUpTime}
+                              </div>
                             </div>
                             <br />
                             <br />
@@ -586,7 +589,9 @@ const MyOrders = React.memo(({ restaurantId }) => {
                           <>
                             <div className="pay-opt">Delivery Time</div>
                             <div className="pay-name">
-                              <div className="pay-method">{deliverytime}</div>
+                              <div className="pay-method">
+                                {user.selectedDeliveryTime}
+                              </div>
                             </div>
                             <br />
                             <br />
@@ -617,7 +622,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
             {state.showaddress ? (
               <>
                 {" "}
-                <ManageAddress refetchAddresses={sethandleadd} />{" "}
+                <ManageAddress />{" "}
               </>
             ) : null}
 

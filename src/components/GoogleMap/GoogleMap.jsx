@@ -65,6 +65,9 @@ const GoogleMap = (props) => {
   };
 
   const calculateDistance = (origin, destination, callback) => {
+    //const service = new props.google.maps.DistanceMatrixService();
+    console.log("destination is", destination);
+
     const service = new props.google.maps.DistanceMatrixService();
 
     const originCord = `${origin.lat},${origin.lng}`;
@@ -87,6 +90,8 @@ const GoogleMap = (props) => {
         let distance;
 
         let status;
+
+        console.log("response in google", response);
 
         if (
           response.rows[0].elements[0].distance === undefined &&

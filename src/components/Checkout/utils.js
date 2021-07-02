@@ -1,6 +1,7 @@
 import moment from "moment";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useRouteMatch } from "react-router-dom";
 
 const DELIVERY_TYPE = {
   DEFAULT: "Delivery",
@@ -110,6 +111,7 @@ export function getFormattedRequestPayload(
 ) {
   // const menu = useSelector((state) => state.menu);
   console.log("arguments", cartList);
+  console.log("user in utils", user);
   //const user1 = useSelector((state) => state.user);
 
   const formattedItems = getFormmatedItems(cartList, restaurant);
@@ -176,9 +178,12 @@ export function getFormattedRequestPayload(
           user.selectedAddress.country || user.selectedAddress[0].country,
         delivery_zipcode:
           user.selectedAddress.zipcode || user.selectedAddress[0].zipcode,
-        mobile: user.selectedAddress.phone || user.selectedAddress[0].phone,
-        delivery_phone:
-          user.selectedAddress.phone || user.selectedAddress[0].phone,
+        delivery_mobile: user.user.mobile,
+        mobile: user.user.mobile,
+        delivery_phone: user.user.mobile,
+        // mobile: user.selectedAddress.phone || user.selectedAddress[0].phone,
+        // delivery_phone:
+        //   user.selectedAddress.phone || user.selectedAddress[0].phone,
         delivery_option: delivery.deliveryType.toLowerCase(),
         order_location: null,
         time_for_delivery: user.selectedDeliveryTime,
@@ -199,9 +204,8 @@ export function getFormattedRequestPayload(
         time_for_delivery: "",
         delivery_time: user.selectedPickUpTime,
         distance: "",
-        phone: "",
-        delivery_phone:
-          user.selectedAddress.phone || user.selectedAddress[0].phone,
+        phone: user.user.mobile,
+        delivery_phone: user.user.mobile,
       };
 }
 //console.log("check", getFormattedRequestPayload());

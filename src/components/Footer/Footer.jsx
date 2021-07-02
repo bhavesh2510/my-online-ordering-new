@@ -1,6 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import Logo from "../Footer/zottoLogo.png";
+import FacebookIcon from "@material-ui/icons/Facebook";
+import TwitterIcon from "@material-ui/icons/Twitter";
+import InstagramIcon from "@material-ui/icons/Instagram";
 
 const Footer = () => {
   const menu = useSelector((state) => state.menu);
@@ -98,37 +101,18 @@ const Footer = () => {
               <ul>
                 <li>
                   <a href="#0">
-                    <i className="icon-facebook" />
+                    <FacebookIcon />
+                  </a>
+                </li>
+
+                <li>
+                  <a href="#0">
+                    <TwitterIcon />
                   </a>
                 </li>
                 <li>
                   <a href="#0">
-                    <i className="icon-twitter" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#0">
-                    <i className="icon-google" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#0">
-                    <i className="icon-instagram" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#0">
-                    <i className="icon-pinterest" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#0">
-                    <i className="icon-vimeo" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#0">
-                    <i className="icon-youtube-play" />
+                    <InstagramIcon />
                   </a>
                 </li>
               </ul>

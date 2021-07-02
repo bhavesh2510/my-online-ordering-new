@@ -1,6 +1,8 @@
 .cart-button {
   cursor: pointer;
+  height: 20px;
   border-radius: 50%;
+  color: whitesmoke;
   background-color: transparent;
   margin-left: -10px;
   border: none;

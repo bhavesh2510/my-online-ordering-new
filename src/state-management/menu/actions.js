@@ -1,4 +1,4 @@
-import * as actionTypes from './actionTypes';
+import * as actionTypes from "./actionTypes";
 
 export function fetchCategoriesRequest() {
   return { type: actionTypes.FETCH_CATEGORIES_REQUEST };
@@ -23,6 +23,7 @@ export function fetchMenuItemsRequest() {
 }
 
 export function fetchMenuItemsSuccess(payload) {
+  console.log("payload in menuItemsuccess", payload);
   return {
     type: actionTypes.FETCH_MENU_ITEMS_SUCCESS,
     payload,
@@ -95,6 +96,8 @@ export function showHideOverlay(setTrueFalse) {
 }
 
 export function addItem(item, modifiers = null, subTotal = 0, restaurantInfo) {
+  console.log("item in addItem", item);
+  console.log("modifiers in addItem", modifiers);
   return {
     type: actionTypes.ADD_ITEM,
     item,
@@ -104,7 +107,12 @@ export function addItem(item, modifiers = null, subTotal = 0, restaurantInfo) {
   };
 }
 
-export function removeItem(item, modifiers = null, subTotal = 0, restaurantInfo) {
+export function removeItem(
+  item,
+  modifiers = null,
+  subTotal = 0,
+  restaurantInfo
+) {
   return {
     type: actionTypes.REMOVE_ITEM,
     item,
@@ -243,5 +251,13 @@ export function displayAddressModal(isDisplay) {
   return {
     type: actionTypes.DISPLAY_ADDRESS_MODAL,
     isDisplay,
-  }
+  };
+}
+
+export function changechoosencategory(newvalue) {
+  console.log("value in changes", newvalue);
+  return {
+    type: actionTypes.CHANGE_CHOOSEN_CATEGORY,
+    newvalue,
+  };
 }

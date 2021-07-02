@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { openModal, closeModal } from "../../state-management/modal/actions";
@@ -42,6 +42,8 @@ import Checkout from "../../components/Checkout/Checkout";
 import OrderSuccess from "../../components/OrderSuccess/OrderSuccess";
 import PaymentFailed from "../../components/Checkout/PaymentFailed";
 import AppModal from "../../components/AppModal/AppModal";
+//import LoadingBar from "../../components/LoadingBar/LoadingBar";
+import ScrollToTop from "./ScrollToTop";
 import {
   isHappyHourStillActive,
   setTimer,
@@ -56,12 +58,12 @@ const RestaurantInformation = (props) => {
     await dispatch(initializeStoreState(props.restaurantId));
     await dispatch(fetchHappyHours(props.restaurantId));
     await dispatch(fetchMenuItems(props.restaurantId));
-    await dispatch(fetchPizzas(props.restaurantId));
-    await dispatch(fetchRestuarantDeliveryRange(props.restaurantId));
     await dispatch(fetchCategories(props.restaurantId));
+    setLoading(false);
     await dispatch(fetchAllForcedModifiers(props.restaurantId));
     await dispatch(fetchAllOptionalModifiers(props.restaurantId));
-    setLoading(false);
+    await dispatch(fetchPizzas(props.restaurantId));
+    await dispatch(fetchRestuarantDeliveryRange(props.restaurantId));
   };
 
   useEffect(() => {
@@ -126,6 +128,7 @@ const RestaurantInformation = (props) => {
         happyHours={menu.happyHours}
         onAddItem={handleAddItem}
         onRemoveItem={handleRemoveItem}
+        loading={loading}
       />
     );
   };
@@ -133,7 +136,7 @@ const RestaurantInformation = (props) => {
     <>
       {/* {console.log("ResInfo-props", props)} */}
       {/* {console.log("user", user, "menu", menu, "main", main)} */}
-      {loading && <LoadingBar />}
+      {/* {loading && <LoadingBar />} */}
       <AppModal />
       <Switch>
         <Route exact path={`/restId=${props.restaurantId}`}>
@@ -155,6 +158,7 @@ const RestaurantInformation = (props) => {
           <MyOrders restaurantId={props.restaurantId} />
         </Route>
         <Route exact path={`/restId=${props.restaurantId}/checkout`}>
+          <ScrollToTop />
           <Checkout
             //orderId={generateOrderId()}
             restaurantInfo={menu.restaurantInfo}

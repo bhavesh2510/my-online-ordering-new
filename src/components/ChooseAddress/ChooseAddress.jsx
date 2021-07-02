@@ -612,8 +612,14 @@ const ChooseAddress = (props) => {
   return (
     <>
       <Modal isOpen={true} toggle={toggle} style={{ top: "10%", left: "2%" }}>
-        <ModalHeader toggle={toggle}> SELECT DELIVERY AREA</ModalHeader>
+        <ModalHeader style={{ height: "60px" }} toggle={toggle}>
+          {" "}
+          <p style={{ textAlign: "center", fontSize: "20px" }}>
+            SELECT DELIVERY AREA
+          </p>
+        </ModalHeader>
         <ModalBody>
+          <h4>Please enter correct address with house number</h4>
           <GoogleMap
             lat={state.mapCentre ? state.mapCentre.lat : null}
             lng={state.mapCentre ? state.mapCentre.lng : null}

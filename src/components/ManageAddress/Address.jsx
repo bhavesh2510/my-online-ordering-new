@@ -1,4 +1,5 @@
 const Address = ({ address }) => {
+  console.log("adderss in add address", address);
   return (
     <>
       <ul
@@ -45,7 +46,7 @@ const Address = ({ address }) => {
 
         <>
           <li>
-            <span>{address.state || "state"}</span>
+            <span>{address.state == "undefined" ? "" : address.state}</span>
           </li>
         </>
 

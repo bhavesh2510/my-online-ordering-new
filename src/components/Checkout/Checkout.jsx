@@ -1,7 +1,7 @@
 import Appheader from "../AppHeader/AppHeader";
 import "../Checkout/Checkout.css";
 // import Button from "@material-ui/core/Button";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
 import MoneyIcon from "@material-ui/icons/Money";
@@ -36,7 +36,9 @@ import AppHeader from "../AppHeader/AppHeader";
 import Footer from "../Footer/Footer";
 import RenderModifiers from "../../containers/Modifiers/RenderModifiers";
 import { modalNames } from "../AppModal/constants";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { closeModal, openModal } from "../../state-management/modal/actions";
+import { setComment } from "../../state-management/menu/actions";
 
 const Checkout = () => {
   //const format = "HH:mm";
@@ -46,6 +48,8 @@ const Checkout = () => {
   const menu = useSelector((state) => state.menu);
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  let refIndex = -1;
+  const timeOutRef = Array.from({ length: 100 }, () => React.createRef());
   const DELIVERY_TYPE = {
     DEFAULT: "Delivery",
     TAKE_AWAY: "PickUp",
@@ -94,8 +98,9 @@ const Checkout = () => {
   const grandTotal = Number(getGrandTotal());
 
   useEffect(() => {
-    if (main.deliveryRange) getDeliveryCharges();
-    dispatch(setPickupTime(data.pickupTime));
+    if (main.deliveryRange)
+      //getDeliveryCharges();
+      dispatch(setPickupTime(data.pickupTime));
     //getDeliveryCharges();
 
     console.log("xyz", data.pickupTime);
@@ -132,50 +137,59 @@ const Checkout = () => {
     return Number(menu.restaurantInfo["price_without_tax_flag"]);
   };
 
-  const getItemPrice = (item, isStillActive) => {
+  function getItemPrice(item, isStillActive) {
+    console.log("getItem item is", item);
     if (item.happyHourItem && isStillActive) {
-      if (item.similarItems && item.similarItems.length > 0) {
-        let totalPrice = 0;
-
-        for (let i = 0; i < item.similarItems.length; i++) {
-          totalPrice += this.isPriceWithoutTax()
-            ? item.similarItems[i].happyHourItem.subTotal
-            : item.similarItems[i].happyHourItem.grandTotal;
-        }
-
-        return Number(totalPrice).toFixed(2);
-      } else {
-        console.log("sub", Number(item.happyHourItem.subTotal).toFixed(2));
-        console.log("grand", Number(item.happyHourItem.grandTotal).toFixed(2));
-        return this.isPriceWithoutTax()
-          ? Number(item.happyHourItem.subTotal).toFixed(2)
-          : Number(item.happyHourItem.grandTotal).toFixed(2);
-      }
-    } else if (item.subTotal && item.grandTotal) {
-      if (item.similarItems && item.similarItems.length > 0) {
-        let totalPrice = 0;
-
-        for (let i = 0; i < item.similarItems.length; i++) {
-          totalPrice += isPriceWithoutTax()
-            ? item.similarItems[i].subTotal || item.similarItems[i].price
-            : item.similarItems[i].grandTotal ||
-              getActualPrice(item.similarItems[i]);
-        }
-
-        return Number(totalPrice).toFixed(2);
-      } else {
-        console.log(
-          "log",
-          isPriceWithoutTax()
-            ? item.subTotal || item.price
-            : item.grandTotal || this.getActualPrice(item)
-        );
-        return isPriceWithoutTax()
-          ? item.subTotal || item.price
-          : item.grandTotal || this.getActualPrice(item);
-      }
+      return isPriceWithoutTax
+        ? truncateDecimal(item.happyHourItem.grandTotal)
+        : truncateDecimal(item.happyHourItem.grandTotal);
+    } else {
+      return isPriceWithoutTax ? item.grandTotal : item.grandTotal;
     }
-  };
+
+    // if (item.happyHourItem && isStillActive) {
+    //   if (item.similarItems && item.similarItems.length > 0) {
+    //     let totalPrice = 0;
+
+    //     for (let i = 0; i < item.similarItems.length; i++) {
+    //       totalPrice += this.isPriceWithoutTax()
+    //         ? item.similarItems[i].happyHourItem.subTotal
+    //         : item.similarItems[i].happyHourItem.grandTotal;
+    //     }
+
+    //     return Number(totalPrice).toFixed(2);
+    //   } else {
+    //     console.log("sub", Number(item.happyHourItem.subTotal).toFixed(2));
+    //     console.log("grand", Number(item.happyHourItem.grandTotal).toFixed(2));
+    //     return this.isPriceWithoutTax()
+    //       ? Number(item.happyHourItem.subTotal).toFixed(2)
+    //       : Number(item.happyHourItem.grandTotal).toFixed(2);
+    //   }
+    // } else if (item.subTotal && item.grandTotal) {
+    //   if (item.similarItems && item.similarItems.length > 0) {
+    //     let totalPrice = 0;
+
+    //     for (let i = 0; i < item.similarItems.length; i++) {
+    //       totalPrice += isPriceWithoutTax()
+    //         ? item.similarItems[i].subTotal || item.similarItems[i].price
+    //         : item.similarItems[i].grandTotal ||
+    //           getActualPrice(item.similarItems[i]);
+    //     }
+
+    //     return Number(totalPrice).toFixed(2);
+    //   } else {
+    //     console.log(
+    //       "log",
+    //       isPriceWithoutTax()
+    //         ? item.subTotal || item.price
+    //         : item.grandTotal || this.getActualPrice(item)
+    //     );
+    //     return isPriceWithoutTax()
+    //       ? item.subTotal || item.price
+    //       : item.grandTotal || this.getActualPrice(item);
+    //   }
+    // }
+  }
 
   const getActualPrice = (item) => {
     if (menu.restaurantInfo) {
@@ -371,8 +385,8 @@ const Checkout = () => {
             ) {
               return (
                 acc +
-                (item.subTotal -
-                  ((item.happyHourItem && item.happyHourItem.subTotal) || 0))
+                (item.grandTotal -
+                  ((item.happyHourItem && item.happyHourItem.grandTotal) || 0))
               );
             }
 
@@ -387,7 +401,7 @@ const Checkout = () => {
   const sendpaymentreq = (type, orderId) => {
     var errorurl = `http://ciboapp.me/feedmii/?/${menu.restaurantInfo.restaurant_id}/paymentfailed`;
     var failedurl = `http://ciboapp.me/feedmii/?/${menu.restaurantInfo.restaurant_id}/paymentfailed`;
-    var accepturl = `http://ciboapp.me/feedmii/?/${menu.restaurantInfo.restaurant_id}/ordersuccess`;
+    var accepturl = `http://ciboapp.me/feedmii/?/${menu.restaurantInfo.restaurant_id}/ordersuccess/orderid=${orderId}`;
     var mkey = menu.restaurantInfo.merchant_key;
     var sec = menu.restaurantInfo.secret;
     var userid = "123";
@@ -427,7 +441,18 @@ const Checkout = () => {
   };
   const handleCheckout = async (deliveryDetails) => {
     console.log("deliveryDetails is ", deliveryDetails);
-    if (deliveryDetails.booleanforpaymentmethod == 0) {
+
+    if (!deliveryDetails.delivery_option) {
+      return notification["warning"]({
+        style: {
+          marginTop: "50px",
+          color: "rgba(0, 0, 0, 0.65)",
+          border: "1px solid #b7eb8f",
+          backgroundColor: "#f6ffed",
+        },
+        message: "Please select Order Option",
+      });
+    } else if (deliveryDetails.booleanforpaymentmethod == 0) {
       return notification["warning"]({
         style: {
           marginTop: "50px",
@@ -495,6 +520,7 @@ const Checkout = () => {
             // props.phone_code,
             user,
             user.user.selectedPickUpTime,
+
             menu.restaurantInfo,
             deliveryDetails,
             orderId,
@@ -529,7 +555,7 @@ const Checkout = () => {
         } else {
           dispatch(clearMenuState());
           History.push(
-            `/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess`
+            `/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${response_format.order_id}`
           );
         }
       }
@@ -546,6 +572,11 @@ const Checkout = () => {
     );
   }
 
+  const [comm, setcomm] = useState();
+  function handleComments(e) {
+    dispatch(setComment(e.target.value));
+    setcomm(e.target.value);
+  }
   return (
     <>
       {/* <section
@@ -579,6 +610,7 @@ const Checkout = () => {
         <div className="row" style={{ transform: "none" }}>
           <div className="col-lg-7">
             <PaymentForm
+              comm={comm}
               onHandleCheckout={handleCheckout}
               deliveryCharges={getDeliveryCharges}
             />
@@ -605,7 +637,7 @@ const Checkout = () => {
             >
               <div id="cart-box" style={{ backgroundColor: "white" }}>
                 <h3 className="cart-head">
-                  Your order <i class="icon_cart_alt float-right"></i>
+                  Your order <ShoppingCartIcon style={{ float: "right" }} />
                 </h3>
                 <table
                   className="table table_summary"
@@ -613,7 +645,19 @@ const Checkout = () => {
                 >
                   <tbody>
                     {menu.cart.map((val) => {
-                      let isStillActive = false;
+                      if (val.isHappyHourActive) {
+                        const result = isHappyHourStillActive(
+                          val,
+                          menu.restaurantInfo.timezone
+                        );
+                        console.log("items in itemlist", val);
+
+                        var isStillActive = result.isActive;
+                        if (isStillActive) {
+                          refIndex++;
+                          setTimer(result.distance, timeOutRef[refIndex]);
+                        }
+                      }
                       return (
                         <>
                           <tr>
@@ -700,6 +744,7 @@ const Checkout = () => {
                           style={{ height: "51px" }}
                         >
                           <textarea
+                            onChange={(e) => handleComments(e)}
                             maxLength="140"
                             className="textarea-class"
                             placeholder="Any suggestions for restro ?"

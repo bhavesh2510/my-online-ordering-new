@@ -34,6 +34,7 @@ const Information = (props) => {
   const user = useSelector((state) => state.user);
   const main = useSelector((state) => state.main);
   console.log("menu in selector is", menu);
+  console.log("loading in menuItems", props.loading);
   const [timings, settimings] = useState();
   const scrollToTop = () => {
     scroll.scrollToTop();
@@ -139,18 +140,21 @@ const Information = (props) => {
       {/* End section */}
       {/* content */}
       <div className="container margin_60_35">
-        <div className="row">
+        <div className="row customised_row">
           <div className="col-lg-3">
             <p>
               <a
-                href="list_page.html"
+                href="#"
                 className="btn_side"
                 style={{ backgroundColor: "#5B53CD" }}
               >
                 Back to search
               </a>
             </p>
-            <MenuCategories categories={menu.categoriesList} />
+            <MenuCategories
+              categories={menu.categoriesList}
+              loading={props.loading}
+            />
 
             {/* End box_style_1 */}
             <div className="box_style_2 d-none d-sm-block" id="help">
@@ -165,11 +169,8 @@ const Information = (props) => {
               <h4>
                 Need <span>Help?</span>
               </h4>
-              <a
-                href="tel://004542344599"
-                className="phone"
-                style={{ color: "#5B53CD" }}
-              >
+              <a href="#" className="phone" style={{ color: "#5B53CD" }}>
+                {props.restaurantInfo.phone_code}&nbsp;
                 {props.restaurantInfo.phone}
               </a>
               <small>
@@ -195,6 +196,7 @@ const Information = (props) => {
                 happyhours={menu.happyHours}
                 onAddItem={props.onAddItem}
                 onRemoveItem={props.onRemoveItem}
+                loading={props.loading}
               />
             </div>
             {/* End box_style_1 */}
@@ -202,7 +204,7 @@ const Information = (props) => {
           {/* End col */}
           <div className="col-lg-3" id="sidebar">
             <div
-              className="theiaStickySidebar"
+              className="customised_theiaStickySidebar"
               style={{ position: "sticky", top: "65px" }}
             >
               <Cart

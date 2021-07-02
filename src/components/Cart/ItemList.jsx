@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   isHappyHourStillActive,
   setTimer,
@@ -9,6 +9,7 @@ import { getTaxes } from "../../state-management/menu/operations";
 import RenderModifiers from "../../containers/Modifiers/RenderModifiers";
 import "./Cart.css";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import RemoveCircleIcon from "@material-ui/icons/RemoveCircle";
 const ItemList = ({
   items,
   currency,
@@ -17,9 +18,14 @@ const ItemList = ({
   onRemove,
   onAdd,
 }) => {
-  const timeOutRef = Array.from({ length: 100 }, () => React.createRef());
   const menu = useSelector((state) => state.menu);
+  const modal = useSelector((state) => state.modal);
   let refIndex = -1;
+  const timeOutRef = Array.from({ length: 100 }, () => React.createRef());
+
+  const [state, setState] = useState({
+    item: "",
+  });
 
   function getDiscountedPrice(item, isStillActive) {
     if (item.happyHourItem && isStillActive) {
@@ -105,6 +111,15 @@ const ItemList = ({
   }
 
   function getItemPrice(item, isStillActive) {
+    console.log("getItem item is", item);
+    if (item.happyHourItem && isStillActive) {
+      return isPriceWithoutTax
+        ? truncateDecimal(item.happyHourItem.grandTotal)
+        : truncateDecimal(item.happyHourItem.grandTotal);
+    } else if (item.subTotal && item.grandTotal) {
+      return isPriceWithoutTax ? item.grandTotal : item.grandTotal;
+    }
+
     console.log("items in itemlits", item);
     // if (item.modifiers !== null) {
     //   if (item.modifiers && item.happyHourItem && isStillActive) {
@@ -117,57 +132,72 @@ const ItemList = ({
     //   }
     // }
 
-    if (item.happyHourItem && isStillActive) {
-      if (item.similarItems && item.similarItems.length > 0) {
-        let totalPrice = 0;
+    //starts here
 
-        for (let i = 0; i < item.similarItems.length; i++) {
-          totalPrice += isPriceWithoutTax()
-            ? item.similarItems[i].happyHourItem.subTotal
-            : item.similarItems[i].happyHourItem.grandTotal;
-        }
+    // if (item.happyHourItem && isStillActive) {
+    //   if (item.similarItems && item.similarItems.length > 0) {
+    //     let totalPrice = 0;
 
-        return Number(totalPrice).toFixed(2);
-      } else {
-        console.log("sub", Number(item.happyHourItem.subTotal).toFixed(2));
-        console.log("grand", Number(item.happyHourItem.grandTotal).toFixed(2));
-        return isPriceWithoutTax()
-          ? Number(item.happyHourItem.subTotal).toFixed(2)
-          : Number(item.happyHourItem.grandTotal).toFixed(2);
-      }
-    } else if (item.subTotal && item.grandTotal) {
-      if (item.similarItems && item.similarItems.length > 0) {
-        let totalPrice = 0;
+    //     for (let i = 0; i < item.similarItems.length; i++) {
+    //       totalPrice += isPriceWithoutTax()
+    //         ? item.similarItems[i].happyHourItem.subTotal
+    //         : item.similarItems[i].happyHourItem.grandTotal;
+    //     }
 
-        for (let i = 0; i < item.similarItems.length; i++) {
-          totalPrice += isPriceWithoutTax()
-            ? item.similarItems[i].subTotal || item.similarItems[i].price
-            : item.similarItems[i].grandTotal ||
-              getActualPrice(item.similarItems[i]);
-        }
+    //     return Number(totalPrice).toFixed(2);
+    //   } else {
+    //     console.log("sub", Number(item.happyHourItem.subTotal).toFixed(2));
+    //     console.log("grand", Number(item.happyHourItem.grandTotal).toFixed(2));
+    //     return isPriceWithoutTax()
+    //       ? Number(item.happyHourItem.subTotal).toFixed(2)
+    //       : Number(item.happyHourItem.grandTotal).toFixed(2);
+    //   }
+    // } else if (item.subTotal && item.grandTotal) {
+    //   if (item.similarItems && item.similarItems.length > 0) {
+    //     let totalPrice = 0;
 
-        return Number(totalPrice).toFixed(2);
-      } else {
-        console.log(
-          "log",
-          isPriceWithoutTax()
-            ? item.subTotal || item.price
-            : item.grandTotal || getActualPrice(item)
-        );
-        return isPriceWithoutTax()
-          ? item.subTotal || item.price
-          : item.grandTotal || getActualPrice(item);
-      }
-    }
+    //     for (let i = 0; i < item.similarItems.length; i++) {
+    //       totalPrice += isPriceWithoutTax()
+    //         ? item.similarItems[i].subTotal || item.similarItems[i].price
+    //         : item.similarItems[i].grandTotal ||
+    //           getActualPrice(item.similarItems[i]);
+    //     }
+
+    //     return Number(totalPrice).toFixed(2);
+    //   } else {
+    //     //alert("only for dish & pizza");
+
+    //     return isPriceWithoutTax()
+    //       ? item.subTotal || item.price
+    //       : item.grandTotal || getActualPrice(item);
+    //   }
+    // }
+
+    //ends here
   }
 
   function getModifierPrice(item, isStillActive) {
-    if (item.happyHourItem && isStillActive) {
-      return isPriceWithoutTax
-        ? truncateDecimal(item.happyHourItem.subTotal)
-        : truncateDecimal(item.happyHourItem.grandTotal);
-    } else if (item.subTotal && item.grandTotal) {
-      return isPriceWithoutTax ? item.grandTotal : item.grandTotal;
+    console.log("item in getModi", item);
+
+    var temp_arr = [];
+    var temp_comapre_array = [];
+    item.modifiers.forcedModifier.map((val) => {
+      temp_arr.push(val.optionalModifiers);
+    });
+    console.log("temp_arr in getModi", temp_arr);
+    for (let i = 0; i < temp_arr.length; i++) {
+      temp_comapre_array.push(temp_arr[i]);
+    }
+    console.log("comaprision lenmgth", temp_comapre_array[0].length);
+
+    if (temp_comapre_array[0].length > 0) {
+      return isPriceWithoutTax()
+        ? item.subTotal || item.price
+        : item.grandTotal || getActualPrice(item);
+    } else {
+      return isPriceWithoutTax()
+        ? item.subTotal || item.price
+        : item.grandTotal || getActualPrice(item);
     }
   }
 
@@ -290,6 +320,7 @@ const ItemList = ({
           {items.map((item, i) => {
             if (item.isHappyHourActive) {
               const result = isHappyHourStillActive(item, timezone);
+              console.log("items in itemlist", item);
 
               var isStillActive = result.isActive;
               if (isStillActive) {
@@ -306,7 +337,10 @@ const ItemList = ({
                       onClick={() => onRemove(item)}
                       className="cart-button"
                     >
-                      <i className="icon_minus_alt" />
+                      <RemoveCircleIcon
+                        fontSize="small"
+                        style={{ color: "black" }}
+                      />
                     </button>
                     {/* <button onClick={() => onAdd(item)} className="cart-button">
                       <i className="icon_plus_alt" />
@@ -333,11 +367,41 @@ const ItemList = ({
                   </td>
                   {console.log("items in itemlist", item)}
                   <td>
+                    {/* {item.modifiers !== null ? (
+                      <p style={{ textAlign: "right" }}>
+                        {`${currency}${truncateDecimal(
+                          getModifierPrice(item, isStillActive)
+                        )}`}
+                      </p>
+                    ) : (
+                      <p style={{ textAlign: "right" }}>
+                        {`${currency}${truncateDecimal(
+                          getItemPrice(item, isStillActive)
+                        )}`}
+                      </p>
+                    )} */}
+
                     <p style={{ textAlign: "right" }}>
-                      {`${currency} ${truncateDecimal(
+                      {`${currency}${truncateDecimal(
                         getItemPrice(item, isStillActive)
                       )}`}
                     </p>
+
+                    {/* {item.modifiers ? (
+                      <p style={{ textAlign: "right" }}>
+                        {`${currency}${truncateDecimal(
+                          getItemPrice(item, isStillActive)
+                        )}`}
+                      </p>
+                    ) : (
+                      <>
+                        <p style={{ textAlign: "right" }}>
+                          {`${currency}${truncateDecimal(
+                            getItemPrice(item, isStillActive)
+                          )}`} 
+                        </p>
+                      </>
+                    )} */}
                   </td>
                 </tr>
               </>

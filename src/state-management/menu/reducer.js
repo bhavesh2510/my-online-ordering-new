@@ -1,4 +1,4 @@
-import * as actionTypes from './actionTypes';
+import * as actionTypes from "./actionTypes";
 import {
   updateMenuItemsWithCart,
   addItem,
@@ -9,10 +9,10 @@ import {
   updateHappyHourInfoToMenuItems,
   revertCartItemsToInitialState,
   updatePizzaItemsWithCart,
-} from './operations';
-import { persistState, getPersistedState } from '../operations';
+} from "./operations";
+import { persistState, getPersistedState } from "../operations";
 
-const REDUCER_KEY = 'menu-reducer';
+const REDUCER_KEY = "menu-reducer";
 const initialState = {
   comments: "",
   categoriesList: [],
@@ -34,12 +34,13 @@ const initialState = {
   isHappyHoursApplicable: false,
   displayAddressModal: true,
   isLoading: false,
+  choosenCategory: "happy_hours",
 };
 const itemsToPersist = [
-  'cart',
-  'selectedCategoryId',
-  'searchQuery',
-  'restaurantId',
+  "cart",
+  "selectedCategoryId",
+  "searchQuery",
+  "restaurantId",
 ];
 
 let newState;
@@ -170,7 +171,7 @@ const menuReducer = (state = initialState, action) => {
           state.pizzas
         ),
       };
-
+      console.log("newState", action.modifiers);
       persistState(newState, itemsToPersist, REDUCER_KEY);
 
       return newState;
@@ -192,6 +193,7 @@ const menuReducer = (state = initialState, action) => {
       return newState;
     }
     case actionTypes.SET_SELECTED_CATEGORY_ID: {
+      console.log("sub cat action", action);
       newState = {
         ...state,
         searchQuery: "",
@@ -234,7 +236,7 @@ const menuReducer = (state = initialState, action) => {
     case actionTypes.CLEAR_MENU_STATE: {
       newState = {
         ...state,
-        comments:'',
+        comments: "",
         cart: [],
         menuItems: revertMenuItemsToInitialState(state.menuItems),
         pizzas: revertCartItemsToInitialState(state.pizzas),

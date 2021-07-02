@@ -65,11 +65,15 @@ const PaymentForm = (props) => {
     fetchAddressesList();
   }, [add]);
 
+  useEffect(() => {
+    setdata({ ...data, comments: props.comm });
+  }, [props.comm]);
   const [data, setdata] = useState({
     deliveryType: user.isTakeAway
       ? DELIVERY_TYPE.TAKE_AWAY
       : DELIVERY_TYPE.HOME_DELIVERY,
     selectedAddress: user.selectedAddress,
+    delivery_option: false,
     //selectedAddress: "",
     //changeaddress: [],
 
@@ -95,6 +99,8 @@ const PaymentForm = (props) => {
 
     address_error: "",
   });
+
+  console.log("props comments", props.comm);
 
   const initialize = async () => {
     // check if user logged in, else return
@@ -134,8 +140,22 @@ const PaymentForm = (props) => {
     }
   }, [api]);
 
+  const [timeinbusinesshour, settimeinbusinesshour] = useState();
+
+  useEffect(() => {
+    console.log("condition for business hour", timeinbusinesshour);
+  }, [timeinbusinesshour]);
+
   useEffect(() => {
     // dispatch(setSelectedAddress(user.defaultAddress));
+    const time = new Date().toLocaleTimeString();
+    const current_time = moment(time, "hh:mm A").format("HH:mm");
+    console.log("24 hr format", current_time);
+    if (current_time > main.opening && current_time < main.closing) {
+      settimeinbusinesshour(true);
+    } else {
+      settimeinbusinesshour(false);
+    }
 
     const deliveryOptions = !(
       main.selectedRestaurant.order_option === "" ||
@@ -163,7 +183,12 @@ const PaymentForm = (props) => {
 
   const deliveryTypeClick = (type) => {
     setState({ ...state, showAddress: true });
-    setdata({ ...data, deliveryType: type, showAddress: true });
+    setdata({
+      ...data,
+      deliveryType: type,
+      showAddress: true,
+      delivery_option: true,
+    });
     dispatch(setIsTakeAway(type === DELIVERY_TYPE.TAKE_AWAY));
     if (headingfornoaddress) {
       getDeliveryCharges(user.distance);
@@ -172,11 +197,13 @@ const PaymentForm = (props) => {
   const deliveryTypeEatinClick = (type) => {
     dispatch(setDeliveryCost(0));
     setState({ ...state, showAddress: false });
+
     setdata({
       ...data,
       deliveryType: type,
       showAddress: false,
       showChangeAddress: false,
+      delivery_option: true,
     });
     dispatch(setIsTakeAway(type === DELIVERY_TYPE.TAKE_AWAY));
   };
@@ -188,6 +215,7 @@ const PaymentForm = (props) => {
       deliveryType: type,
       showAddress: false,
       showChangeAddress: false,
+      delivery_option: true,
     });
 
     dispatch(setIsTakeAway(type === DELIVERY_TYPE.TAKE_AWAY));
@@ -323,6 +351,7 @@ const PaymentForm = (props) => {
     }
   };
   const onClick = () => {
+    //setdata({ ...data, comments: props.comm });
     props.onHandleCheckout(data);
   };
 
@@ -693,7 +722,7 @@ const PaymentForm = (props) => {
           </>
         ) : null}
 
-        {data.hasEatInOption ? (
+        {data.hasEatInOption && timeinbusinesshour ? (
           <>
             <input
               className="check_payment"
@@ -832,7 +861,10 @@ const PaymentForm = (props) => {
                     <p style={{ fontSize: "15px" }}>
                       {data.changeaddress.address1}, &nbsp;{" "}
                       {data.changeaddress.address2} &nbsp;
-                      {data.changeaddress.state}, &nbsp;
+                      {data.changeaddress.state == "undefined"
+                        ? ""
+                        : data.changeaddress.state}
+                      , &nbsp;
                     </p>
 
                     <p style={{ fontSize: "15px" }}>
@@ -1008,25 +1040,7 @@ const PaymentForm = (props) => {
         <h2 className="delivery-head">Choose Payment method</h2>
 
         {data.paymentOptions.map((val) => {
-          if (val == "0")
-            return (
-              <>
-                <div className="payment_select">
-                  <input
-                    type="radio"
-                    name="payment"
-                    id="cash"
-                    value="0"
-                    onChange={(e) => paymentOptionChange("0")}
-                  />
-                  <label className="payment-class" for="cash">
-                    Pay With Cash &nbsp;
-                    <AccountBalanceWalletIcon />
-                  </label>
-                </div>
-              </>
-            );
-          else if (val == "1") {
+          if (val == "1") {
             return (
               <>
                 <div className="payment_select">
@@ -1061,7 +1075,7 @@ const PaymentForm = (props) => {
                 </div>
               </>
             );
-          } else if (val == "4") {
+          } else if (val == "5") {
             return (
               <>
                 <div className="payment_select">
@@ -1075,42 +1089,6 @@ const PaymentForm = (props) => {
                   <label className="payment-class" for="paywithpoints">
                     Open Banking &nbsp;
                     <AccountBalanceIcon />
-                  </label>
-                </div>
-              </>
-            );
-          } else if (val == "5") {
-            return (
-              <>
-                <div className="payment_select">
-                  <input
-                    type="radio"
-                    name="payment"
-                    id="paypal"
-                    value="5"
-                    onChange={(e) => paymentOptionChange("5")}
-                  />
-                  <label className="payment-class" for="paypal">
-                    PayPal &nbsp;
-                    <AccountBalanceWalletIcon />
-                  </label>
-                </div>
-              </>
-            );
-          } else {
-            return (
-              <>
-                <div className="payment_select">
-                  <input
-                    type="radio"
-                    name="payment"
-                    id="others"
-                    value="6"
-                    onChange={(e) => paymentOptionChange("6")}
-                  />
-                  <label className="payment-class" for="others">
-                    Other &nbsp;
-                    <AccountBalanceWalletIcon />
                   </label>
                 </div>
               </>

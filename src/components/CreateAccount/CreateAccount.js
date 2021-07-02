@@ -63,6 +63,16 @@ const CreateAccount = (props) => {
     setState({ ...state, mobile: value });
   };
 
+  function ValidateEmail() {
+    var mailformat =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (state.email.match(mailformat)) {
+      onSubmit();
+    } else {
+      setState({ ...state, errorMessage: "Please Enter Valid Email" });
+    }
+  }
+
   const onSubmit = async () => {
     setState({
       ...state,
@@ -270,7 +280,7 @@ const CreateAccount = (props) => {
                   {/* <br /> */}
                   {!state.requestSuccess ? <p>{state.errorMessage}</p> : null}
                   <Button
-                    onClick={onSubmit}
+                    onClick={ValidateEmail}
                     style={{
                       backgroundColor: "#6244da",
                       padding: "10px",

@@ -7,12 +7,16 @@ import { modalNames } from "../../components/AppModal/constants";
 import { openModal, closeModal } from "../../state-management/modal/actions";
 import MenuModal from "../../containers/Modals/DishModal/DishModal";
 import { addItem } from "../../state-management/menu/actions";
-import { isHappyHourStillActive } from "../../state-management/menu/utils";
+import {
+  isHappyHourStillActive,
+  setTimer,
+} from "../../state-management/menu/utils";
 import DishModal from "../../containers/Modals/DishModal/DishModal";
 import { getTaxes } from "../../state-management/menu/operations";
 import { truncateDecimal } from "../../state-management/menu/utils";
 import { connect } from "react-redux";
-
+import AddIcon from "@material-ui/icons/Add";
+import AccessTimeIcon from "@material-ui/icons/AccessTime";
 class PizzaMenuTable extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -42,14 +46,14 @@ class PizzaMenuTable extends React.PureComponent {
 
         for (let i = 0; i < item.similarItems.length; i++) {
           totalPrice += this.isPriceWithoutTax()
-            ? item.similarItems[i].happyHourItem.subTotal
+            ? item.similarItems[i].happyHourItem.grandTotal
             : item.similarItems[i].happyHourItem.grandTotal;
         }
 
         return Number(totalPrice).toFixed(3);
       } else {
         return this.isPriceWithoutTax()
-          ? Number(item.happyHourItem.subTotal).toFixed(3)
+          ? Number(item.happyHourItem.grandTotal).toFixed(3)
           : Number(item.happyHourItem.grandTotal).toFixed(3);
       }
     } else if (item.subTotal && item.grandTotal) {
@@ -58,7 +62,7 @@ class PizzaMenuTable extends React.PureComponent {
 
         for (let i = 0; i < item.similarItems.length; i++) {
           totalPrice += this.isPriceWithoutTax()
-            ? item.similarItems[i].subTotal || item.similarItems[i].price
+            ? item.similarItems[i].grandTotal || item.similarItems[i].price
             : item.similarItems[i].grandTotal ||
               this.getActualPrice(item.similarItems[i]);
         }
@@ -66,11 +70,19 @@ class PizzaMenuTable extends React.PureComponent {
         return Number(totalPrice).toFixed(3);
       } else {
         return this.isPriceWithoutTax()
-          ? Number(item.subTotal || item.price).toFixed(3)
+          ? Number(item.grandTotal || item.price).toFixed(3)
           : Number(item.grandTotal).toFixed(2) ||
               Number(this.getActualPrice(item)).toFixed(3);
       }
     }
+  }
+
+  getTotalPrice(pizza) {
+    var tax = pizza / 100;
+    var x = tax * 25;
+
+    // console.log("actual price", typeof(this.isPriceWithoutTax()));
+    return (Number(pizza) + Number(x)).toFixed(2);
   }
 
   getSizeAndBase(pizza) {
@@ -155,7 +167,7 @@ class PizzaMenuTable extends React.PureComponent {
         >
           {/* {category_name} */}Pizza
         </h3>
-        <p>Description for pizzas</p>
+        {/* <p>Description for pizzas</p> */}
         <table className="table table-striped cart-list">
           <thead>
             <tr>
@@ -171,6 +183,26 @@ class PizzaMenuTable extends React.PureComponent {
             {console.log("list is", this.props.list)}
             {this.props.list.map((item) => {
               let isStillActive = false;
+
+              var refIndex = -1;
+              var timeOutRef = Array.from({ length: 100 }, () =>
+                React.createRef()
+              );
+              if (item.isHappyHourActive) {
+                const result = isHappyHourStillActive(
+                  item,
+                  this.props.restaurantInfo.timezone
+                );
+
+                isStillActive = result.isActive;
+                if (isStillActive) {
+                  refIndex++;
+                  setTimer(result.distance, timeOutRef[refIndex]);
+                }
+              }
+              const minQty =
+                Number(item.min_qty) === 0 ? 0 : Number(item.min_qty);
+
               const sizeAndBaseCollection = this.getSizeAndBase(item);
               console.log("price is", sizeAndBaseCollection);
               //item.price = sizeAndBaseCollection[0].totalPrice;
@@ -191,13 +223,84 @@ class PizzaMenuTable extends React.PureComponent {
                         <h5 style={{ marginTop: "20px" }}>
                           {item.cname || item.name || item.title}
                         </h5>
+
+                        <section className="extra-info">
+                          {item.lactose_free === "1" ? (
+                            <span title="Lactose Free">
+                              <img
+                                alt="lactose free"
+                                src="https://i.ibb.co/JsCzXxm/lactose.png"
+                              />
+                            </span>
+                          ) : null}
+                          {item.nuts_free === "1" ? (
+                            <span title="Nuts Free">
+                              <img
+                                alt="nuts free"
+                                className="properties-img"
+                                src="https://ciboapp.com/feedmi/static/media/nuts_free.6df579b7.png"
+                              />
+                            </span>
+                          ) : null}
+                          {item.is_hot === "1" ? (
+                            <span title="Hot">
+                              <img
+                                alt="hot"
+                                className="properties-img"
+                                src="https://ciboapp.com/feedmi/static/media/hot.9360d00d.png"
+                              />
+                            </span>
+                          ) : null}
+                          {item.is_vegan === "1" ? (
+                            <span title="It's Vegan">
+                              <img
+                                alt="it's vegan"
+                                className="properties-img"
+                                src="https://i.ibb.co/xHDRm3s/vegan.png"
+                              />
+                            </span>
+                          ) : null}
+                          {item.gluten_free === "1" ? (
+                            <span title="Gluten Free">
+                              <img
+                                alt="gluten free"
+                                className="properties-img"
+                                src="https://i.ibb.co/23JCVwx/glute.png"
+                              />
+                            </span>
+                          ) : null}
+                        </section>
+                        {/* <section className="extra-info">
+                          <span>
+                            <b>Free Toppings: </b>
+                            {defaultToppings}
+                          </span>
+                        </section> */}
+
+                        {item.isHappyHourActive && isStillActive ? (
+                          <>
+                            <p style={{ color: "red", fontWeight: "700" }}>
+                              {item.happyHourDetail.happyHourDisplayText}
+                            </p>
+                            <div>
+                              <AccessTimeIcon style={{ color: "red" }} /> &nbsp;{" "}
+                              <span
+                                style={{ color: "red", fontWeight: "700" }}
+                                ref={timeOutRef[refIndex]}
+                              />
+                            </div>
+                          </>
+                        ) : null}
                         <p>{item?.description || item.happyHourDisplayText}</p>
                       </td>
 
                       <td>
                         <strong>
                           {this.props.restaurantInfo.monetary_symbol}&nbsp;
-                          {sizeAndBaseCollection[0].totalPrice}
+                          {/* {sizeAndBaseCollection[0].totalPrice} */}
+                          {this.getTotalPrice(
+                            sizeAndBaseCollection[0].totalPrice
+                          )}
                         </strong>
                         {/* {item.qty ? (
                           <span className="sub-total-price">
@@ -237,7 +340,11 @@ class PizzaMenuTable extends React.PureComponent {
                                   )
                                 }
                               >
-                                <span style={{ display: "block" }}>+</span>
+                                {/* <span style={{ display: "block" }}>+</span> */}
+                                <AddIcon
+                                  fontSize="small"
+                                  style={{ marginTop: "4px" }}
+                                />
                               </button>
                             ) : null}
                           </div>

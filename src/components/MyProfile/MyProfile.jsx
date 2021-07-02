@@ -118,11 +118,12 @@ const MyProfile = () => {
         backgroundColor: "#f6ffed",
       },
     });
+    postProfileChange();
     setState({ ...state, btn: "update", loader: false });
   };
   return (
     <>
-      {state.loader ? <WaitingOverlay /> : null}
+      {/* {state.loader ? <WaitingOverlay /> : null} */}
       {/* <AppHeader /> */}
       {/* <section
         className="parallax-window_myprofile "

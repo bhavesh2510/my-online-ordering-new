@@ -58,6 +58,9 @@ const AddAddress = (props) => {
   const handleNameChange = (value) => {
     setState({ ...state, name: value });
   };
+  const handleAddress1Change = (value) => {
+    setState({ ...state, address1: value });
+  };
   const handleAddress2Change = (value) => {
     setState({ ...state, address2: value });
   };
@@ -175,16 +178,16 @@ const AddAddress = (props) => {
           <div className="input-addd-address">
             <Input
               size="medium"
-              placeholder="Address Line 2"
+              placeholder="Address Line 1"
               style={{ borderRadius: "5px" }}
               value={state.address1 || null}
-              //onChange={(e) => this.handleAddress2Change(e.target.value)}
+              onChange={(e) => handleAddress1Change(e.target.value)}
             />
           </div>
           <div className="input-addd-address">
             <Input
               size="medium"
-              placeholder="Address Line 2"
+              placeholder="House Number"
               style={{ borderRadius: "5px" }}
               value={state.address2}
               onChange={(e) => handleAddress2Change(e.target.value)}
@@ -320,7 +323,7 @@ const AddAddress = (props) => {
           >
             <Button
               className="add-address-button"
-              style={{ backgroundColor: "black" }}
+              style={{ backgroundColor: "#6244da" }}
               onClick={onFormSubmit}
             >
               Submit

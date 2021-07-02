@@ -4,19 +4,21 @@ import {
   setSelectedCategoryId,
   displayHappyHours,
   displayPizzas,
+  changechoosencategory,
 } from "../../state-management/menu/actions";
 import { Link as ScrollLink, animateScroll as scroll } from "react-scroll";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
-const MenuCategories = React.memo(({ categories }) => {
+const MenuCategories = React.memo(({ categories, loading }) => {
   const menu = useSelector((state) => state.menu);
   const dispatch = useDispatch();
   const [dishes, showDishes] = useState(false);
   const [drinks, showDrinks] = useState(false);
   const isPizzaAvailable = menu.pizzas.length;
   const isHappyHoursActive = isHappyHoursActiveInMenu();
+  console.log("loading in menucategories", loading);
 
-  const onDishClick = () => {
+  const onDishClick = (dish) => {
     showDishes(!dishes);
   };
   const onDrinksClick = () => {
@@ -122,11 +124,18 @@ const MenuCategories = React.memo(({ categories }) => {
 
 const MenuSubCategory = React.memo(
   ({ list, searchQuery, selectedCategoryId, setSelectedCategoryId }) => {
+    const menu = useSelector((state) => state.menu);
     console.log("list in menucategories is", list);
     const dispatch = useDispatch();
     const handleClick = (e, item) => {
+      var temp_cat = [];
+      for (let i = 0; i < menu.categoriesList[0].sub_category.length; i++) {
+        temp_cat.push(menu.categoriesList[0].sub_category[i].category_id);
+      }
+      console.log("lis of sub cat", temp_cat);
       // e.stopPropagation();
       dispatch(setSelectedCategoryId(item.category_id));
+
       console.log("items is", item);
     };
     return list.map((s_category) => {

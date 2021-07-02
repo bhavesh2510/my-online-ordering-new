@@ -20,6 +20,7 @@ const ManageAddress = (props) => {
   const menu = useSelector((state) => state.menu);
   const user = useSelector((state) => state.user);
   const modal = useSelector((state) => state.modal);
+  const [handleadd, sethandleadd] = useState(false);
 
   const modalNames = {
     ADD_ADDRESS: "AddAddress",
@@ -35,8 +36,8 @@ const ManageAddress = (props) => {
     const { payload } = await dispatch(fetchAddressesList(user.user.clientId));
 
     setState({ ...state, addresses: payload.data });
-    props.refetchAddresses(false);
-  }, [props.refetchAddresses]);
+    sethandleadd(false);
+  }, [handleadd]);
   useEffect(() => {
     dispatch(displayAddressModal(false));
     fetchAddressList();
@@ -210,11 +211,9 @@ const ManageAddress = (props) => {
         </main>
       </div>
       {modal.modal.modalToShow == "findAddress" ? (
-        <ChooseAddress refetchAddresses={props.refetchAddresses} />
+        <ChooseAddress refetchAddresses={sethandleadd} />
       ) : null}
-      {modal.modal.modalToShow == "AddAddress" ? (
-        <AddAddress refetchAddresses={props.refetchAddresses} />
-      ) : null}
+      {modal.modal.modalToShow == "AddAddress" ? <AddAddress /> : null}
     </>
   );
 };

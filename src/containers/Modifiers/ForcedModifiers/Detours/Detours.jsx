@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Checkbox } from "antd";
 import { connect } from "react-redux";
 import "./Detours.scss";
@@ -17,6 +17,10 @@ const Detours = React.memo(
         return item;
       }
     });
+
+    useEffect(() => {
+      console.log("selected item", selectedOptions);
+    }, [selectedOptions]);
 
     console.log("detouropt", detourOptions);
 
@@ -67,6 +71,8 @@ const Detours = React.memo(
     }
 
     const handleChange = (checked, option) => {
+      console.log("item in detours checked", checked);
+      console.log("item in detours checked", option);
       let newSelectedOptions = [];
 
       let withFreeLimitItems = [];
@@ -78,6 +84,7 @@ const Detours = React.memo(
           ({ id }) => id !== option.id
         );
       }
+
       withFreeLimitItems = setFreeLimitPrices(newSelectedOptions);
       setSelectedOptions(withFreeLimitItems);
 
@@ -109,7 +116,12 @@ const Detours = React.memo(
           <>
             {/* <section style={{ display: "inline-flex" }} key={i}>
              <label className="label"> */}
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
               <Checkbox
                 style={{ fontSize: "13px" }}
                 disabled={canSetDisabled}
@@ -137,7 +149,7 @@ const Detours = React.memo(
       <div
         className="detour-options"
         style={{
-          marginLeft: "-20px",
+          marginLeft: "0px",
           marginTop: "10px",
           border: "1px solid black",
           padding: "10px",

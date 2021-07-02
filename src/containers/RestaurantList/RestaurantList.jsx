@@ -115,7 +115,7 @@ class RestaurantList extends React.PureComponent {
             ) : null}
           </div>
         ) : (
-          <LoadingBar />
+          ""
         )}
       </Router>
     );

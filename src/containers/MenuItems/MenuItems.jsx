@@ -4,6 +4,7 @@ import MenuTable from "../../components/MenuTable/MenuTable";
 import PizzaMenuTable from "../../components/MenuTable/PizzaMenuTable";
 import { getTaxes } from "../../state-management/menu/operations";
 import { getFilterredList } from "../../state-management/menu/selectors";
+import Skeleton from "react-loading-skeleton";
 
 const MenuItems = React.memo(
   ({
@@ -16,6 +17,7 @@ const MenuItems = React.memo(
     menuItems,
     restaurantInfo,
     searchQuery,
+    loading,
   }) => {
     //! [x] Need to refractored, should create a seperate Table (presentational component)
     //! Should filter isOnline isHappyhour active and need to implement details page for menun with subcategory,
@@ -25,6 +27,8 @@ const MenuItems = React.memo(
     //? Need to filter Pizzas and HappyHours based on isActive and isOnline
     const menu = useSelector((state) => state.menu);
     const state = useSelector((state) => state);
+
+    console.log("loading in menuTable", loading);
 
     const allforcedModifiers = menu.allForcedModifier;
 
@@ -42,6 +46,31 @@ const MenuItems = React.memo(
       [selectedCategoryId]
     );
 
+    function getDishesDescription() {
+      if (
+        categories.length &&
+        selectedCategoryId &&
+        selectedCategoryId.length > 0
+      ) {
+        const category = categories.find(
+          (category) =>
+            category["sub_category"] &&
+            category["sub_category"].find(
+              ({ category_id: cId }) => cId === selectedCategoryId
+            )
+        );
+        console.log("category", category);
+        const subCategory =
+          category &&
+          category["sub_category"] &&
+          category["sub_category"].find(
+            ({ category_id: cId }) => cId === selectedCategoryId
+          );
+        console.log("subcategory is", subCategory);
+        // cname = subCategory ? subCategory.cname : "";
+        return subCategory ? subCategory.description : "";
+      }
+    }
     function getSelectedCategoryName() {
       if (
         categories.length &&
@@ -164,37 +193,54 @@ const MenuItems = React.memo(
           // menuItems.filter(({ category_id: cid }) => cid === selectedCategoryId)
           filteredIems
         )} */}
-
-        {console.log("fltered items", filteredIems)}
-        {console.log("check product type", filteredIems[0]?.productType)}
-        {filteredIems[0]?.productType === "Dishes" ||
-        filteredIems[0]?.productType === "Drinks" ? (
-          <MenuTable
-            symbol={restaurantInfo.monetary_symbol}
-            actualPrice={getActualPrice}
-            category_name={getSelectedCategoryName()}
-            list={filteredIems}
-            onAddItem={onAddItem}
-            onRemoveItem={onRemoveItem}
-          />
-        ) : null}
-        {console.log("items in menuitem before pizza", pizzas)}
-        {menu.selectedCategoryId === -2 ? (
-          <PizzaMenuTable
-            symbol={restaurantInfo.monetary_symbol}
-            category_name="Pizza"
-            list={pizzas}
-          />
-        ) : null}
-
-        {selectedCategoryId === -1 ? (
-          <MenuTable
-            symbol={restaurantInfo.monetary_symbol}
-            category_name="Happy Hours"
-            list={(menuItems = getFilterredList(state))}
-            onAddItem={onAddItem}
-          />
-        ) : null}
+        {loading ? (
+          <>
+            <Skeleton height={28} width={400} style={{ marginLeft: "10%" }} />
+            <Skeleton height={28} width={300} style={{ marginLeft: "20%" }} />
+            <Skeleton height={28} width={300} style={{ marginLeft: "20%" }} />
+            <Skeleton height={28} width={400} style={{ marginLeft: "10%" }} />
+          </>
+        ) : (
+          <>
+            {console.log("fltered items", filteredIems)}
+            {console.log("check product type", filteredIems[0]?.productType)}
+            {filteredIems[0]?.productType === "Dishes" ||
+            filteredIems[0]?.productType === "Drinks" ? (
+              <MenuTable
+                symbol={restaurantInfo.monetary_symbol}
+                actualPrice={getActualPrice}
+                category_name={getSelectedCategoryName()}
+                description={getDishesDescription()}
+                list={filteredIems}
+                onAddItem={onAddItem}
+                onRemoveItem={onRemoveItem}
+                loading={loading}
+              />
+            ) : null}
+            {console.log("items in menuitem before pizza", pizzas)}
+            {menu.selectedCategoryId === -2 ? (
+              <PizzaMenuTable
+                symbol={restaurantInfo.monetary_symbol}
+                category_name="Pizza"
+                list={pizzas}
+                loading={loading}
+              />
+            ) : null}
+            {console.log(
+              "checking for happyhour",
+              (menuItems = getFilterredList(state))
+            )}
+            {selectedCategoryId === -1 ? (
+              <MenuTable
+                symbol={restaurantInfo.monetary_symbol}
+                category_name="Happy Hours"
+                list={(menuItems = getFilterredList(state))}
+                onAddItem={onAddItem}
+                loading={loading}
+              />
+            ) : null}
+          </>
+        )}
       </>
     );
   }

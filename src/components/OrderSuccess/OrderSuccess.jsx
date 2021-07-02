@@ -9,11 +9,13 @@ import Footer from "../Footer/Footer";
 import WaitingOverlay from "../WaitingOverlay/WaitingOverlay";
 import moment from "moment";
 import { truncateDecimal } from "../../state-management/menu/utils";
+import HelpIcon from "@material-ui/icons/Help";
 
 const OrderSuccess = () => {
   const dispatch = useDispatch();
   const menu = useSelector((state) => state.menu);
   const user = useSelector((state) => state.user);
+  const [ordersession, setordersession] = useState();
 
   const [state, setstate] = useState({
     showOrderDetails: false,
@@ -68,16 +70,24 @@ const OrderSuccess = () => {
       //console.log("complete data", state);
     }
 
-    const response_2 = await dispatch(
-      fetchMyOrderDetails(ordersList[0].order_id)
-    );
+    const urlParams = new URLSearchParams(window.location.search);
+    var order_session = "";
+    for (const entry of urlParams.entries()) {
+      order_session = entry[1].slice("30");
+    }
+    console.log("order session in 78", order_session);
+    const response_2 = await dispatch(fetchMyOrderDetails(order_session));
     const { payload_again } = await response_2;
+
+    console.log("response_2 in ordersuccess", response_2);
 
     if (response_2.payload.status == 200) {
       //orderCoompleteDetails = response_2.payload.data;
       setorderCoompleteDetails(response_2.payload.data[0]);
     }
     console.log("complete details", orderCoompleteDetails);
+    var order_session = "";
+    console.log("order session in 89", order_session);
   };
 
   useEffect(() => {
@@ -99,10 +109,34 @@ const OrderSuccess = () => {
                 Order confirmed!
               </h2>
               <div id="confirm">
-                <i className="icon_check_alt2"></i>
+                {/* <i className="icon_check_alt2"></i> */}
+                <img
+                  src="https://i.ibb.co/TmCnRTh/Tick-Mark-Dark-512.png"
+                  height="250px"
+                  width="200px"
+                />
                 <br />
-                <h3>Thank you!</h3>
-                <h3>Order Number :{orderCoompleteDetails.order_id} </h3>
+                <h3
+                  className="text-pizzamodal"
+                  style={{ fontSize: "20px", color: "black" }}
+                >
+                  Hey {user.user.firstName},
+                </h3>
+                <br />
+                <h3
+                  className="text-pizzamodal"
+                  style={{ fontSize: "20px", color: "black" }}
+                >
+                  {" "}
+                  Thank you for Order!
+                </h3>
+                <br />
+                <h3
+                  className="text-pizzamodal"
+                  style={{ fontSize: "20px", color: "black" }}
+                >
+                  Order Number :{orderCoompleteDetails.order_id}{" "}
+                </h3>
                 {/* <p>
                   Lorem ipsum dolor sit amet, nostrud nominati vis ex, essent
                   conceptam eam ad. Cu etiam comprehensam nec. Cibo delicata mei
@@ -146,7 +180,7 @@ const OrderSuccess = () => {
                         title=""
                         data-original-title="Please consider 30 minutes of margin for the delivery!"
                       >
-                        <i class="icon_question_alt"></i>
+                        <HelpIcon fontSize="small" />
                       </a>
                     </td>
 
@@ -168,7 +202,6 @@ const OrderSuccess = () => {
                         {orderCoompleteDetails.delivery_option == "delivery" ? (
                           <strong className="float-right">
                             {orderCoompleteDetails.delivery_option}
-                            {user.selectedDeliveryTime}
                           </strong>
                         ) : null}
                       </strong>
@@ -184,7 +217,7 @@ const OrderSuccess = () => {
                         title=""
                         data-original-title="Please consider 30 minutes of margin for the delivery!"
                       >
-                        <i class="icon_question_alt"></i>
+                        <HelpIcon fontSize="small" />
                       </a>
                     </td>
                     <td>

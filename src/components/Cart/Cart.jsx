@@ -12,6 +12,7 @@ import { useHistory } from "react-router";
 import ItemList from "./ItemList";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { suppressDeprecationWarnings } from "moment";
+import { notification } from "antd";
 
 const Cart = (props) => {
   const History = useHistory();
@@ -119,7 +120,8 @@ const Cart = (props) => {
       ? truncateDecimal(
           props.cartlist.reduce((acc, item) => {
             if (
-              isHappyHourStillActive(item, props.restinfo.timezone).isActive &&
+              isHappyHourStillActive(item, menu.restaurantInfo.timezone)
+                .isActive &&
               item.happyHourItem
             ) {
               return (
@@ -130,12 +132,7 @@ const Cart = (props) => {
               );
             }
 
-            return (
-              acc +
-              (item.modifiers
-                ? item.qty * Number(item.tax || 0)
-                : Number(item.tax || 0))
-            );
+            return acc + Number(item.tax || 0);
           }, 0)
         )
       : "";
@@ -281,7 +278,19 @@ const Cart = (props) => {
   const [warning, setwarning] = useState(false);
   const grandTotal = Number(getGrandTotal());
   const goToCheckout = () => {
-    History.push(`/restId=${menu.restaurantInfo.restaurant_id}/checkout`);
+    if (main.isClosed) {
+      return notification["warning"]({
+        style: {
+          marginTop: "50px",
+          color: "rgba(0, 0, 0, 0.65)",
+          border: "1px solid #b7eb8f",
+          backgroundColor: "#f6ffed",
+        },
+        message: "Oops ! Restaurant is closed. Please Try Agin Later.",
+      });
+    } else {
+      History.push(`/restId=${menu.restaurantInfo.restaurant_id}/checkout`);
+    }
   };
 
   return (

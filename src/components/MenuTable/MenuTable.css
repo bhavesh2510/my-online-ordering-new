@@ -17,3 +17,13 @@
 .main-menu {
   left: -40px;
 }
+
+.extra-info {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.properties-img {
+  height: 1.2rem;
+  margin-right: 5px;
+}

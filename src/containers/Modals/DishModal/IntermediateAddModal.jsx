@@ -33,7 +33,9 @@ class IntermediateAddModal extends React.PureComponent {
   handleRepeatLast = () => {
     const { item } = this.state;
     const similarItems = this.props.cart.filter(({ id }) => item.id === id);
+    console.log("similar items in repeat last", item);
     const lastItem = similarItems[similarItems.length - 1] || item;
+    console.log("last item is", lastItem);
 
     this.props.addItem(
       lastItem,
