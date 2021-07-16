@@ -10,6 +10,7 @@ import WaitingOverlay from "../WaitingOverlay/WaitingOverlay";
 import moment from "moment";
 import { truncateDecimal } from "../../state-management/menu/utils";
 import HelpIcon from "@material-ui/icons/Help";
+import "./OrderSuccess.css";
 
 const OrderSuccess = () => {
   const dispatch = useDispatch();
@@ -101,39 +102,41 @@ const OrderSuccess = () => {
         {/* style={{ marginTop: "20px" }} */}
         <div className="row justify-content-center">
           <div className="col-md-6">
-            <div className="box_style_2">
+            <div className="box_style_2 mobile-order-success">
               <h2
                 className="inner"
-                style={{ textAlign: "center", backgroundColor: "#6244da" }}
+                style={{ textAlign: "center", backgroundColor: "#666171" }}
               >
                 Order confirmed!
               </h2>
               <div id="confirm">
-                {/* <i className="icon_check_alt2"></i> */}
-                <img
+                <div class="check-wrap"></div>
+
+                {/* <img
                   src="https://i.ibb.co/TmCnRTh/Tick-Mark-Dark-512.png"
                   height="250px"
                   width="200px"
-                />
+                /> */}
                 <br />
                 <h3
-                  className="text-pizzamodal"
-                  style={{ fontSize: "20px", color: "black" }}
+                  className="text-pizzamodal fontsize-of-ordersuccess"
+
+                  // style={{ fontSize: "20px", color: "black" }}
                 >
                   Hey {user.user.firstName},
                 </h3>
                 <br />
                 <h3
-                  className="text-pizzamodal"
-                  style={{ fontSize: "20px", color: "black" }}
+                  className="text-pizzamodal fontsize-of-ordersuccess"
+                  // style={{ fontSize: "20px", color: "black" }}
                 >
                   {" "}
                   Thank you for Order!
                 </h3>
                 <br />
                 <h3
-                  className="text-pizzamodal"
-                  style={{ fontSize: "20px", color: "black" }}
+                  className="text-pizzamodal fontsize-of-ordersuccess"
+                  // style={{ fontSize: "20px", color: "black" }}
                 >
                   Order Number :{orderCoompleteDetails.order_id}{" "}
                 </h3>

@@ -5,7 +5,7 @@ import { Button } from "react-scroll";
 import { useSelector, useDispatch } from "react-redux";
 import { openModal, closeModal } from "../../state-management/modal/actions";
 import MenuModal from "../../containers/Modals/DishModal/DishModal";
-import { addItem } from "../../state-management/menu/actions";
+import { addItem, removeItem } from "../../state-management/menu/actions";
 import {
   isHappyHourStillActive,
   setTimer,
@@ -17,6 +17,7 @@ import AddIcon from "@material-ui/icons/Add";
 import "./MenuTable.css";
 import Skeleton from "react-loading-skeleton";
 import { modalNames } from "../../components/AppModal/constants";
+import RemoveIcon from "@material-ui/icons/Remove";
 
 const MenuTable = ({
   onAddItem,
@@ -27,12 +28,17 @@ const MenuTable = ({
   actualPrice,
   description,
   loading,
+  headerforhappyhour,
 }) => {
   const dispatch = useDispatch();
   const menu = useSelector((state) => state.menu);
   const modal = useSelector((state) => state.modal);
+  console.log("header for happy", category_name);
 
   console.log("listr in menutable", list);
+  if (list.length > 1) {
+    console.log("cnane in menutable", list[0].category_id);
+  }
   const modalNames = {
     DISH_MODAL: "DishModal",
     INTERMEDIATE_ADD_MODAL: "IntermediateAddModal",
@@ -83,6 +89,63 @@ const MenuTable = ({
     );
     return Number(menu.restaurantInfo["price_without_tax_flag"]);
   };
+
+  const getSelectedCategoryName = (cname) => {
+    console.log("cname in menu", cname);
+    var selectedCategoryId;
+    if (cname.length > 0) {
+      selectedCategoryId = cname[0].category_id;
+    }
+    if (menu.categoriesList.length) {
+      const category = menu.categoriesList.find(
+        (category) =>
+          category["sub_category"] &&
+          category["sub_category"].find(
+            ({ category_id: cId }) => cId === selectedCategoryId
+          )
+      );
+      const subCategory =
+        category &&
+        category["sub_category"] &&
+        category["sub_category"].find(
+          ({ category_id: cId }) => cId === selectedCategoryId
+        );
+
+      return subCategory ? subCategory.cname : "";
+    }
+
+    if (menu.selectedCategoryId === -1) {
+      return "Happy Hours";
+    } else if (menu.selectedCategoryId === -2) {
+      return "Pizza's";
+    }
+  };
+
+  function getDishesDescription(cname) {
+    var selectedCategoryId;
+    if (cname.length > 0) {
+      selectedCategoryId = cname[0].category_id;
+    }
+    if (menu.categoriesList) {
+      const category = menu.categoriesList.find(
+        (category) =>
+          category["sub_category"] &&
+          category["sub_category"].find(
+            ({ category_id: cId }) => cId === selectedCategoryId
+          )
+      );
+      console.log("category", category);
+      const subCategory =
+        category &&
+        category["sub_category"] &&
+        category["sub_category"].find(
+          ({ category_id: cId }) => cId === selectedCategoryId
+        );
+      console.log("subcategory is", subCategory);
+      // cname = subCategory ? subCategory.cname : "";
+      return subCategory ? subCategory.description : "";
+    }
+  }
 
   const getActualPrice = (item) => {
     if (menu.restaurantInfo) {
@@ -183,228 +246,356 @@ const MenuTable = ({
     }
   };
 
+  const myFunction = (id) => {
+    var dots = document.getElementById(`${id}dots`);
+    var moreText = document.getElementById(`${id}more`);
+    var btnText = document.getElementById(`${id}myBtn`);
+
+    dots.style.display = "none";
+    moreText.style.display = "inline";
+    btnText.style.display = "none";
+  };
+
+  const removefromcart = (item) => {
+    dispatch(removeItem(item, item.modifiers || null, 0, menu.restaurantInfo));
+  };
+
   return (
     <>
       {loading ? (
         <>
           <>
-            <Skeleton height={28} width={400} style={{ marginLeft: "10%" }} />
+            {/* <Skeleton height={28} width={400} style={{ marginLeft: "10%" }} />
             <Skeleton height={28} width={300} style={{ marginLeft: "20%" }} />
             <Skeleton height={28} width={300} style={{ marginLeft: "20%" }} />
-            <Skeleton height={28} width={400} style={{ marginLeft: "10%" }} />
+            <Skeleton height={28} width={400} style={{ marginLeft: "10%" }} /> */}
+
+            <Skeleton className="skelton-class" />
+            <Skeleton className="skelton-class-mid" />
+            <Skeleton className="skelton-class-mid" />
+            <Skeleton className="skelton-class" />
           </>
         </>
       ) : (
         <>
-          <h3
-            className="nomargin_top"
-            id={category_name}
-            style={{ color: "#5B53CD" }}
+          <div className="category-separator"></div>
+          <h4
+            className="category-name-head text-pizzamodal"
+            id={getSelectedCategoryName(list)}
           >
-            {category_name}
-          </h3>
-          <p>{description}</p>
-          <table className="table table-striped cart-list">
-            <thead>
-              <tr>
-                <th>Item</th>
+            {category_name == "Happy Hours"
+              ? "Happy Hours"
+              : getSelectedCategoryName(list)}
+          </h4>
+          <>
+            {list.map((item) => {
+              const sizeAndBaseCollection = getSizeAndBase(item);
+              let isStillActive = false;
+              console.log("menuItems in this file", item);
 
-                {list.forced_modifier > 0 ? (
-                  <th style={{ display: "none" }}>price</th>
-                ) : (
-                  <th>Price</th>
-                )}
-                {/* <th>Price</th> */}
-                <th>Order</th>
-              </tr>
-            </thead>
-            <tbody>
-              {console.log("list is", list)}
-              {list.map((item) => {
-                const sizeAndBaseCollection = getSizeAndBase(item);
-                let isStillActive = false;
-                console.log("menuItems in this file", item);
-
-                if (item.isHappyHourActive) {
-                  const result = isHappyHourStillActive(
-                    item,
-                    menu.restaurantInfo.timezone
-                  );
-
-                  isStillActive = result.isActive;
-                  if (isStillActive) {
-                    refIndex++;
-                    setTimer(result.distance, timeOutRef[refIndex]);
-                  }
-                }
-                const minQty =
-                  Number(item.min_qty) === 0 ? 0 : Number(item.min_qty);
-
-                console.log("items in menutable", item);
-                return (
-                  <tr>
-                    <td>
-                      <figure className="thumb_menu_list">
-                        <img
-                          style={{ marginTop: "10px" }}
-                          src={item?.image ?? "https://cutt.ly/gkb8C6Z"}
-                          alt="thumb"
-                        />
-                      </figure>
-
-                      <h5 style={{ marginTop: "20px" }}>
-                        {item.cname || item.name || item.title}
-                      </h5>
-                      <section className="extra-info">
-                        {item.lactose_free === "1" ? (
-                          <span title="Lactose Free">
-                            <img
-                              className="properties-img"
-                              alt="lactose free"
-                              src="https://i.ibb.co/JsCzXxm/lactose.png"
-                            />
-                          </span>
-                        ) : null}
-                        {item.nuts_free === "1" ? (
-                          <span title="Nuts Free">
-                            <img
-                              className="properties-img"
-                              alt="nuts free"
-                              src="https://ciboapp.com/feedmi/static/media/nuts_free.6df579b7.png"
-                            />
-                          </span>
-                        ) : null}
-                        {item.is_hot === "1" ? (
-                          <span title="Hot">
-                            <img
-                              className="properties-img"
-                              alt="hot"
-                              src="https://ciboapp.com/feedmi/static/media/hot.9360d00d.png"
-                            />
-                          </span>
-                        ) : null}
-                        {item.is_vegan === "1" ? (
-                          <span title="It's Vegan">
-                            <img
-                              className="properties-img"
-                              alt="it's vegan"
-                              src="https://i.ibb.co/xHDRm3s/vegan.png"
-                            />
-                          </span>
-                        ) : null}
-                        {item.gluten_free === "1" ? (
-                          <span title="Gluten Free">
-                            <img
-                              className="properties-img"
-                              alt="gluten free"
-                              src="https://i.ibb.co/23JCVwx/glute.png"
-                            />
-                          </span>
-                        ) : null}
-                      </section>
-                      <br />
-                      {/* <p>happ hour start</p> */}
-
-                      {item.isHappyHourActive && isStillActive ? (
-                        <>
-                          <p style={{ color: "red", fontWeight: "700" }}>
-                            {item.happyHourDetail.happyHourDisplayText}
-                          </p>
-                          <div>
-                            <AccessTimeIcon style={{ color: "red" }} /> &nbsp;{" "}
-                            <span
-                              style={{ color: "red", fontWeight: "700" }}
-                              ref={timeOutRef[refIndex]}
-                            />
-                          </div>
-                        </>
-                      ) : null}
-
-                      {/* <p>happ hour end</p> */}
-                      <p>{item?.description || item.happyHourDisplayText}</p>
-                    </td>
-
-                    {item.base ? (
-                      <td>
-                        <strong> {sizeAndBaseCollection[0].totalPrice}</strong>
-                      </td>
-                    ) : (
-                      <td>
-                        <strong>{`${symbol} ${getActualPrice(item)}`}</strong>
-                      </td>
-                    )}
-
-                    <td className="options">
-                      <>
-                        {item.base ? (
-                          <>
-                            <div style={{ display: "flex" }}>
-                              <button
-                                className="button-menutable"
-                                onClick={() =>
-                                  openPizzaModal(
-                                    item,
-                                    isHappyHourStillActive(
-                                      item,
-                                      menu.restaurantInfo.timezone
-                                    ).isActive
-                                  )
-                                }
-                              >
-                                {/* <span style={{ display: "block" }}>+</span> */}
-                                <AddIcon
-                                  fontSize="small"
-                                  style={{ marginTop: "4px" }}
-                                />
-                              </button>
-                            </div>
-                          </>
-                        ) : (
-                          <div style={{ display: "flex" }}>
-                            <button
-                              className="button-menutable"
-                              onClick={() =>
-                                onAddItem(
-                                  item,
-                                  isHappyHourStillActive(
-                                    item,
-                                    menu.restaurantInfo.timezone
-                                  ).isActive
-                                )
-                              }
-                            >
-                              {/* <span style={{ display: "block" }}>+</span> */}
-                              <AddIcon
-                                fontSize="small"
-                                style={{ marginTop: "4px" }}
-                              />
-                            </button>
-                          </div>
-                        )}
-                        {/* <button
-                        className="button-menutable"
-                        style={{ marginLeft: "20px" }}
-                        onClick={() =>
-                          onRemoveItem(
-                            item,
-                            isHappyHourStillActive(
-                              item,
-                              menu.restaurantInfo.timezone
-                            ).isActive
-                          )
-                        }
-                      >
-                        <span style={{ display: "block" }}>-</span>
-                      </button> */}
-                        {/* </div> */}
-                      </>
-                    </td>
-                  </tr>
+              if (item.isHappyHourActive) {
+                const result = isHappyHourStillActive(
+                  item,
+                  menu.restaurantInfo.timezone
                 );
-              })}
-            </tbody>
-          </table>
-          <hr />
+
+                isStillActive = result.isActive;
+                if (isStillActive) {
+                  refIndex++;
+                  setTimer(result.distance, timeOutRef[refIndex]);
+                }
+              }
+              const minQty =
+                Number(item.min_qty) === 0 ? 0 : Number(item.min_qty);
+
+              console.log("itemszzz in menutable", item);
+              return (
+                <>
+                  <div>
+                    <div className="parent-menutable">
+                      <div className="parent-flex">
+                        <div className="left-menutable-img">
+                          <div className="img-cover-menutable">
+                            <img
+                              className="food-image"
+                              src={
+                                item.image_url
+                                  ? item.image_url
+                                  : "https://cutt.ly/gkb8C6Z"
+                              }
+                              //src="https://cutt.ly/gkb8C6Z"
+                            ></img>
+                          </div>
+                        </div>
+
+                        <div className="food-details">
+                          <div className="inner-food-details-div">
+                            <div className="specific-food-details">
+                              <h4 className="food-item-name">
+                                {item.cname || item.name || item.title}
+                              </h4>
+
+                              <div className="food-icons">
+                                <div className="food-icon-child">
+                                  {item.lactose_free === "1" ? (
+                                    <span title="Lactose Free">
+                                      <img
+                                        className="properties-img"
+                                        alt="lactose free"
+                                        src="https://i.ibb.co/JsCzXxm/lactose.png"
+                                      />
+                                    </span>
+                                  ) : null}
+                                  {item.nuts_free === "1" ? (
+                                    <span title="Nuts Free">
+                                      <img
+                                        className="properties-img"
+                                        alt="nuts free"
+                                        src="https://ciboapp.com/feedmi/static/media/nuts_free.6df579b7.png"
+                                      />
+                                    </span>
+                                  ) : null}
+                                  {item.is_hot === "1" ? (
+                                    <span title="Hot">
+                                      <img
+                                        className="properties-img"
+                                        alt="hot"
+                                        src="https://ciboapp.com/feedmi/static/media/hot.9360d00d.png"
+                                      />
+                                    </span>
+                                  ) : null}
+                                  {item.is_vegan === "1" ? (
+                                    <span title="It's Vegan">
+                                      <img
+                                        className="properties-img"
+                                        alt="it's vegan"
+                                        src="https://i.ibb.co/xHDRm3s/vegan.png"
+                                      />
+                                    </span>
+                                  ) : null}
+                                  {item.gluten_free === "1" ? (
+                                    <span title="Gluten Free">
+                                      <img
+                                        className="properties-img"
+                                        alt="gluten free"
+                                        src="https://i.ibb.co/23JCVwx/glute.png"
+                                      />
+                                    </span>
+                                  ) : null}
+                                </div>
+                              </div>
+
+                              <div className="item-price-parent-div">
+                                <span className="item-price">{`${symbol} ${getActualPrice(
+                                  item
+                                )}`}</span>
+                              </div>
+                            </div>
+
+                            {/* {item.base ? (
+                              <>
+                                <div className="specific-add-button">
+                                  <div
+                                    className="button-container"
+                                    onClick={() =>
+                                      openPizzaModal(
+                                        item,
+                                        isHappyHourStillActive(
+                                          item,
+                                          menu.restaurantInfo.timezone
+                                        ).isActive
+                                      )
+                                    }
+                                  >
+                                    <span className="add-to-cart-button">
+                                      Add
+                                    </span>
+                                    <span className="add-to-cart-button-plus">
+                                      <AddIcon />
+                                    </span>
+                                  </div>
+                                </div>
+                              </>
+                            ) : (
+                              <div className="specific-add-button">
+                                <div
+                                  className="button-container"
+                                  onClick={() =>
+                                    onAddItem(
+                                      item,
+                                      isHappyHourStillActive(
+                                        item,
+                                        menu.restaurantInfo.timezone
+                                      ).isActive
+                                    )
+                                  }
+                                >
+                                  <span className="add-to-cart-button">
+                                    Add
+                                  </span>
+                                  <span className="add-to-cart-button-plus">
+                                    <AddIcon />
+                                  </span>
+                                </div>
+                              </div>
+                            )} */}
+                            {item.qty ? (
+                              <>
+                                <div className="after-first-add-container">
+                                  <div className="after-first-add-parent">
+                                    <div className="after-first-add-child">
+                                      <div
+                                        className="left-after-add"
+                                        onClick={() => removefromcart(item)}
+                                      >
+                                        <RemoveIcon fontSize="small" />
+                                      </div>
+                                      <div className="middle-after-add">
+                                        <span className="qty-after-add">
+                                          {item.qty}
+                                        </span>
+                                      </div>
+                                      {item.base ? (
+                                        <>
+                                          <div
+                                            className="right-after-add"
+                                            onClick={() =>
+                                              openPizzaModal(
+                                                item,
+                                                isHappyHourStillActive(
+                                                  item,
+                                                  menu.restaurantInfo.timezone
+                                                ).isActive
+                                              )
+                                            }
+                                          >
+                                            <AddIcon fontSize="small" />
+                                          </div>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <div
+                                            className="right-after-add"
+                                            onClick={() =>
+                                              onAddItem(
+                                                item,
+                                                isHappyHourStillActive(
+                                                  item,
+                                                  menu.restaurantInfo.timezone
+                                                ).isActive
+                                              )
+                                            }
+                                          >
+                                            <AddIcon fontSize="small" />
+                                          </div>
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              </>
+                            ) : (
+                              <>
+                                <div className="specific-add-button">
+                                  {item.base ? (
+                                    <>
+                                      <div
+                                        className="button-container"
+                                        onClick={() =>
+                                          openPizzaModal(
+                                            item,
+                                            isHappyHourStillActive(
+                                              item,
+                                              menu.restaurantInfo.timezone
+                                            ).isActive
+                                          )
+                                        }
+                                      >
+                                        <span className="add-to-cart-button">
+                                          Add
+                                        </span>
+                                        <span className="add-to-cart-button-plus">
+                                          <AddIcon />
+                                        </span>
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <div
+                                        className="button-container"
+                                        onClick={() =>
+                                          onAddItem(
+                                            item,
+                                            isHappyHourStillActive(
+                                              item,
+                                              menu.restaurantInfo.timezone
+                                            ).isActive
+                                          )
+                                        }
+                                      >
+                                        <span className="add-to-cart-button">
+                                          Add
+                                        </span>
+                                        <span className="add-to-cart-button-plus">
+                                          <AddIcon />
+                                        </span>
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+                              </>
+                            )}
+                          </div>
+                          {item.isHappyHourActive && isStillActive ? (
+                            <>
+                              <p
+                                className="food-description"
+                                style={{ color: "red", fontWeight: "600" }}
+                              >
+                                {item.happyHourDetail.happyHourDisplayText}
+                              </p>
+                              <p className="food-description">
+                                {/* <AccessTimeIcon style={{ color: "red" }} />{" "} */}
+
+                                <span
+                                  style={{ color: "red", fontWeight: "700" }}
+                                  ref={timeOutRef[refIndex]}
+                                />
+                              </p>
+                            </>
+                          ) : null}
+
+                          {item.description ? (
+                            <>
+                              <p className="food-description">
+                                {item.description.slice(0, 50)}
+                                <span id={`${item.id}dots`}>...</span>
+                                <span
+                                  id={`${item.id}myBtn`}
+                                  className="read-more"
+                                  onClick={() => myFunction(item.id)}
+                                >
+                                  read more
+                                </span>
+                                <p
+                                  className="food-description"
+                                  id={`${item.id}more`}
+                                  style={{ display: "none" }}
+                                >
+                                  {item.description.slice(51, 10000)}
+                                </p>
+                              </p>
+                            </>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr className="hr-for-mobile" />
+                </>
+              );
+            })}
+          </>
         </>
       )}
     </>

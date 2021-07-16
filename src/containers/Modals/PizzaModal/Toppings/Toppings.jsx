@@ -14,6 +14,7 @@ const Toppings = React.memo(
     pizza,
     restaurantInfo,
   }) => {
+    console.log("op array", optionalToppings);
     function renderDefaultToppings() {
       return (
         <div

@@ -331,7 +331,7 @@ const ItemList = ({
 
             return (
               <>
-                <tr>
+                <tr style={{ lineHeight: "1" }}>
                   <td>
                     <button
                       onClick={() => onRemove(item)}
@@ -366,7 +366,7 @@ const ItemList = ({
                       : null}
                   </td>
                   {console.log("items in itemlist", item)}
-                  <td>
+                  <td style={{ width: "30%" }}>
                     {/* {item.modifiers !== null ? (
                       <p style={{ textAlign: "right" }}>
                         {`${currency}${truncateDecimal(
@@ -382,7 +382,7 @@ const ItemList = ({
                     )} */}
 
                     <p style={{ textAlign: "right" }}>
-                      {`${currency}${truncateDecimal(
+                      {`${currency} ${truncateDecimal(
                         getItemPrice(item, isStillActive)
                       )}`}
                     </p>

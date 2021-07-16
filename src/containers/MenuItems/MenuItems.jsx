@@ -1,10 +1,11 @@
-import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
+import React, { useMemo, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import MenuTable from "../../components/MenuTable/MenuTable";
 import PizzaMenuTable from "../../components/MenuTable/PizzaMenuTable";
 import { getTaxes } from "../../state-management/menu/operations";
 import { getFilterredList } from "../../state-management/menu/selectors";
 import Skeleton from "react-loading-skeleton";
+import { addItem, removeItem } from "../../state-management/menu/actions";
 
 const MenuItems = React.memo(
   ({
@@ -18,6 +19,7 @@ const MenuItems = React.memo(
     restaurantInfo,
     searchQuery,
     loading,
+    status,
   }) => {
     //! [x] Need to refractored, should create a seperate Table (presentational component)
     //! Should filter isOnline isHappyhour active and need to implement details page for menun with subcategory,
@@ -27,10 +29,66 @@ const MenuItems = React.memo(
     //? Need to filter Pizzas and HappyHours based on isActive and isOnline
     const menu = useSelector((state) => state.menu);
     const state = useSelector((state) => state);
+    const [hhour, sethhour] = useState(false);
+    const dispatch = useDispatch();
+    console.log("status in menuiten", status);
 
     console.log("loading in menuTable", loading);
 
     const allforcedModifiers = menu.allForcedModifier;
+    var array_of_ids = [];
+    var tem_arr_cname = [];
+    var list = (menuItems = getFilterredList(state));
+    console.log("happ hour array ", list);
+
+    const func = () => {
+      var tem_arr = [];
+
+      var dish_subcat_id = [];
+      var dish_cname = [];
+      var drink_subcat_id = [];
+      var drink_cname = [];
+
+      for (let i = 0; i < menu.categoriesList[0].sub_category.length; i++) {
+        dish_subcat_id.push(menu.categoriesList[0].sub_category[i].category_id);
+        dish_cname.push(menu.categoriesList[0].sub_category[i].cname);
+      }
+      array_of_ids.push(dish_subcat_id);
+      tem_arr_cname.push(dish_cname);
+
+      for (let i = 0; i < menu.categoriesList[1].sub_category.length; i++) {
+        drink_subcat_id.push(
+          menu.categoriesList[1].sub_category[i].category_id
+        );
+
+        dish_cname.push(menu.categoriesList[1].sub_category[i].cname);
+      }
+      array_of_ids.push(drink_subcat_id);
+      tem_arr_cname.push(drink_cname);
+
+      console.log("temp arr cname is", tem_arr_cname);
+
+      for (let j = 0; j < dish_subcat_id.length; j++) {
+        tem_arr.push(
+          menu.menuItems.filter(
+            ({ category_id: cid, online }) =>
+              cid === dish_subcat_id[j] && online === "1"
+          )
+        );
+      }
+
+      for (let j = 0; j < drink_subcat_id.length; j++) {
+        tem_arr.push(
+          menu.menuItems.filter(
+            ({ category_id: cid, online }) =>
+              cid === drink_subcat_id[j] && online === "1"
+          )
+        );
+      }
+
+      console.log("temp arr is", tem_arr);
+      return tem_arr;
+    };
 
     const findCategory = (selectedCategoryId) => {
       console.log("memoized value");
@@ -71,29 +129,57 @@ const MenuItems = React.memo(
         return subCategory ? subCategory.description : "";
       }
     }
-    function getSelectedCategoryName() {
-      if (
-        categories.length &&
-        selectedCategoryId &&
-        selectedCategoryId.length > 0
-      ) {
-        const category = categories.find(
-          (category) =>
+    function getSelectedCategoryName(catname) {
+      console.log("catname is xyz", catname);
+      console.log("array of id in catname", array_of_ids);
+      var req_ids = [];
+      for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < array_of_ids[i].length; j++)
+          req_ids.push(array_of_ids[i][j]);
+      }
+
+      console.log("req ids in catnme", tem_arr_cname);
+      // if (
+      //   categories.length &&
+      //   selectedCategoryId &&
+      //   selectedCategoryId.length > 0
+      // ) {
+      //   const category = categories.find(
+      //     (category) =>
+      //       category["sub_category"] &&
+      //       category["sub_category"].find(
+      //         ({ category_id: cId }) => cId === selectedCategoryId
+      //       )
+      //   );
+      //   console.log("category in catname", category);
+
+      for (let k = 0; k < req_ids.length; k++) {
+        if (
+          categories.length &&
+          selectedCategoryId &&
+          selectedCategoryId.length > 0
+        ) {
+          const category = categories.find(
+            (category) =>
+              category["sub_category"] &&
+              category["sub_category"].find(
+                ({ category_id: cId }) => cId === req_ids[k]
+              )
+          );
+          console.log("category in catname", category);
+          const subCategory =
+            category &&
             category["sub_category"] &&
             category["sub_category"].find(
-              ({ category_id: cId }) => cId === selectedCategoryId
-            )
-        );
-        console.log("category", category);
-        const subCategory =
-          category &&
-          category["sub_category"] &&
-          category["sub_category"].find(
-            ({ category_id: cId }) => cId === selectedCategoryId
-          );
-        console.log("subcategory is", subCategory);
+              ({ category_id: cId }) => cId === req_ids[k]
+            );
+          console.log("subcategory in catname", subCategory);
+          console.log("break");
+          return subCategory ? subCategory.cname : "";
+        }
+        //console.log("subcategory in catname", subCategory);
         // cname = subCategory ? subCategory.cname : "";
-        return subCategory ? subCategory.cname : "";
+        //return subCategory ? subCategory.cname : "";
       }
 
       if (selectedCategoryId === -1) {
@@ -122,6 +208,7 @@ const MenuItems = React.memo(
       return 0;
     };
 
+    var a = 1;
     // const getItemPrice = (item, isStillActive) => {
     //   if (item.happyHourItem && isStillActive) {
     //     if (item.similarItems && item.similarItems.length > 0) {
@@ -170,6 +257,12 @@ const MenuItems = React.memo(
     //   }
     // };
 
+    const removefromcart = (item) => {
+      dispatch(
+        removeItem(item, item.modifiers || null, 0, menu.restaurantInfo)
+      );
+    };
+
     return (
       <>
         {/* {console.log("seleted category name", getSelectedCategoryName())}
@@ -195,15 +288,63 @@ const MenuItems = React.memo(
         )} */}
         {loading ? (
           <>
-            <Skeleton height={28} width={400} style={{ marginLeft: "10%" }} />
-            <Skeleton height={28} width={300} style={{ marginLeft: "20%" }} />
-            <Skeleton height={28} width={300} style={{ marginLeft: "20%" }} />
-            <Skeleton height={28} width={400} style={{ marginLeft: "10%" }} />
+            {/* <div className="skelton-container">
+              <Skeleton height={28} width={400} style={{ marginLeft: "10%" }} />
+              <Skeleton height={28} width={300} style={{ marginLeft: "20%" }} />
+              <Skeleton height={28} width={300} style={{ marginLeft: "20%" }} />
+              <Skeleton height={28} width={400} style={{ marginLeft: "10%" }} />
+            </div> */}
+
+            <div className="skelton-container">
+              <div className="parent-menutable">
+                <div className="parent-flex">
+                  <div className="left-menutable-img">
+                    <div className="img-cover-menutable">
+                      <Skeleton height={100} className="img-skelton" />
+                    </div>
+                  </div>
+
+                  <div className="food-details">
+                    <div className="inner-food-details-div">
+                      <div className="specific-food-details">
+                        <h4 className="food-item-name">
+                          <Skeleton height={20} width={200} count={4} />
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </>
         ) : (
           <>
             {console.log("fltered items", filteredIems)}
             {console.log("check product type", filteredIems[0]?.productType)}
+            {console.log("func is", func())}
+            {console.log("array of id", array_of_ids)}
+
+            {status ? (
+              <>
+                {func().map((val) => {
+                  return (
+                    <MenuTable
+                      symbol={restaurantInfo.monetary_symbol}
+                      actualPrice={getActualPrice}
+                      //category_name={getSelectedCategoryName(val)}
+                      // description={getDishesDescription()}
+                      list={val}
+                      //list={findAllMenuForDish}
+                      onAddItem={onAddItem}
+                      onRemoveItem={onRemoveItem}
+                      loading={loading}
+                    />
+                  );
+                })}
+              </>
+            ) : null}
+
+            {/* 
             {filteredIems[0]?.productType === "Dishes" ||
             filteredIems[0]?.productType === "Drinks" ? (
               <MenuTable
@@ -212,32 +353,44 @@ const MenuItems = React.memo(
                 category_name={getSelectedCategoryName()}
                 description={getDishesDescription()}
                 list={filteredIems}
+                //list={findAllMenuForDish}
                 onAddItem={onAddItem}
                 onRemoveItem={onRemoveItem}
                 loading={loading}
               />
-            ) : null}
+            ) : null} */}
             {console.log("items in menuitem before pizza", pizzas)}
-            {menu.selectedCategoryId === -2 ? (
-              <PizzaMenuTable
-                symbol={restaurantInfo.monetary_symbol}
-                category_name="Pizza"
-                list={pizzas}
-                loading={loading}
-              />
+            {status ? (
+              <>
+                {menu.selectedCategoryId === -2 ? (
+                  <PizzaMenuTable
+                    symbol={restaurantInfo.monetary_symbol}
+                    category_name="Pizza"
+                    list={pizzas}
+                    loading={loading}
+                    removeforpizza={removefromcart}
+                  />
+                ) : null}
+              </>
             ) : null}
+
             {console.log(
               "checking for happyhour",
               (menuItems = getFilterredList(state))
             )}
-            {selectedCategoryId === -1 ? (
-              <MenuTable
-                symbol={restaurantInfo.monetary_symbol}
-                category_name="Happy Hours"
-                list={(menuItems = getFilterredList(state))}
-                onAddItem={onAddItem}
-                loading={loading}
-              />
+            {!status ? (
+              <>
+                {selectedCategoryId === -1 ? (
+                  <MenuTable
+                    symbol={restaurantInfo.monetary_symbol}
+                    category_name="Happy Hours"
+                    list={(menuItems = getFilterredList(state))}
+                    onAddItem={onAddItem}
+                    loading={loading}
+                    headerforhappyhour={hhour}
+                  />
+                ) : null}
+              </>
             ) : null}
           </>
         )}

@@ -46,7 +46,7 @@ td {
 }
 
 .check_payment:checked + label {
-  background-color: #6244da;
+  background-color: #302f31;
   color: white;
 }
 .btn_radio {
@@ -56,7 +56,10 @@ td {
   padding-bottom: 12px;
   margin: 20px;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 3px;
+  /* margin-left: 0px;
+ 
+ 
   /* width: 100%; */
 
   background-color: #f1f1f1;
@@ -135,7 +138,7 @@ td {
   color: #212529;
 }
 .cart-head {
-  background: #6244da;
+  background: #302f31;
   color: whitesmoke;
   margin: -15px -15px 15px -15px;
   padding: 15px;
@@ -285,6 +288,27 @@ input[type="radio"]:checked + .payment-class:before {
   margin-top: -70px;
   margin-right: 0px;
 }
+.delivery-head-business {
+  font-size: 32px;
+  font-weight: 600;
+  color: #282c3f;
+  margin-bottom: 32px;
+}
+.delivery-head-type {
+  font-size: 32px;
+  font-weight: 600;
+  color: #282c3f;
+  margin-bottom: 32px;
+  margin-left: 05px;
+}
+.timepicker-container {
+  margin-top: 10px;
+}
+.container-for-mobile {
+  width: 110%;
+  margin-left: 0px;
+  margin-top: -20px;
+}
 @media (max-width: 768px) {
   .address-section-paymentform {
     width: 90%;
@@ -300,9 +324,9 @@ input[type="radio"]:checked + .payment-class:before {
   .btn_radio {
     padding-left: 20px;
     padding-right: 20px;
-    padding-top: 6px;
-    padding-bottom: 6px;
-    margin: 10px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    margin: 20px;
     margin-left: -5px;
     cursor: pointer;
     border-radius: 5px;
@@ -337,5 +361,23 @@ input[type="radio"]:checked + .payment-class:before {
   }
   .address-add-change {
     margin-top: -100px;
+  }
+  .delivery-head-business {
+    font-size: 19px;
+    font-weight: 600;
+    color: #282c3f;
+    margin-bottom: 32px;
+  }
+  .container-for-mobile {
+    width: 110%;
+    margin-left: 0px;
+    margin-top: -20px;
+  }
+  .timepicker-container {
+    margin-top: 10px;
+  }
+  .delivery-head-type {
+    font-size: 27px;
+    margin-left: 0px;
   }
 }

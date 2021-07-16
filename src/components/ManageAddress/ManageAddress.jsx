@@ -113,6 +113,7 @@ const ManageAddress = (props) => {
         )
       );
       fetchAddressList();
+      //window.location.reload();
     } else {
       const existingDefaultAddress = state.addresses.find(
         (addr) => addr["is_default"] === "1"
@@ -141,6 +142,7 @@ const ManageAddress = (props) => {
         )
       );
       fetchAddressList();
+      //window.location.reload();
     }
   };
 

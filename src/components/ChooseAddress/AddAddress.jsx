@@ -323,7 +323,7 @@ const AddAddress = (props) => {
           >
             <Button
               className="add-address-button"
-              style={{ backgroundColor: "#6244da" }}
+              style={{ backgroundColor: "#302f31" }}
               onClick={onFormSubmit}
             >
               Submit

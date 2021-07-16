@@ -10,3 +10,18 @@
   width: 1000px !important;
   background-color: red;
 }
+.img-of-pizza-modal {
+  margin-left: -17px;
+  margin-top: -20px;
+  height: 190px;
+  width: 499px;
+}
+
+@media (max-width: 768px) {
+  .img-of-pizza-modal {
+    margin-left: -17px;
+    margin-top: -20px;
+    height: 190px;
+    width: 329px;
+  }
+}

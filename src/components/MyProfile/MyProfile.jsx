@@ -237,7 +237,7 @@ const MyProfile = () => {
               <TextField
                 size="small"
                 className="profile-textfield"
-                label="Country Code"
+                label="Phone Number"
                 variant="outlined"
                 value={state.mobile}
                 onChange={(e) => handlePhoneNumber(e.target.value)}
@@ -249,7 +249,7 @@ const MyProfile = () => {
                 onClick={formSubmit}
                 className="profile-submit-button"
                 style={{
-                  backgroundColor: "#6244da",
+                  backgroundColor: "#302f31",
                   color: "white",
                 }}
               >

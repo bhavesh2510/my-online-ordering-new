@@ -18,22 +18,25 @@
 .button-parent {
   right: 10px;
   position: absolute;
-  padding: 0.6rem 2.6rem;
+  padding: 0.6rem;
   bottom: 5px;
   background-color: black;
   color: white;
   border-radius: 10px;
   cursor: pointer;
 }
-.btn-submit {
-  min-width: auto;
-  min-height: 26px;
-  display: inline-flex;
-  -webkit-box-align: stretch;
+.btn-submit-order-success {
+  /* min-width: auto;
+  min-height: 26px; */
+  color: white;
+  /* display: inline-flex;
+  -webkit-box-align: stretch; */
   align-items: stretch;
   border-radius: 0.6rem;
   background: transparent;
-  padding: 0px;
+  padding-left: 20px;
+  padding-right: 25px;
+  font-size: 15px;
   border: none;
 }
 .nav-parent {
@@ -58,10 +61,10 @@
   display: inline-block;
 }
 .tab-current {
-  // border: 1px solid #ededed;
+  /* // border: 1px solid #ededed;
   // box-shadow: inset 0 2px #ededed;
   // border-bottom: none;
-  // z-index: 100;
+  // z-index: 100; */
   border: 1px solid transparent;
   border-bottom: none;
   margin: 0 0.25em;
@@ -71,7 +74,7 @@
 }
 .anchor-parent {
   color: #999;
-  //border: 1px solid black;
+  /* //border: 1px solid black; */
   display: block;
   font-size: 13px;
   text-transform: uppercase;
@@ -88,9 +91,6 @@
   border-top-right-radius: 3px;
   cursor: pointer;
 }
-//
-
-//
 
 .modal-wrapper {
   position: fixed;
@@ -137,7 +137,7 @@
     min-width: 20rem;
     border-radius: 0.6rem;
     transform: scale(1);
-    //box-shadow: rgb(28 28 28 / 15%) 0px 1.2rem 7rem;
+    /* //box-shadow: rgb(28 28 28 / 15%) 0px 1.2rem 7rem; */
     transition: transform 0.25s ease 0s;
   }
 }
@@ -248,7 +248,7 @@
 }
 
 .tax-area {
-  //background: rgb(255, 251, 247);
+  /* //background: rgb(255, 251, 247); */
   background-color: #f1f1f1;
   padding: 1.5rem 1.4rem;
 }
@@ -422,21 +422,37 @@
   }
   .body-container {
     width: 290px !important;
-    height: 350px;
+    height: 370px;
   }
-  .btn-submit {
+  .width-of-ordersuccess {
+    width: 105%;
+  }
+  .btn-submit-order-success {
     min-width: 20px !important;
     min-height: 20px;
     display: inline-flex;
-    // -webkit-box-align: stretch;
-    // align-items: stretch;
+
+    color: white;
+
     border-radius: 0.6rem;
     background: transparent;
-    padding: 0px;
+    padding: 5px;
     border: none;
   }
   .pl-5,
   .px-5 {
     padding: 1rem !important;
+  }
+  .button-parent {
+    bottom: 12px;
+  }
+  .heading-modal {
+    font-size: 1.4rem;
+    line-height: 2rem;
+    font-weight: 400;
+    color: rgb(28, 28, 28);
+    margin-top: 0.5rem;
+    margin-bottom: 0.83rem;
+    margin-left: 15px;
   }
 }

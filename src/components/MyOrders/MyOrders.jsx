@@ -10,7 +10,7 @@ import {
 } from "../../state-management/user/asyncActions";
 import LoadingBar from "../LoadingBar/LoadingBar";
 import MyOrderDetails from "../MyOrderDetails/MyOrderDetails";
-import "./MyOrders.scss";
+import "./MyOrders.css";
 import AppHeader from "../AppHeader/AppHeader";
 import MyProfile from "../MyProfile/MyProfile";
 import HomeIcon from "@material-ui/icons/Home";
@@ -33,6 +33,7 @@ import {
   isHappyHourStillActive,
   setTimer,
 } from "../../state-management/menu/utils";
+import RenderModifiers from "../../containers/Modifiers/RenderModifiers";
 
 const MyOrders = React.memo(({ restaurantId }) => {
   const main = useSelector((state) => state.main);
@@ -190,6 +191,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
   const [paymethod, setpaymethod] = useState();
 
   const showModal = async (currentitem) => {
+    console.log("cyrrent item is", currentitem);
     setstate({ ...state, showloader: true });
     //console.log("orderid of modal", orderid);
     if (currentitem.pay_method === "2") {
@@ -318,6 +320,29 @@ const MyOrders = React.memo(({ restaurantId }) => {
   };
 
   const savedAmount = Math.abs(getSavedAmount());
+
+  const isFmHaveDetours = (fmId, detoursList) => {
+    let data = "";
+
+    let result = false;
+
+    detoursList.map((detour) => {
+      if (detour.fm_item_id === fmId) {
+        // detour availabe
+        result = true;
+        // now loop through items
+        detour.dom.map((op) => {
+          data += ` , ${op.om_item_name}`;
+        });
+      }
+    });
+
+    return {
+      result,
+      data,
+    };
+  };
+
   return (
     <>
       {state.showloader ? <WaitingOverlay /> : null}
@@ -326,7 +351,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
       <AppHeader />
 
       <section
-        //className="parallax-window_myprofile "
+        className="width-of-ordersuccess"
         data-parallax="scroll"
         // data-image-src="https://cutt.ly/Kkb7BY9"
         style={{
@@ -343,7 +368,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
         </div>
       </section>
       <div
-        className="container margin_60"
+        className="container margin_60 width-of-ordersuccess"
         style={{ backgroundColor: "#f9f9f9", border: "1px solid #f1f1f1" }}
       >
         <nav className="nav-parent">
@@ -409,12 +434,22 @@ const MyOrders = React.memo(({ restaurantId }) => {
           <div className="row">
             {state.showorder ? (
               <>
-                <>
-                  <PaginationOrderList
-                    orderList={orderList}
-                    showModal={showModal}
-                  />
-                </>
+                {orderList.length == 0 ? (
+                  <>
+                    <img
+                      src="https://biryaniblues.com/assets/frontend/images/empty-box.png"
+                      style={{ marginLeft: "30%" }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <PaginationOrderList
+                      orderList={orderList}
+                      showModal={showModal}
+                    />
+                  </>
+                )}
+
                 {/* {orderList.map((currval) => {
                   return (
                   
@@ -463,24 +498,141 @@ const MyOrders = React.memo(({ restaurantId }) => {
                         <h5 className="heading-list">Order List</h5>
                         {product &&
                           product.map((currval) => {
+                            let item = currval;
+                            let forcedModifier = "";
+
+                            let optionalModifier = "";
+
+                            let toppings = "";
+
+                            let sizeAndBase = "";
+
+                            let halfNhalf = "";
+
+                            if (
+                              item.forced_modifier === undefined ||
+                              item.forced_modifier.length !== 0
+                            ) {
+                              item.forced_modifier.map(function (fm) {
+                                // check if there is detour availabe
+                                const detours = isFmHaveDetours(
+                                  fm.fmid,
+                                  item.detours
+                                );
+
+                                forcedModifier += `, ${fm.name}`;
+                                forcedModifier = forcedModifier
+                                  .replace(/[\s,]+/, " ")
+                                  .trim();
+                                if (detours.result) {
+                                  detours.data = detours.data
+                                    .replace(/[\s,]+/, " ")
+                                    .trim();
+                                  forcedModifier += `(${detours.data})`;
+                                }
+                              });
+                            }
+                            if (
+                              item.optional_modifier === undefined ||
+                              item.optional_modifier.length !== 0
+                            ) {
+                              item.optional_modifier.map(function (om) {
+                                optionalModifier += `, ${om.name}`;
+                              });
+                              optionalModifier = optionalModifier
+                                .replace(/[\s,]+/, " ")
+                                .trim();
+                            }
+
+                            // PIZZA Details
+
+                            // Toppings
+                            if (item.toppings !== undefined) {
+                              item.toppings.map(function (top) {
+                                toppings += `, ${top.name}`;
+                              });
+                              toppings = toppings.replace(/[\s,]+/, " ").trim();
+                            }
+
+                            // SizeAndBase
+                            if (item.base !== undefined) {
+                              console.log("pizaa bug", item);
+                              sizeAndBase = `${item.size_vlaue} ${item.base.base_name}`;
+                            }
+
+                            // HalfNhalf
+                            if (
+                              item.first_half_toppings !== undefined &&
+                              item.second_half_toppings !== undefined &&
+                              item.first_half_toppings.length > 0 &&
+                              item.second_half_toppings.length > 0
+                            ) {
+                              halfNhalf = `First Half: ${item.first_half_toppings[0].name}, Second Half: ${item.second_half_toppings[0].name}`;
+                            }
+
                             return (
-                              <div className="dish-item">
-                                <div className="dish-name">
-                                  <div className="dish-name-child">
-                                    <div className="para-tax">
-                                      {currval.quantity} x{" "}
-                                      {currval.product_name}
-                                    </div>
-                                    <div className="para-tax">
-                                      {truncateDecimal(
-                                        Number(currval.subtotal) +
-                                          Number(currval.tax)
-                                      )}
-                                      {/* Number(currval.tax)} */}
+                              <>
+                                <div className="dish-item">
+                                  <div className="dish-name">
+                                    <div className="dish-name-child">
+                                      <div className="para-tax">
+                                        {currval.quantity} x{" "}
+                                        {currval.product_name}
+                                      </div>
+
+                                      <div className="para-tax">
+                                        {truncateDecimal(
+                                          Number(currval.subtotal) +
+                                            Number(currval.tax)
+                                        )}
+                                        {/* Number(currval.tax)} */}
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
+
+                                <div
+                                  style={{
+                                    width: "50%",
+                                    marginLeft: "28px",
+                                    marginTop: "10px",
+                                    fontSize: "13px",
+                                  }}
+                                >
+                                  {forcedModifier !== "" ? (
+                                    <section className="modifiers">
+                                      <span className="modifiers-heading">
+                                        Modifiers:
+                                      </span>
+                                      {forcedModifier}
+                                    </section>
+                                  ) : null}
+                                  {optionalModifier !== "" ? (
+                                    <section className="modifiers">
+                                      <span className="modifiers-heading">
+                                        Extras:
+                                      </span>
+                                      {optionalModifier}
+                                    </section>
+                                  ) : null}
+                                  {toppings !== "" ? (
+                                    <section className="modifiers">
+                                      <span className="modifiers-heading">
+                                        Toppings:
+                                      </span>
+                                      {toppings}
+                                    </section>
+                                  ) : null}
+                                  {halfNhalf !== "" ? (
+                                    <section className="modifiers">
+                                      <span className="modifiers-heading">
+                                        Half And Half Choice:
+                                      </span>
+                                      {halfNhalf}
+                                    </section>
+                                  ) : null}
+                                </div>
+                              </>
                             );
                           })}
 
@@ -678,7 +830,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
                           onClick={changePasswordFormSubmit}
                           className="password-submit-button"
                           style={{
-                            backgroundColor: "#6244da",
+                            backgroundColor: "#302f31",
 
                             color: "white",
                           }}

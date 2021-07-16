@@ -282,7 +282,7 @@ const CreateAccount = (props) => {
                   <Button
                     onClick={ValidateEmail}
                     style={{
-                      backgroundColor: "#6244da",
+                      backgroundColor: "#302f31",
                       padding: "10px",
                       color: "white",
                       width: "90%",

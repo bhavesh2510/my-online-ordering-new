@@ -1,0 +1,71 @@
+.check-wrap {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px solid #4caf50;
+  position: relative;
+  overflow: hidden;
+  animation: wrap 0.23s ease-in-out forwards;
+  animation-delay: 0.8s;
+  transform: scale(0);
+  margin-left: 37%;
+}
+
+.check-wrap::before,
+.check-wrap::after {
+  content: "";
+  position: absolute;
+  background-color: white;
+  width: 0;
+  height: 9px;
+  transform-origin: left;
+  animation-duration: 0.23s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+.check-wrap::before {
+  top: 58px;
+  left: 30px;
+  transform: rotate(45deg);
+  animation-name: left;
+  animation-delay: 1.8s;
+}
+.check-wrap::after {
+  top: 70px;
+  left: 45px;
+  transform: rotate(-45deg);
+  animation-name: right;
+  animation-delay: 1.8s;
+}
+
+@media (max-width: 768px) {
+  .check-wrap {
+    margin-left: 30% !important;
+  }
+}
+@keyframes wrap {
+  0% {
+    background-color: transparent;
+    transform: scale(0);
+  }
+  100% {
+    background-color: #4caf50;
+    transform: scale(1);
+  }
+}
+@keyframes left {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 24px;
+  }
+}
+@keyframes right {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 47px;
+  }
+}

@@ -237,6 +237,7 @@ class PizzaModal extends React.PureComponent {
     };
 
     const { payload } = await this.props.fetchToppings(requestData);
+    console.log("payload of toppings", payload);
 
     this.setState({ isToppingFetched: true });
     if (payload) {
@@ -382,10 +383,11 @@ class PizzaModal extends React.PureComponent {
         >
           <ModalHeader>
             <img
-              style={{ marginLeft: "-17px", marginTop: "-20px" }}
+              className="img-of-pizza-modal"
+              // style={{ marginLeft: "-17px", marginTop: "-20px" }}
               src="https://i.ibb.co/qWc9P0d/piiza-3.jpg"
-              height="190px"
-              width="499px"
+              // height="190px"
+              // width="499px"
             />
             <div
               onClick={this.toggle}

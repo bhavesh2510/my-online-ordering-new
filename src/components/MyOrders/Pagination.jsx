@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./MyOrders.scss";
+import "./MyOrders.css";
 
 const Pagination = ({ showPerPage, onPaginationChange, total }) => {
   console.log("length is", total);

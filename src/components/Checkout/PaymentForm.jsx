@@ -94,7 +94,7 @@ const PaymentForm = (props) => {
     hasPickupOption: false,
     pickupTime: settime(),
     deliveryTime: settime(),
-
+    checkingChangeAddress: false,
     showChangeAddress: false,
 
     address_error: "",
@@ -192,6 +192,7 @@ const PaymentForm = (props) => {
     dispatch(setIsTakeAway(type === DELIVERY_TYPE.TAKE_AWAY));
     if (headingfornoaddress) {
       getDeliveryCharges(user.distance);
+      //setdata({ ...data, checkingChangeAddress: true });
     }
   };
   const deliveryTypeEatinClick = (type) => {
@@ -350,9 +351,41 @@ const PaymentForm = (props) => {
       });
     }
   };
+
   const onClick = () => {
-    //setdata({ ...data, comments: props.comm });
-    props.onHandleCheckout(data);
+    console.log("distance at the time of range is", range_arr);
+    var range_arr;
+    main.deliveryRange.range.map((val) => {
+      range_arr = val.range_to;
+    });
+
+    if (!data.checkingChangeAddress && data.deliveryType == "Delivery") {
+      notification["warning"]({
+        message: "please select atleast one address",
+        style: {
+          marginTop: "50px",
+
+          color: "rgba(0, 0, 0, 0.65)",
+          border: "1px solid #b7eb8f",
+          backgroundColor: "#f6ffed",
+        },
+        placement: "topRight",
+      });
+    } else if (user.distance > range_arr && data.deliveryType == "Delivery") {
+      notification["warning"]({
+        message: "This Address is out of range now !",
+        style: {
+          marginTop: "50px",
+
+          color: "rgba(0, 0, 0, 0.65)",
+          border: "1px solid #b7eb8f",
+          backgroundColor: "#f6ffed",
+        },
+        placement: "topRight",
+      });
+    } else {
+      props.onHandleCheckout(data);
+    }
   };
 
   const getMinHours = () => {
@@ -445,6 +478,7 @@ const PaymentForm = (props) => {
         dispatch(setSelectedAddress(defaultAddress));
         handleDefautAddress(defaultAddress);
         setheadingfornoaddress(true);
+        setdata({ ...data, checkingChangeAddress: true });
       }
     }
 
@@ -513,6 +547,7 @@ const PaymentForm = (props) => {
       changeaddress: address,
       selectedAddress: address,
       showChangeAddress: false,
+      checkingChangeAddress: true,
     });
     setState({ ...state, showAddress: true });
     handleChangeDefautAddress(address);
@@ -702,61 +737,63 @@ const PaymentForm = (props) => {
   return (
     <>
       <div className="box_style_2 delivery-container">
-        <h2 className="delivery-head">Select Delivery type</h2>
-        {data.hasDeliveryOption ? (
-          <>
-            <input
-              className="check_payment"
-              type="radio"
-              name="typeofdelivery"
-              id="delivery"
-            />
+        <h2 className="delivery-head-type">Select Delivery type</h2>
+        <div className="container-for-mobile">
+          {data.hasDeliveryOption ? (
+            <>
+              <input
+                className="check_payment"
+                type="radio"
+                name="typeofdelivery"
+                id="delivery"
+              />
 
-            <label
-              onClick={() => deliveryTypeClick(DELIVERY_TYPE.DEFAULT)}
-              for="delivery"
-              class="btn_radio"
-            >
-              Delivery
-            </label>
-          </>
-        ) : null}
+              <label
+                onClick={() => deliveryTypeClick(DELIVERY_TYPE.DEFAULT)}
+                for="delivery"
+                class="btn_radio"
+              >
+                Delivery
+              </label>
+            </>
+          ) : null}
 
-        {data.hasEatInOption && timeinbusinesshour ? (
-          <>
-            <input
-              className="check_payment"
-              type="radio"
-              name="typeofdelivery"
-              id="eatin"
-            />
-            <label
-              onClick={() => deliveryTypeEatinClick(DELIVERY_TYPE.EAT_IN)}
-              for="eatin"
-              class="btn_radio"
-            >
-              Eat In
-            </label>{" "}
-          </>
-        ) : null}
+          {data.hasEatInOption && timeinbusinesshour ? (
+            <>
+              <input
+                className="check_payment"
+                type="radio"
+                name="typeofdelivery"
+                id="eatin"
+              />
+              <label
+                onClick={() => deliveryTypeEatinClick(DELIVERY_TYPE.EAT_IN)}
+                for="eatin"
+                class="btn_radio"
+              >
+                Eat In
+              </label>{" "}
+            </>
+          ) : null}
 
-        {data.hasPickupOption ? (
-          <>
-            <input
-              className="check_payment"
-              type="radio"
-              name="typeofdelivery"
-              id="pickup"
-            />
-            <label
-              onClick={() => deliveryTypePickupClick(DELIVERY_TYPE.TAKE_AWAY)}
-              for="pickup"
-              class="btn_radio"
-            >
-              Pickup
-            </label>
-          </>
-        ) : null}
+          {data.hasPickupOption ? (
+            <>
+              <input
+                className="check_payment"
+                type="radio"
+                name="typeofdelivery"
+                id="pickup"
+              />
+              <label
+                onClick={() => deliveryTypePickupClick(DELIVERY_TYPE.TAKE_AWAY)}
+                for="pickup"
+                class="btn_radio"
+              >
+                Pickup
+              </label>
+            </>
+          ) : null}
+        </div>
       </div>
 
       {state.showAddress ? (
@@ -824,12 +861,12 @@ const PaymentForm = (props) => {
                           ? user.defaultAddress[0].address2
                           : null}{" "}
                         &nbsp;
-                        {user.defaultAddress
+                        {user.defaultAddress &&
+                        user.defaultAddress[0].state !== "undefined"
                           ? user.defaultAddress[0].state
                           : null}
                         , &nbsp;
                       </p>
-
                       <p style={{ fontSize: "15px" }}>
                         {user.defaultAddress
                           ? user.defaultAddress[0].city
@@ -843,6 +880,13 @@ const PaymentForm = (props) => {
                           ? user.defaultAddress[0].country
                           : null}
                       </p>
+                      +
+                      {user.defaultAddress
+                        ? menu.restaurantInfo.phone_code
+                        : null}{" "}
+                      &nbsp;
+                      {user.defaultAddress ? user.user.mobile : null}
+                      <p></p>
                     </>
                   ) : null}
                 </>
@@ -871,6 +915,10 @@ const PaymentForm = (props) => {
                       {data.changeaddress.city} - &nbsp;
                       {data.changeaddress.zipcode} , &nbsp;{" "}
                       {data.changeaddress.country}
+                    </p>
+                    <p style={{ fontSize: "15px" }}>
+                      +{menu.restaurantInfo.phone_code} &nbsp;
+                      {user.user.mobile}
                     </p>
                   </>
                 ) : null}
@@ -946,6 +994,7 @@ const PaymentForm = (props) => {
                             style={{
                               height: "35px",
                               paddingTop: "8px",
+                              backgroundColor: "#302f31",
                             }}
                           >
                             Deliver Here
@@ -985,17 +1034,21 @@ const PaymentForm = (props) => {
           <h2 className="delivery-head">Pickup Details</h2>
           <div className="pickup-details">
             <h3>
-              <strong>Business hours are {main.businessHour}</strong>
+              <strong className="delivery-head-business">
+                Business hours are {main.businessHour}
+              </strong>
             </h3>
             <br />
             <div className="address-details" style={{ color: "black" }}>
               selected pickup time : &nbsp;
-              <TimePicker
-                defaultValue={data.pickupTime}
-                disabledHours={getDisabledHours}
-                onChange={onPickupTimeChange}
-                format="HH:mm"
-              />
+              <div className="timepicker-container">
+                <TimePicker
+                  defaultValue={data.pickupTime}
+                  disabledHours={getDisabledHours}
+                  onChange={onPickupTimeChange}
+                  format="HH:mm"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -1007,7 +1060,7 @@ const PaymentForm = (props) => {
           style={{ cursor: "pointer" }}
           onClick={showAddressModal}
         >
-          <div className="pickup-details" style={{ height: "30px" }}>
+          <div className="pickup-details" style={{ height: "45px" }}>
             <div
               className="address-details"
               style={{
@@ -1016,12 +1069,14 @@ const PaymentForm = (props) => {
               }}
             >
               Selected Delivery Time : &nbsp;
-              <TimePicker
-                defaultValue={data.pickupTime}
-                disabledHours={getDisabledHours}
-                onChange={onDeliveryTimeChange}
-                format="HH:mm"
-              />
+              <div className="timepicker-container">
+                <TimePicker
+                  defaultValue={data.pickupTime}
+                  disabledHours={getDisabledHours}
+                  onChange={onDeliveryTimeChange}
+                  format="HH:mm"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -1101,7 +1156,7 @@ const PaymentForm = (props) => {
               <Button
                 onClick={onClick}
                 style={{
-                  backgroundColor: "#6244da",
+                  backgroundColor: "#302f31",
                   color: "white",
                   width: "100%",
                   padding: "10px",

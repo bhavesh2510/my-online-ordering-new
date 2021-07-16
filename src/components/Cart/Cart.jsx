@@ -295,7 +295,11 @@ const Cart = (props) => {
 
   return (
     <div id="cart_box">
-      <h3 style={{ backgroundColor: "#6244da", color: "white" }}>
+      <h3
+        style={{ backgroundColor: "#666171", color: "white" }}
+        id="Your Order"
+        className="hide-on-mobile"
+      >
         Your order <ShoppingCartIcon style={{ float: "right" }} />
       </h3>
 
@@ -364,7 +368,7 @@ const Cart = (props) => {
               Subtotal{" "}
               <span className="float-right">{`${
                 props.restinfo.monetary_symbol
-              }${getSubTotal()}`}</span>
+              } ${getSubTotal()}`}</span>
             </td>
           </tr>
           <tr>
@@ -372,7 +376,7 @@ const Cart = (props) => {
               Taxes{" "}
               <span className="float-right">{`${
                 props.restinfo.monetary_symbol
-              }${getSubTaxTotal()}`}</span>
+              } ${getSubTaxTotal()}`}</span>
             </td>
           </tr>
           {/* {radioval == "takeaway" || radioval == "eatin" ? (
@@ -398,7 +402,7 @@ const Cart = (props) => {
               TOTAL{" "}
               <span className="float-right">{`${
                 props.restinfo.monetary_symbol
-              }${getBillAmount()}`}</span>
+              } ${getBillAmount()}`}</span>
             </td>
           </tr>
         </tbody>
@@ -415,9 +419,9 @@ const Cart = (props) => {
       {user.user.isUserLoggedIn ? (
         <button
           onClick={goToCheckout}
-          className="btn_full"
-          href="cart.html"
-          style={{ backgroundColor: "#5B53CD" }}
+          className="btn_full "
+          // href="cart.html"
+          style={{ backgroundColor: "#302f32" }}
         >
           Checkout
         </button>
@@ -425,8 +429,8 @@ const Cart = (props) => {
         <button
           onClick={callLoginForm}
           className="btn_full"
-          href="cart.html"
-          style={{ backgroundColor: "#5B53CD" }}
+          // href="cart.html"
+          style={{ backgroundColor: "#302f32" }}
         >
           Proceed to Login
         </button>

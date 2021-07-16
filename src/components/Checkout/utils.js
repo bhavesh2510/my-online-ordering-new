@@ -160,6 +160,18 @@ export function getFormattedRequestPayload(
 
   console.log("Formatted Request Payload", payload);
 
+  var x;
+
+  if (delivery.deliveryType == DELIVERY_TYPE.DEFAULT) {
+    if (user.selectedAddress.state) {
+      x = user.selectedAddress.state;
+    } else if (user.selectedAddress[0].state) {
+      x = user.selectedAddress[0].state;
+    } else {
+      x = "";
+    }
+  }
+
   return delivery.deliveryType !== DELIVERY_TYPE.TAKE_AWAY &&
     delivery.deliveryType !== DELIVERY_TYPE.EAT_IN
     ? {
@@ -172,8 +184,8 @@ export function getFormattedRequestPayload(
             delivery.selectedAddress[0].address2,
         delivery_city:
           user.selectedAddress.city || user.selectedAddress[0].city,
-        delivery_state:
-          user.selectedAddress.state || user.selectedAddress[0].state,
+        delivery_state: x,
+        // user.selectedAddress.state || user.selectedAddress[0].state,
         delivery_country:
           user.selectedAddress.country || user.selectedAddress[0].country,
         delivery_zipcode:

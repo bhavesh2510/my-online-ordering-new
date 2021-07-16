@@ -102,19 +102,20 @@ const Appheader = () => {
               </a>
               <ul>
                 {Number(menu.restaurantInfo["chain_owner_id"]) ? (
-                  <li key={11} className="navigation-buttons">
-                    {/* Should figure out why Link is not working as expected, page getting redirected */}
-                    <a
-                      // onClick={() =>
-                      //   history.push(
-                      //     `${process.env.REACT_APP_PUBLIC_URL}chainId=${menu.restaurantInfo.chain_owner_id}`
-                      //   )
-                      // }
-                      href={`?/chainId=${menu.restaurantInfo.chain_owner_id}`}
-                    >
-                      Home
-                    </a>
-                  </li>
+                  <>
+                    {/* {main.restaurants.lenth >= 1 ? ( */}
+                    <>
+                      <li key={11} className="navigation-buttons">
+                        {/* Should figure out why Link is not working as expected, page getting redirected */}
+                        <a
+                          href={`?/chainId=${menu.restaurantInfo.chain_owner_id}`}
+                        >
+                          Home
+                        </a>
+                      </li>
+                    </>
+                    {/* ) : null} */}
+                  </>
                 ) : null}
                 <li
                   style={{ color: "white", cursor: "pointer" }}

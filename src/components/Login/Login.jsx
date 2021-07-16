@@ -457,7 +457,7 @@ const Login = (props) => {
               <Button
                 onClick={onFormSubmit}
                 style={{
-                  backgroundColor: "#6244da",
+                  backgroundColor: "#302f31",
                   padding: "10px",
                   color: "white",
                   width: "90%",

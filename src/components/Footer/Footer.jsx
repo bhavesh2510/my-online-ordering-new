@@ -1,12 +1,18 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Logo from "../Footer/zottoLogo.png";
 import FacebookIcon from "@material-ui/icons/Facebook";
 import TwitterIcon from "@material-ui/icons/Twitter";
 import InstagramIcon from "@material-ui/icons/Instagram";
+import {
+  setUserLoggedOut,
+  showLoginFormMethod,
+  showRegisterFormMethod,
+} from "../../state-management/user/actions";
 
 const Footer = () => {
   const menu = useSelector((state) => state.menu);
+  const dispatch = useDispatch();
   var d = new Date();
   var n = d.getFullYear();
 
@@ -28,16 +34,23 @@ const Footer = () => {
 
         return (
           <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-            }}
+            className="footer-business-info"
+            // style={{
+            //   display: "flex",
+            //   flexDirection: "row",
+            // }}
           >
-            <p style={{ float: "left", fontWeight: "500" }}>
+            <p
+              className="footer-business-day"
+              //style={{ float: "left", fontWeight: "500" }}
+            >
               {business.day_name}
             </p>{" "}
             &nbsp;
-            <p style={{ alignContent: "flex-end", float: "right" }}>
+            <p
+              className="footer-business-hour"
+              //style={{ alignContent: "flex-end", float: "right" }}
+            >
               {businessHour}
             </p>
             <br />
@@ -46,6 +59,14 @@ const Footer = () => {
       })
     );
   }
+
+  const showLogin = () => {
+    dispatch(showLoginFormMethod());
+  };
+
+  const showRegister = () => {
+    dispatch(showRegisterFormMethod());
+  };
 
   return (
     <footer>
@@ -66,23 +87,10 @@ const Footer = () => {
             <h3>About</h3>
             <ul>
               <li>
-                <a href="about.html">About us</a>
+                <a onClick={showLogin}>Login</a>
               </li>
               <li>
-                <a href="faq.html">Faq</a>
-              </li>
-              <li>
-                <a href="contacts.html">Contacts</a>
-              </li>
-              <li>
-                <a href="#0" data-toggle="modal" data-target="#login_2">
-                  Login
-                </a>
-              </li>
-              <li>
-                <a href="#0" data-toggle="modal" data-target="#register">
-                  Register
-                </a>
+                <a onClick={showRegister}>Register</a>
               </li>
               <li>
                 <a href="#0">Terms and conditions</a>

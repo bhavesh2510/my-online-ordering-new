@@ -1,11 +1,11 @@
 .button-menutable {
   cursor: pointer;
-  background-color: #5b53cd;
-  color: whitesmoke;
-  font-size: 1rem;
+  background-color: #302f31;
+  color: white;
+  font-size: 1.5rem;
   width: 30px;
   height: 30px;
-  border-radius: 20%;
+  border-radius: 50%;
   border: none;
   outline: none;
   /* paddingTop: "-15px; */
@@ -24,6 +24,422 @@
 }
 
 .properties-img {
-  height: 1.2rem;
+  height: 1rem;
   margin-right: 5px;
+}
+.description-div {
+  /* background-color: #f1f1f1; */
+  width: 188%;
+}
+.description-div:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+.mobile-description {
+  display: none;
+}
+.width-td {
+  width: 60%;
+}
+.mobile-description-div {
+  display: none;
+}
+.skelton-class {
+  height: 28px;
+  width: 400px;
+}
+.skelton-class-mid {
+  height: 28px;
+  width: 300px;
+}
+@media (max-width: 768px) {
+  .description-div {
+    display: none;
+  }
+  .mobile-description {
+    display: block;
+  }
+  .table.cart-list td {
+    vertical-align: middle;
+    color: #555;
+  }
+  .width-td {
+    width: 10px !important;
+    padding: 10px;
+  }
+  .extra-info {
+    display: flex;
+    margin-top: 10px;
+    margin-left: -10px;
+  }
+  .mobile-description-div {
+    display: block;
+    padding: 10px;
+    margin-left: 20px;
+  }
+  .happy-hour-text-div {
+    width: 100px;
+  }
+
+  .skelton-class {
+    height: 28px !important;
+    width: 50px !important;
+  }
+  .skelton-class-mid {
+    height: 28px !important;
+    width: 50px !important;
+  }
+}
+.button-menu-container {
+  display: flex;
+}
+.add-icon-align {
+  margin-top: 4px;
+}
+
+.parent-menutable {
+  margin-bottom: 2.5rem;
+}
+.parent-flex {
+  display: flex;
+  flex-direction: row;
+}
+.left-menutable-img {
+  position: relative;
+  margin-right: 2rem;
+  margin-bottom: 0px;
+  flex-shrink: 0;
+}
+
+.img-cover-menutable {
+  height: 7rem;
+  width: 7rem;
+  border-radius: 0.8rem;
+  visibility: visible;
+}
+.food-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: none;
+  opacity: 1;
+  will-change: transform, opacity;
+  border-radius: inherit;
+  filter: unset;
+}
+.food-details {
+  width: 100%;
+  min-width: 1%;
+}
+.inner-food-details-div {
+  display: flex;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+}
+.specific-food-details {
+  display: flex;
+  flex-direction: column;
+  max-width: 75%;
+}
+.food-item-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgb(28, 28, 28);
+  line-height: 150%;
+  margin: 0px;
+}
+.item-price-parent-div {
+  margin: 5px 0px;
+}
+.item-price {
+  font-size: 1rem;
+  color: rgb(28, 28, 28);
+  font-weight: 700;
+}
+.food-description {
+  margin: 0rem 0px;
+  font-size: 0.8rem;
+  color: rgb(79, 79, 79);
+  max-width: 75%;
+  overflow-wrap: break-word;
+}
+.specific-add-button {
+  display: flex;
+  flex-direction: column;
+  -webkit-box-align: center;
+  align-items: center;
+}
+.button-container {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  width: 5.5rem;
+  height: 2.5rem;
+  border: 1px solid rgb(181, 181, 181);
+  border-radius: 0.3rem;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  background: rgb(255, 255, 255);
+}
+.add-to-cart-button {
+  color: rgb(28, 28, 28);
+  font-size: 1rem;
+  margin: 0px 0.5rem;
+  font-weight: 500;
+}
+.read-more {
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgb(28, 28, 28);
+}
+.category-name-head {
+  font-size: 2.4rem;
+  /* line-height: 1.2; */
+  color: rgb(28, 28, 28);
+  margin: 0px;
+  margin-block-end: 0px;
+
+  top: 198px;
+  padding: 1.4rem 0px;
+  background: rgb(255, 255, 255);
+  font-weight: 500;
+
+  z-index: 1;
+  display: flex;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  align-items: center;
+}
+.food-icons {
+  margin: 0.3rem 0px;
+}
+.food-icon-child {
+  display: flex;
+}
+.add-to-cart-button-plus {
+  display: none;
+}
+.cart-for-mobile {
+  display: none;
+}
+.cart-background-mobile {
+  display: none;
+}
+.category-separator {
+  /* style={{
+    backgroundColor: "#f1f1f1",
+    height: "20px",
+    width: "113%",
+    marginLeft: "-25px",
+    marginTop: "-25px",
+  }} */
+
+  background-color: #f1f1f1;
+  height: 10px;
+  width: 110%;
+  margin-left: -25px;
+  margin-top: -25px;
+}
+
+@media (max-width: 768px) {
+  .parent-menutable {
+    margin-bottom: 2.5rem;
+  }
+
+  .left-menutable-img {
+    margin-right: 1rem;
+  }
+
+  .img-cover-menutable {
+    height: 6.5rem;
+    width: 6.5rem;
+    border-radius: 0.4rem;
+    visibility: visible;
+    margin-left: -20px;
+    margin-top: 20px;
+  }
+  .food-details {
+    margin-top: 20px;
+  }
+  .food-item-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: rgb(28, 28, 28);
+    line-height: 150%;
+    margin: 0px;
+  }
+
+  .button-container {
+    margin-top: 10px;
+
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid rgb(181, 181, 181);
+    border-radius: 1.2rem;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+    background: rgb(255, 255, 255);
+  }
+  .add-to-cart-button {
+    display: none;
+  }
+  .add-to-cart-button-plus {
+    display: block;
+  }
+  .food-description {
+    margin: 0rem 0px;
+    font-size: 0.8rem;
+    color: rgb(79, 79, 79);
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }
+  /* .category-name {
+    font-size: 2rem;
+   
+    color: rgb(28, 28, 28);
+    margin-left: -10px;
+    margin-block-end: 0px;
+
+    top: 198px;
+    padding: 1.4rem 0px;
+    background: rgb(255, 255, 255);
+    font-weight: 500;
+
+    z-index: 1;
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    align-items: center;
+  } */
+  .full-width-mobile {
+    width: 112%;
+    margin-left: -27px;
+  }
+  .item-price-parent-div {
+    margin: 5px 0px;
+  }
+  .category-separator {
+    /* style={{
+      backgroundColor: "#f1f1f1",
+      height: "20px",
+      width: "113%",
+      marginLeft: "-25px",
+      marginTop: "-25px",
+    }} */
+
+    background-color: #f1f1f1;
+    height: 12px;
+    width: 117%;
+    margin-left: -25px;
+    margin-top: -25px;
+  }
+  .hr-for-mobile {
+    background-color: #f1f1f1;
+  }
+  .read-more {
+    font-size: 0.9rem;
+  }
+  .item-price {
+    font-size: 0.9rem;
+    color: rgb(28, 28, 28);
+    font-weight: 700;
+  }
+}
+
+.after-first-add-container {
+  display: flex;
+  flex-direction: column;
+  -webkit-box-align: center;
+  align-items: center;
+}
+.after-first-add-parent {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  width: 5.2rem;
+  height: 2.5rem;
+  border: 1px solid rgb(28, 28, 28);
+  border-radius: 0.3rem;
+  overflow: hidden;
+  cursor: initial;
+  user-select: none;
+  background: rgb(255, 255, 255);
+}
+.after-first-add-child {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+}
+.left-after-add {
+  position: relative;
+  width: 100%;
+  -webkit-box-flex: 0;
+  flex-grow: 0;
+  flex-shrink: 0;
+  max-width: 31.6667%;
+  padding: 0px;
+  display: flex;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center;
+  cursor: pointer;
+}
+.middle-after-add {
+  position: relative;
+  width: 100%;
+  -webkit-box-flex: 0;
+  flex-grow: 0;
+  flex-shrink: 0;
+  max-width: 36.6667%;
+  padding: 0px;
+  display: flex;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center;
+  background: rgb(247, 235, 236);
+  cursor: initial;
+}
+.right-after-add {
+  position: relative;
+  width: 100%;
+  -webkit-box-flex: 0;
+  flex-grow: 0;
+  flex-shrink: 0;
+  max-width: 31.6667%;
+  padding: 0px;
+  display: flex;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center;
+  cursor: pointer;
+}
+.qty-after-add {
+  color: rgb(28, 28, 28);
+  font-size: 1.1rem;
+  margin: 0px 0.5rem;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .after-first-add-parent {
+    margin-left: 20px !important;
+  }
 }

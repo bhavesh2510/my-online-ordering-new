@@ -27,7 +27,7 @@ function PaginationOrderList(props) {
             <div className="col-md-4 mb-4" key={currval.id}>
               <div
                 className="card"
-                style={{ border: "1px dotted #6244da", borderRadius: "15px" }}
+                style={{ border: "1px dotted #302f31", borderRadius: "15px" }}
               >
                 <div className="card-body body-container">
                   <div style={{ marginBottom: "-0.5rem" }}>
@@ -71,15 +71,10 @@ function PaginationOrderList(props) {
                   </div>
                   <div
                     className="button-parent"
-                    style={{ backgroundColor: "#6244da" }}
+                    style={{ backgroundColor: "#302f31" }}
                     onClick={() => props.showModal(currval)}
                   >
-                    <button
-                      className="btn-submit"
-                      style={{
-                        color: "white",
-                      }}
-                    >
+                    <button className="btn-submit-order-success">
                       View Detail
                     </button>
                   </div>
