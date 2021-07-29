@@ -46,7 +46,7 @@ export const ModifierOption = ({
         > */}
         <Radio value={option.id}>{option.name}</Radio>
         <div style={{ fontSize: "13px", marginLeft: "auto" }}>
-          <b>{`${currency} ${getModifierPrice(option.price)}`}</b>
+          <p>( {`${currency} ${getModifierPrice(option.price)}`} )</p>
         </div>
       </div>
       {/* </label> */}

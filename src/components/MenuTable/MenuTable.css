@@ -141,8 +141,8 @@
   max-width: 75%;
 }
 .food-item-name {
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 1.2rem;
+  font-weight: 700;
   color: rgb(28, 28, 28);
   line-height: 150%;
   margin: 0px;
@@ -151,11 +151,12 @@
   margin: 5px 0px;
 }
 .item-price {
-  font-size: 1rem;
-  color: rgb(28, 28, 28);
-  font-weight: 700;
+  font-size: 0.9rem;
+  color: #bd1e44;
+  font-weight: 500;
 }
 .food-description {
+  margin-top: 10px;
   margin: 0rem 0px;
   font-size: 0.8rem;
   color: rgb(79, 79, 79);
@@ -176,15 +177,17 @@
   justify-content: center;
   width: 5.5rem;
   height: 2.5rem;
-  border: 1px solid rgb(181, 181, 181);
+  border: 1px solid #5c48d2;
   border-radius: 0.3rem;
   overflow: hidden;
   cursor: pointer;
   user-select: none;
-  background: rgb(255, 255, 255);
+
+  background: #5c48d2;
+  margin-top: 80px;
 }
 .add-to-cart-button {
-  color: rgb(28, 28, 28);
+  color: whitesmoke;
   font-size: 1rem;
   margin: 0px 0.5rem;
   font-weight: 500;
@@ -196,7 +199,7 @@
   color: rgb(28, 28, 28);
 }
 .category-name-head {
-  font-size: 2.4rem;
+  font-size: 24px;
   /* line-height: 1.2; */
   color: rgb(28, 28, 28);
   margin: 0px;
@@ -274,21 +277,25 @@
   }
 
   .button-container {
-    margin-top: 10px;
-
-    display: flex;
-    -webkit-box-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 4rem;
+    height: 2rem;
     border: 1px solid rgb(181, 181, 181);
-    border-radius: 1.2rem;
+    /* border-radius: 1.2rem; */
     overflow: hidden;
     cursor: pointer;
     user-select: none;
     background: rgb(255, 255, 255);
+  }
+  .after-first-add-parent {
+    width: 4rem !important;
+    height: 2rem !important;
+    border: 1px solid rgb(28, 28, 28);
+    border-radius: 0.3rem;
+    overflow: hidden;
+    cursor: initial;
+    user-select: none;
+    background: rgb(255, 255, 255);
+    margin-top: 80px;
   }
   .add-to-cart-button {
     display: none;
@@ -377,6 +384,7 @@
   cursor: initial;
   user-select: none;
   background: rgb(255, 255, 255);
+  margin-top: 80px;
 }
 .after-first-add-child {
   height: 100%;
@@ -413,7 +421,9 @@
   justify-content: center;
   -webkit-box-align: center;
   align-items: center;
-  background: rgb(247, 235, 236);
+  /* background: rgb(247, 235, 236); */
+  /* background-color: #eeecfb; */
+
   cursor: initial;
 }
 .right-after-add {
@@ -433,6 +443,7 @@
 }
 .qty-after-add {
   color: rgb(28, 28, 28);
+
   font-size: 1.1rem;
   margin: 0px 0.5rem;
   font-weight: 500;

@@ -1,0 +1,63 @@
+.restro-card-container {
+  width: 350px;
+
+  height: 170px;
+}
+.restro-card-rname {
+  padding-top: 18px;
+  font-size: 16px;
+  font-weight: 700;
+  color: black !important;
+}
+.restro-card-location {
+  margin-top: -15px;
+  width: 98%;
+  color: #968ea1;
+  font-weight: 600;
+  font-size: 13px;
+}
+.rest-card-info {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+}
+.rest-card-info-child {
+  width: 100px;
+  height: 25px;
+  background-color: #f5dde3;
+  color: #bd1e44;
+  padding-left: 25px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+.rest-card-info-child-pickup {
+  width: 100px;
+  height: 25px;
+  background-color: #dee5ef;
+  color: #245591;
+  padding-left: 25px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+.rest-card-info-child-eatin {
+  width: 100px;
+  height: 25px;
+  background-color: #def1f1;
+  color: #25a09e;
+  padding-left: 30px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+.rest-card-info-child-opensat {
+  width: 100px;
+  height: 25px;
+  background-color: #d9f0ff;
+  color: #0098ff;
+  padding-left: 20px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+.hover-cat:hover {
+  border: 1px dotted black;
+  border-radius: 10px;
+}

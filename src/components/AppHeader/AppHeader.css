@@ -1,0 +1,31 @@
+.left-parent {
+  display: flex;
+  flex-direction: row;
+  margin-left: 10%;
+}
+.img-profile {
+  margin-right: 40px;
+  margin-top: -5px;
+}
+.hide-on-desktop {
+  display: none !important;
+}
+.header-bg {
+  background: white;
+  border-bottom: 1px solid #f1f1f1;
+}
+@media (max-width: 768px) {
+  .header-bg {
+    background: none;
+    border-bottom: none;
+  }
+  .color-black {
+    background-color: black !important;
+  }
+  span ::before {
+    background-color: black !important;
+  }
+  .hide-on-desktop {
+    display: block !important;
+  }
+}

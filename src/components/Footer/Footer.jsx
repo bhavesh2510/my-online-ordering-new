@@ -1,14 +1,16 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Logo from "../Footer/zottoLogo.png";
-import FacebookIcon from "@material-ui/icons/Facebook";
-import TwitterIcon from "@material-ui/icons/Twitter";
-import InstagramIcon from "@material-ui/icons/Instagram";
+import FacebookIcon from "./facebook@3x.png";
+import TwitterIcon from "./twitter@3x.png";
+import InstagramIcon from "./ig@3x.png";
 import {
   setUserLoggedOut,
   showLoginFormMethod,
   showRegisterFormMethod,
 } from "../../state-management/user/actions";
+
+import "./Footer.css";
 
 const Footer = () => {
   const menu = useSelector((state) => state.menu);
@@ -33,28 +35,41 @@ const Footer = () => {
         }
 
         return (
-          <div
-            className="footer-business-info"
-            // style={{
-            //   display: "flex",
-            //   flexDirection: "row",
-            // }}
-          >
-            <p
-              className="footer-business-day"
-              //style={{ float: "left", fontWeight: "500" }}
-            >
-              {business.day_name}
-            </p>{" "}
-            &nbsp;
-            <p
-              className="footer-business-hour"
-              //style={{ alignContent: "flex-end", float: "right" }}
-            >
-              {businessHour}
-            </p>
-            <br />
-          </div>
+          <>
+            <div className="main-footer-container">
+              <div className="footer-parent">
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    fontSize: "16px",
+                    fontWeight: "500",
+                    color: "#302F31",
+                    letterSpacing: "0.07em",
+                    color: "#666171",
+                    lineHeight: "2",
+                  }}
+                >
+                  {business.day_name}
+                </div>
+              </div>
+
+              <div className="footer-parent" style={{ marginRight: "140px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    fontSize: "16px",
+                    fontWeight: "500",
+                    color: "#666171",
+                    lineHeight: "2",
+                  }}
+                >
+                  {businessHour}
+                </div>
+              </div>
+            </div>
+          </>
         );
       })
     );
@@ -73,32 +88,91 @@ const Footer = () => {
       <div className="container">
         <div className="row">
           <div className="col-md-4">
-            <h3>Secure payments with</h3>
+            <p
+              style={{
+                fontSize: "16px",
+                color: "#302F31",
+                fontWeight: "700",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Secure payments with
+            </p>
 
             <img
+              className="logo-measurements"
               src="https://www.zotto.io/wp-content/uploads/2020/09/logo.png"
               alt="zotto-Logo"
               style={{ marginTop: "10px" }}
-              height="50px"
-              width="150px"
             />
           </div>
-          <div className="col-md-4">
-            <h3>About</h3>
+          <div className="col-md-4 margin-for-mobile">
+            <p
+              style={{
+                letterSpacing: "0.15em",
+                color: "#302F31",
+                fontWeight: "700",
+                fontSize: "16px",
+              }}
+            >
+              ABOUT
+            </p>
             <ul>
               <li>
-                <a onClick={showLogin}>Login</a>
+                <a
+                  style={{
+                    fontWeight: "500",
+                    fontSize: "16px",
+                    letterSpacing: "0.07em",
+                    color: "#666171",
+                  }}
+                  onClick={showLogin}
+                >
+                  Login
+                </a>
               </li>
-              <li>
-                <a onClick={showRegister}>Register</a>
+
+              <li style={{ marginTop: "10px" }}>
+                <a
+                  style={{
+                    fontWeight: "500",
+                    fontSize: "16px",
+                    letterSpacing: "0.07em",
+                    color: "#666171",
+                  }}
+                  onClick={showRegister}
+                >
+                  Register
+                </a>
               </li>
-              <li>
-                <a href="#0">Terms and conditions</a>
+
+              <li style={{ marginTop: "10px" }}>
+                <a
+                  style={{
+                    fontWeight: "500",
+                    fontSize: "16px",
+                    letterSpacing: "0.07em",
+                    color: "#666171",
+                    whiteSpace: "nowrap",
+                  }}
+                  href="#0"
+                >
+                  Terms and conditions
+                </a>
               </li>
             </ul>
           </div>
-          <div className="col-md-2">
-            <h3>Business Hours</h3>
+          <div className="col-md-4 margin-for-mobile">
+            <p
+              style={{
+                letterSpacing: "0.15em",
+                color: "#302F31",
+                fontWeight: "700",
+                fontSize: "16px",
+              }}
+            >
+              BUSINESS HOURS
+            </p>
             {renderBusinessHours()}
           </div>
         </div>
@@ -109,22 +183,31 @@ const Footer = () => {
               <ul>
                 <li>
                   <a href="#0">
-                    <FacebookIcon />
+                    <img
+                      src={FacebookIcon}
+                      style={{ height: "35px", width: "35px" }}
+                    />
                   </a>
                 </li>
 
                 <li>
                   <a href="#0">
-                    <TwitterIcon />
+                    <img
+                      src={TwitterIcon}
+                      style={{ height: "35px", width: "35px" }}
+                    />
                   </a>
                 </li>
                 <li>
                   <a href="#0">
-                    <InstagramIcon />
+                    <img
+                      src={InstagramIcon}
+                      style={{ height: "35px", width: "35px" }}
+                    />
                   </a>
                 </li>
               </ul>
-              <p>© zotto {n}</p>
+              <p style={{ fontSize: "16px", fontWeight: "500" }}>© zotto {n}</p>
             </div>
           </div>
         </div>

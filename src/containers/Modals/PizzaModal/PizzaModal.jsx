@@ -379,7 +379,7 @@ class PizzaModal extends React.PureComponent {
           size="lg"
           isOpen={true}
           toggle={this.toggle}
-          style={{ top: "10%", left: "2%" }}
+          style={{ top: "15%", left: "2%", width: "35%" }}
         >
           <ModalHeader>
             <img
@@ -409,7 +409,7 @@ class PizzaModal extends React.PureComponent {
               className="text-pizzamodal"
               style={{
                 fontWeight: "800",
-                color: "black",
+                color: "#5c48d2",
                 fontSize: "25px",
                 marginTop: "20px",
               }}

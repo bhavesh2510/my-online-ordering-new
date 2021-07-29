@@ -7,6 +7,9 @@ import { displayAddressModal } from "../../state-management/menu/actions";
 import { openModal } from "../../state-management/modal/actions";
 import AddAddress from "../ChooseAddress/AddAddress";
 import ChooseAddress from "../ChooseAddress/ChooseAddress";
+import img1 from "./Regular-1.5px-edit@3x.png";
+import img2 from "./Regular-1.5px-trash@3x.png";
+import img3 from "./Light-1px-add_circled@3x.png";
 import {
   fetchAddressesList,
   fetchMyOrderList,
@@ -150,13 +153,28 @@ const ManageAddress = (props) => {
     <>
       <div id="address-container">
         <main class="main-container">
-          <section className="add-address">
-            <h5>Add Address</h5>
+          <div
+            className="add-address-for-mobile"
+            onClick={() => callAddressModal(false, {})}
+          >
+            <p className="add-for-mobile-text">Add Address</p>
+          </div>
+          <section
+            className="add-address hide-on-mobile"
+            onClick={() => callAddressModal(false, {})}
+          >
+            <span style={{ cursor: "pointer" }}>
+              <img src={img3} style={{ height: "30px", width: "30px" }} />
+            </span>
             <span
-              onClick={() => callAddressModal(false, {})}
-              style={{ cursor: "pointer" }}
+              style={{
+                whiteSpace: "nowrap",
+                marginTop: "10px",
+                fontWeight: "700",
+                color: "rgb(168, 166, 170)",
+              }}
             >
-              <AddIcon />
+              Add an address
             </span>
           </section>
 
@@ -168,9 +186,72 @@ const ManageAddress = (props) => {
                   className="address-section"
                   // key={i}
                 >
-                  <Address address={address} key={i} />
+                  <div style={{ display: "flex" }}>
+                    <div
+                      onClick={() => callAddressModal(true, address)}
+                      style={{
+                        width: "35px",
+                        height: "35px",
+                        cursor: "pointer",
+                        marginTop: "-4px",
+                        marginLeft: "70%",
+                        marginRight: "10px",
+                      }}
+                    >
+                      <img
+                        src={img1}
+                        style={{
+                          width: "20px",
+                          height: "20px",
+                          marginLeft: "60%",
+                        }}
+                      />
+                    </div>
+
+                    <div
+                      style={{
+                        width: "35px",
+                        height: "35px",
+                        cursor: "pointer",
+                        marginTop: "-4px",
+                        marginLeft: "10px",
+                      }}
+                    >
+                      <img
+                        onClick={() => handleRemove(address)}
+                        src={img2}
+                        style={{
+                          width: "20px",
+                          height: "20px",
+                          marginLeft: "10%",
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div style={{ marginTop: "-15px" }}>
+                    <Address address={address} key={i} />
+                    <p
+                      className={`actions ${
+                        address["is_default"] === "1" ? "default" : ""
+                      }`}
+                      style={{ marginLeft: "60%" }}
+                      onClick={() => handleSetDefault(address)}
+                    >
+                      {" "}
+                      {address["is_default"] === "1" ? (
+                        <span
+                          className="default-address"
+                          style={{ marginLeft: "30%" }}
+                        >
+                          Default
+                        </span>
+                      ) : (
+                        "Set default"
+                      )}
+                    </p>
+                  </div>
                   <ul className="address-actions">
-                    <li onClick={() => callAddressModal(true, address)}>
+                    {/* <li onClick={() => callAddressModal(true, address)}>
                       <span>
                         <h5
                           className="actions"
@@ -179,8 +260,8 @@ const ManageAddress = (props) => {
                           Edit
                         </h5>
                       </span>
-                    </li>
-                    <li onClick={() => handleRemove(address)}>
+                    </li> */}
+                    {/* <li onClick={() => handleRemove(address)}>
                       <span>
                         <h5
                           className="actions"
@@ -189,8 +270,8 @@ const ManageAddress = (props) => {
                           Remove
                         </h5>
                       </span>
-                    </li>
-                    <li>
+                    </li> */}
+                    {/* <li>
                       <span onClick={() => handleSetDefault(address)}>
                         <h5
                           className={`actions ${
@@ -204,7 +285,7 @@ const ManageAddress = (props) => {
                           )}
                         </h5>
                       </span>
-                    </li>
+                    </li> */}
                   </ul>
                 </section>
               </>

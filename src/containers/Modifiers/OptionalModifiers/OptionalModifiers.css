@@ -37,3 +37,7 @@ section {
 .free-amount {
   text-decoration: line-through;
 } */
+
+.ant-checkbox-wrapper {
+  font-weight: 500 !important;
+}

@@ -21,25 +21,24 @@ const Toppings = React.memo(
           className="toppings-container"
           style={{
             marginTop: "20px",
-            backgroundColor: "#f9f9f9",
+
             padding: "10px",
-            border: "1px solid #f1f1f1",
+
             borderRadius: "10px",
           }}
         >
-          <img
+          {/* <img
             src="https://i.ibb.co/YcBnL1C/pizza-slice.png"
             height="40px"
             width="80px"
             style={{ float: "right" }}
-          />{" "}
+          />{" "} */}
           <br />
           <span
-            className="text-pizzamodal"
             style={{
               marginTop: "-10px",
               fontSize: "20px",
-              textTransform: "uppercase",
+              color: "#968EA1",
             }}
           >
             {" "}
@@ -76,22 +75,21 @@ const Toppings = React.memo(
           className="toppings-container"
           style={{
             marginTop: "20px",
-            backgroundColor: "#f9f9f9",
+
             padding: "10px",
-            border: "1px solid #f1f1f1",
+
             borderRadius: "10px",
           }}
         >
-          <img
+          {/* <img
             src="https://i.ibb.co/YcBnL1C/pizza-slice.png"
             height="40px"
             width="80px"
             style={{ float: "right" }}
-          />{" "}
+          />{" "} */}
           <br />
           <span
-            className="text-pizzamodal"
-            style={{ marginTop: "380px", fontSize: "20px" }}
+            style={{ marginTop: "380px", fontSize: "20px", color: "#968EA1" }}
           >
             {" "}
             Optional Toppings{" "}

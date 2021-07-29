@@ -251,7 +251,7 @@ const ItemList = ({
       <>
         <section
           className="size-and-base-section"
-          style={{ marginTop: "10px" }}
+          style={{ marginTop: "10px", marginLeft: "25px", lineHeight: "1.4" }}
         >
           <label style={{ fontSize: "12px" }}>Size & Base:&nbsp; </label>
           <span
@@ -262,7 +262,10 @@ const ItemList = ({
             {item.selectedBase.name}
           </span>
         </section>
-        <section className="toppings-list">
+        <section
+          className="toppings-list"
+          style={{ marginLeft: "25px", lineHeight: "1.4" }}
+        >
           {defaultToppings !== "" ? (
             <label style={{ fontSize: "12px", lineHeight: "0" }}>
               Default Toppings:&nbsp;{" "}
@@ -293,7 +296,10 @@ const ItemList = ({
             {optionalToppings}
           </span>
         </section>
-        <section className="toppings-list">
+        <section
+          className="toppings-list"
+          style={{ marginLeft: "25px", lineHeight: "1.4" }}
+        >
           {halfAndHalf !== "" ? (
             <label style={{ fontSize: "12px", lineHeight: "0" }}>
               Half And Half Choice:{" "}
@@ -353,7 +359,8 @@ const ItemList = ({
                         <p
                           style={{
                             // marginTop: "10px",
-                            marginLeft: "5px",
+                            marginLeft: "25px",
+                            lineHeight: "1.4",
                             fontSize: "10px",
                           }}
                         >

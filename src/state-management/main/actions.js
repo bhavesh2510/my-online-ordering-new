@@ -81,3 +81,22 @@ export const setPhoneCode = (payload) => {
   };
 };
 
+export function fetchClosedInformationRequest() {
+  return { type: actionTypes.FETCH_CLOSED_INFORMATION_REQUEST };
+}
+
+export function fetchClosedInformationSuccess(payload, timezone) {
+  console.log("restro info success", timezone);
+  return {
+    type: actionTypes.FETCH_CLOSED_INFORMATION_SUCCESS,
+    payload,
+    timezone,
+  };
+}
+
+export function fetchClosedInformationFailure(error) {
+  return {
+    type: actionTypes.FETCH_CLOSED_INFORMATION_FAILURE,
+    error,
+  };
+}

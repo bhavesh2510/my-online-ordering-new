@@ -58,3 +58,20 @@ export function fetchRestuarantList(id) {
     }
   };
 }
+
+export function fetchClosedInformation(restId, timezone) {
+  console.log("timezone in fetch restro", timezone);
+  return async (dispatch) => {
+    // dispatch(actions.fetchRestuarantDeliveryRangeRequest());
+    const url = `https://ciboapp.com/api/mobileApi/v2/app/settings/restId/${restId}`;
+
+    try {
+      const {
+        data: { data },
+      } = await axios.get(url);
+      return dispatch(actions.fetchClosedInformationSuccess(data, timezone));
+    } catch (error) {
+      return dispatch(actions.fetchClosedInformationFailure(error));
+    }
+  };
+}

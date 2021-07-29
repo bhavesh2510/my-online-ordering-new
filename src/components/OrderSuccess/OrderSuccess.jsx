@@ -11,6 +11,7 @@ import moment from "moment";
 import { truncateDecimal } from "../../state-management/menu/utils";
 import HelpIcon from "@material-ui/icons/Help";
 import "./OrderSuccess.css";
+import icon from "./dersucces-icon.png";
 
 const OrderSuccess = () => {
   const dispatch = useDispatch();
@@ -102,144 +103,83 @@ const OrderSuccess = () => {
         {/* style={{ marginTop: "20px" }} */}
         <div className="row justify-content-center">
           <div className="col-md-6">
-            <div className="box_style_2 mobile-order-success">
-              <h2
-                className="inner"
-                style={{ textAlign: "center", backgroundColor: "#666171" }}
-              >
-                Order confirmed!
-              </h2>
-              <div id="confirm">
-                <div class="check-wrap"></div>
+            <div style={{ marginTop: "80px" }}>
+              <img src={icon} style={{ height: "400px" }} />
+              <div className="myorder-parent">
+                <p className="order-confirm-text">Order confirmed !</p>
 
-                {/* <img
-                  src="https://i.ibb.co/TmCnRTh/Tick-Mark-Dark-512.png"
-                  height="250px"
-                  width="200px"
-                /> */}
-                <br />
-                <h3
-                  className="text-pizzamodal fontsize-of-ordersuccess"
+                <p className="hi-text">Hi {user.user.firstName} !</p>
+                <p className="hi-text-2">Thanks for your order !</p>
+                <p className="order-number-text">
+                  Order Number : {orderCoompleteDetails.order_id}
+                </p>
 
-                  // style={{ fontSize: "20px", color: "black" }}
-                >
-                  Hey {user.user.firstName},
-                </h3>
-                <br />
-                <h3
-                  className="text-pizzamodal fontsize-of-ordersuccess"
-                  // style={{ fontSize: "20px", color: "black" }}
-                >
-                  {" "}
-                  Thank you for Order!
-                </h3>
-                <br />
-                <h3
-                  className="text-pizzamodal fontsize-of-ordersuccess"
-                  // style={{ fontSize: "20px", color: "black" }}
-                >
-                  Order Number :{orderCoompleteDetails.order_id}{" "}
-                </h3>
-                {/* <p>
-                  Lorem ipsum dolor sit amet, nostrud nominati vis ex, essent
-                  conceptam eam ad. Cu etiam comprehensam nec. Cibo delicata mei
-                  an, eum porro legere no.
-                </p> */}
+                {orderCoompleteDetails.products &&
+                  orderCoompleteDetails.products.map((currval) => {
+                    return (
+                      <>
+                        <div className="list-of-orders">
+                          <p className="list-of-order-text">
+                            {currval.product_name} &nbsp; x {currval.quantity}
+                          </p>
+                          <p className="list-of-order-text2">
+                            {orderCoompleteDetails.currency}{" "}
+                            {truncateDecimal(
+                              Number(currval.subtotal) + Number(currval.tax)
+                            )}
+                          </p>
+                        </div>
+                        <hr style={{ marginTop: "0px" }} />
+                      </>
+                    );
+                  })}
+
+                <div className="list-of-orders">
+                  <p className="list-of-order-text">Total</p>
+                  <p className="list-of-order-text2" style={{ color: "black" }}>
+                    {orderCoompleteDetails.currency}&nbsp;
+                    {orderCoompleteDetails.total}
+                  </p>
+                </div>
+
+                <div className="list-of-orders">
+                  <p className="list-of-order-text">Payment method</p>
+                  <p className="list-of-order-text2" style={{ color: "black" }}>
+                    {orderCoompleteDetails.pay_method}
+                  </p>
+                </div>
+
+                <div className="list-of-orders">
+                  <p className="list-of-order-text">Order Option</p>
+
+                  {orderCoompleteDetails.delivery_option == "pickup" ? (
+                    <>
+                      <p
+                        className="list-of-order-text2"
+                        style={{ color: "black" }}
+                      >
+                        {orderCoompleteDetails.delivery_option}
+                      </p>
+                    </>
+                  ) : null}
+                  {orderCoompleteDetails.delivery_option == "eatin" ? (
+                    <p
+                      className="list-of-order-text2"
+                      style={{ color: "black" }}
+                    >
+                      {orderCoompleteDetails.delivery_option}
+                    </p>
+                  ) : null}
+                  {orderCoompleteDetails.delivery_option == "delivery" ? (
+                    <p
+                      className="list-of-order-text2"
+                      style={{ color: "black" }}
+                    >
+                      {orderCoompleteDetails.delivery_option}
+                    </p>
+                  ) : null}
+                </div>
               </div>
-              {/* <h3>Order Summary :</h3> */}
-              <table className="table table-striped nomargin">
-                <tbody>
-                  {orderCoompleteDetails.products &&
-                    orderCoompleteDetails.products.map((currval) => {
-                      console.log("currval", currval);
-                      return (
-                        <>
-                          <tr>
-                            <td>
-                              <strong>{currval.quantity} &nbsp;x</strong>{" "}
-                              {currval.product_name}
-                            </td>
-                            <td>
-                              <strong className="float-right">
-                                {truncateDecimal(
-                                  Number(currval.subtotal) + Number(currval.tax)
-                                )}
-                              </strong>
-                            </td>
-                          </tr>
-                        </>
-                      );
-                    })}
-
-                  <br />
-                  <br />
-                  <tr>
-                    <td>
-                      Order Option{" "}
-                      <a
-                        href="#"
-                        className="tooltip-1"
-                        data-placement="top"
-                        title=""
-                        data-original-title="Please consider 30 minutes of margin for the delivery!"
-                      >
-                        <HelpIcon fontSize="small" />
-                      </a>
-                    </td>
-
-                    <td>
-                      <strong className="float-right">
-                        {orderCoompleteDetails.delivery_option == "pickup" ? (
-                          <>
-                            <strong className="float-right">
-                              {orderCoompleteDetails.delivery_option}
-                              {/* {user.selectedPickUpTime} */}
-                            </strong>
-                          </>
-                        ) : null}
-                        {orderCoompleteDetails.delivery_option == "eatin" ? (
-                          <strong className="float-right">
-                            {orderCoompleteDetails.delivery_option}
-                          </strong>
-                        ) : null}
-                        {orderCoompleteDetails.delivery_option == "delivery" ? (
-                          <strong className="float-right">
-                            {orderCoompleteDetails.delivery_option}
-                          </strong>
-                        ) : null}
-                      </strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Payment Option{" "}
-                      <a
-                        href="#"
-                        className="tooltip-1"
-                        data-placement="top"
-                        title=""
-                        data-original-title="Please consider 30 minutes of margin for the delivery!"
-                      >
-                        <HelpIcon fontSize="small" />
-                      </a>
-                    </td>
-                    <td>
-                      <strong className="float-right">
-                        {orderCoompleteDetails.pay_method}
-                      </strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="total_confirm">TOTAL</td>
-                    <td className="total_confirm">
-                      <span className="float-right">
-                        {orderCoompleteDetails.currency}&nbsp;
-                        {orderCoompleteDetails.total}
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
           </div>
         </div>

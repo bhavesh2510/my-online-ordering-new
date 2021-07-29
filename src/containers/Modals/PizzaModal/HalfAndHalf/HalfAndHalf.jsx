@@ -20,7 +20,7 @@ const HalfAndHalf = ({
       <>
         {halfAndHalfPizzaList.map((option) => (
           <div className="details-container" key={option.topping_id}>
-            <label>
+            <label style={{ fontWeight: "500" }}>
               <Radio
                 checked={firstHalfId === option.topping_id}
                 value={`1-${option.topping_id}`}
@@ -54,14 +54,12 @@ const HalfAndHalf = ({
       <div
         className="details-container"
         style={{
-          backgroundColor: "#f9f9f9",
-          border: "1px solid #f1f1f1",
           borderRadius: "10px",
           padding: "10px",
         }}
         //key={option.topping_id}
       >
-        <span className="text-pizzamodal" style={{ fontSize: "18px" }}>
+        <span style={{ fontSize: "20px", color: "#968EA1" }}>
           Half And Half Choice (Required)
         </span>
         <br />

@@ -28,6 +28,10 @@
   padding: 15px;
   margin-bottom: 20px;
 }
+.parent-height-width {
+  height: auto;
+  width: 400px;
+}
 @media (max-width: 768px) {
   .profile-container {
     margin-left: 2%;
@@ -36,9 +40,13 @@
     margin-left: 0%;
   }
   .profile-textfield {
-    width: 70%;
+    width: 127%;
   }
   .profile-submit-button {
-    width: 70%;
+    width: 127%;
+  }
+  .parent-height-width {
+    height: auto;
+    width: 270px;
   }
 }

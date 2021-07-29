@@ -89,23 +89,29 @@ export const OptionalModifier = ({
       <div
         className="optional-modifiers-category"
         key={i}
-        style={{ backgroundColor: "#f1f1f1", paddingTop: "5px" }}
+        style={{ paddingTop: "5px" }}
       >
         <p
-          className="modifier-category-name text-pizzamodal"
+          className="modifier-category-name "
           style={{
             fontSize: "20px",
+            fontWeight: "700",
             marginLeft: "20px",
             marginTop: "5px",
-            color: "black",
+            color: "#5c48d2",
           }}
         >
           {op.om_cat_name}
         </p>
 
         <p
-          className="modifier-category-instruction text-pizzamodal"
-          style={{ marginLeft: "20px", fontSize: "13px", marginTop: "5px" }}
+          className="modifier-category-instruction"
+          style={{
+            marginLeft: "20px",
+            fontSize: "15px",
+            marginTop: "-10px",
+            color: "#968EA1",
+          }}
         >
           {op.free_limit > 0
             ? `Cheapest ${op.free_limit} options will be free`
@@ -141,7 +147,7 @@ const OptionalModifierOptions = (props) => {
   );
 
   return (
-    <div className="modifier-options" style={{ backgroundColor: "#f1f1f1" }}>
+    <div className="modifier-options">
       {props.cat.items.map((op, i) => {
         const canSetDisabled =
           isMaxLimitReached &&
@@ -183,7 +189,7 @@ const OptionalModifierOptions = (props) => {
               style={{ float: "right", marginRight: "15px" }}
               className={`modfier-amount ${strikeOutFree}`}
             >
-              {props.currency} {props.getModifierPrice(op.price)}
+              ( {props.currency} {props.getModifierPrice(op.price)} )
             </span>
             {/* </label> */}
           </section>

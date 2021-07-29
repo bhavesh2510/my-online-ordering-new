@@ -140,7 +140,37 @@ const Information = (props) => {
           border: "1px solid #b7eb8f",
           backgroundColor: "#f6ffed",
         },
-        message: "Oops ! Restaurant is closed. Please Try Agin Later.",
+        message: "Oops ! Restaurant is closed.",
+      });
+    } else if (main.isClosedForWeekday) {
+      return notification["warning"]({
+        style: {
+          marginTop: "50px",
+          color: "rgba(0, 0, 0, 0.65)",
+          border: "1px solid #b7eb8f",
+          backgroundColor: "#f6ffed",
+        },
+        message: `${main.messageForWeekday}`,
+      });
+    } else if (main.isClosedForMonth) {
+      return notification["warning"]({
+        style: {
+          marginTop: "50px",
+          color: "rgba(0, 0, 0, 0.65)",
+          border: "1px solid #b7eb8f",
+          backgroundColor: "#f6ffed",
+        },
+        message: `${main.messageForMonth}`,
+      });
+    } else if (main.isClosedForOnceAMonth) {
+      return notification["warning"]({
+        style: {
+          marginTop: "50px",
+          color: "rgba(0, 0, 0, 0.65)",
+          border: "1px solid #b7eb8f",
+          backgroundColor: "#f6ffed",
+        },
+        message: `${main.messageForOnceAMonth}`,
       });
     } else {
       History.push(`/restId=${menu.restaurantInfo.restaurant_id}/checkout`);
@@ -154,6 +184,13 @@ const Information = (props) => {
   const loginformobile = () => {
     dispatch(showLoginFormMethod());
   };
+
+  var x = main.opening;
+  var opening_time = x.substring(0, x.length - 3);
+
+  var arr = [];
+  arr.push(menu.restaurantInfo?.order_option?.split(","));
+  console.log("order option arr", arr[0].length);
 
   return (
     <>
@@ -210,16 +247,7 @@ const Information = (props) => {
       {/* content */}
       <div className="container margin_60_35">
         <div className="row customised_row ">
-          <div className="col-lg-3">
-            <p className="hide-on-mobile">
-              <a
-                href="#"
-                className="btn_side"
-                style={{ backgroundColor: "#666171" }}
-              >
-                Back to search
-              </a>
-            </p>
+          <div className="col-lg-3" style={{ marginTop: "250px" }}>
             <MenuCategories
               categories={menu.categoriesList}
               loading={props.loading}
@@ -227,47 +255,12 @@ const Information = (props) => {
             />
 
             {/* End box_style_1 */}
-            <div className="box_style_2 d-none d-sm-block" id="help">
-              {/* <img
-                src="https://i.ibb.co/PwH9KGP/life-saver-icon-2.jpg"
-                height="120px"
-                width="120px"
-                alt="help"
-                border="0"
-              /> */}
+            {/* <div className="box_style_2 d-none d-sm-block" id="help">
+              
 
-              <h2>{props.restaurantInfo.rname}</h2>
+             
+             
 
-              <div>
-                <LocationOnIcon />{" "}
-                {`${props.restaurantInfo.address} - ${props.restaurantInfo.city} - ${props.restaurantInfo.country}- ${props.restaurantInfo.zipcode}`}{" "}
-                <br />
-                {menu.restaurantInfo.cost.free_delivery_eligible_amount > 0 ? (
-                  <>
-                    <strong>Delivery charge:</strong> free over&nbsp;
-                    {menu.restaurantInfo.cost.free_delivery_eligible_amount}
-                    &nbsp;
-                    {props.restaurantInfo?.monetary_symbol}
-                    <br />
-                  </>
-                ) : null}
-                {/* Delivery Options : &nbsp;
-                {menu.restaurantInfo.order_option
-                  ?.split(",")
-                  .map((option, i) => {
-                    return (
-                      <b style={{ textTransform: "capitalize" }}>
-                        {option}
-                        <CheckCircleOutlineIcon /> &nbsp;
-                      </b>
-                    );
-                  })} */}
-              </div>
-              <br />
-
-              {/* <h4>
-                Need <span>Help?</span>
-              </h4> */}
               <a href="#" className="phone" style={{ color: "black" }}>
                 {props.restaurantInfo.phone_code}&nbsp;
                 {props.restaurantInfo.phone}
@@ -277,7 +270,7 @@ const Information = (props) => {
                   {`${moment().format("dddd")}`} &nbsp;{timings}
                 </b>
               </small>
-            </div>
+            </div> */}
           </div>
           {/* End col */}
 
@@ -293,13 +286,146 @@ const Information = (props) => {
                 );
               })}
             </div> */}
-            <div className="box_style_2 full-width-mobile" id="main_menu">
-              <h2
+
+            <div
+              className="img-logo-container"
+              style={{ border: "2px solid #e6e6e6" }}
+            >
+              <img
+                src={main.selectedRestaurant.logo}
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  objectFit: "contain",
+                  borderRadius: "8px",
+                }}
+              />
+            </div>
+            <div style={{ marginTop: "20px" }}>
+              <h3 className="restro-name-text">{props.restaurantInfo.rname}</h3>
+              <p className="restro-info-txt1">
+                <LocationOnIcon />{" "}
+                {`${props.restaurantInfo.address} - ${props.restaurantInfo.city} - ${props.restaurantInfo.country}- ${props.restaurantInfo.zipcode}`}{" "}
+              </p>
+              <p className="restro-info-txt2">
+                +{menu.restaurantInfo.phone_code} {menu.restaurantInfo.phone}
+              </p>
+            </div>
+            {/* <div className="info-container">
+              {menu.restaurantInfo?.order_option?.split(",").map((val, i) => {
+                if (val == "eatin") {
+                  return (
+                    <>
+                      <div className="info-box-opens-container">
+                        <p className="info-box-opens-text">Eat-In available</p>
+                      </div>
+                    </>
+                  );
+                } else if (val == "delivery") {
+                  return (
+                    <>
+                      <div className="info-box-delivery-container">
+                        <p className="info-box-delivery-text">
+                          Delivery-available{" "}
+                        </p>
+                      </div>
+                    </>
+                  );
+                } else if (val == "pickup") {
+                  return (
+                    <>
+                      <div className="info-box-pickup-container">
+                        <p className="info-box-pickup-text">Pickup-available</p>
+                      </div>
+                    </>
+                  );
+                }
+              })}
+
+              <div className="info-box-pickup-container">
+                <p className="info-box-pickup-text">Pickup-available</p>
+              </div>
+            </div> */}
+
+            <div className="info-container">
+              {menu.restaurantInfo?.order_option?.split(",").map((val, i) => {
+                if (val == "eatin") {
+                  return (
+                    <>
+                      <div className="info-box-eatin-container">
+                        <p className="info-box-eatin-text">Eat-in available</p>
+                      </div>
+                    </>
+                  );
+                } else if (val == "delivery") {
+                  return (
+                    <>
+                      <div className="info-box-delivery-container">
+                        <p className="info-box-delivery-text">
+                          Delivery available
+                        </p>
+                      </div>
+                    </>
+                  );
+                } else if (val == "pickup") {
+                  return (
+                    <>
+                      <div className="info-box-pickup-container">
+                        <p className="info-box-pickup-text">Pickup available</p>
+                      </div>
+                    </>
+                  );
+                }
+              })}
+
+              <div className="info-box-opens-container">
+                <p className="info-box-opens-text">
+                  Opens at{" "}
+                  {opening_time > 12
+                    ? `${opening_time - 12} PM`
+                    : `${opening_time} AM`}{" "}
+                </p>
+              </div>
+
+              {menu.restaurantInfo.cost.free_delivery_eligible_amount > 0 ? (
+                <div
+                  // className="info-box-freedelivery-container"
+                  className={
+                    arr[0].length == 3
+                      ? `marginleft-class info-box-freedelivery-container`
+                      : `info-box-freedelivery-container`
+                  }
+                  // style={{ marginLeft: "-90px" }}
+                >
+                  <p
+                    className="info-box-freedelivery-text"
+                    style={{ marginTop: "4px" }}
+                  >
+                    Free Delivery{" "}
+                  </p>
+                  <p
+                    className="info-box-freedelivery-text"
+                    style={{ marginTop: "-17px" }}
+                  >
+                    Over{" "}
+                    {menu.restaurantInfo.cost.free_delivery_eligible_amount}{" "}
+                    {props.restaurantInfo?.monetary_symbol}
+                  </p>
+                </div>
+              ) : null}
+            </div>
+
+            <div
+              className="box_style_2 full-width-mobile"
+              id="main_menu"
+              style={{ marginTop: "20px" }}
+            >
+              {/* <h2
                 className="inner hide-on-mobile"
                 style={{ backgroundColor: "#666171" }}
               >
                 Menu
-              </h2>
+              </h2> */}
               <MenuItems
                 status={showdish}
                 pizzas={menu.pizzas}
@@ -317,10 +443,10 @@ const Information = (props) => {
             {/* End box_style_1 */}
           </div>
           {/* End col */}
-          <div className="col-lg-3" id="sidebar">
+          <div className="col-lg-3" id="sidebar" style={{ marginTop: "250px" }}>
             <div
               className="customised_theiaStickySidebar  hide-on-mobile "
-              style={{ position: "sticky", top: "65px" }}
+              style={{ position: "sticky", top: "85px" }}
             >
               <Cart
                 //addItem={handleAddItem}
@@ -415,7 +541,7 @@ const Information = (props) => {
         onOpen={() => {}}
       >
         <div className={classes.list}>
-          <div className="orders-conatiner">
+          <div className="orders-container">
             <h2 className="mob-header-text">
               Your Orders{" "}
               <CloseIcon

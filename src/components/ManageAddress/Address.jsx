@@ -27,31 +27,30 @@ const Address = ({ address }) => {
             </p>
           </span>
         </li>
+
         <li>
           <span>
             <h5 className="address_name">{address.name}</h5>
           </span>
         </li>
-        <li>
-          <span>{address.address1}</span>
-        </li>
-        <li>
-          <span>{address.address2}</span>
-        </li>
+        <div className="for-mobile">
+          <li>
+            <span>{address.address1}</span> &nbsp;{" "}
+            <span>{address.address2}</span>
+          </li>
+
+          <li>
+            <span>
+              {address.city} - {address.zipcode}
+            </span>
+          </li>
+        </div>
+
         <li>
           <span>
-            {address.city} - {address.zipcode}
+            {address.state == "undefined" ? "" : address.state}
+            <span>{address.country}</span>
           </span>
-        </li>
-
-        <>
-          <li>
-            <span>{address.state == "undefined" ? "" : address.state}</span>
-          </li>
-        </>
-
-        <li>
-          <span>{address.country}</span>
         </li>
       </ul>
     </>

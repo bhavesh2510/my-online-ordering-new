@@ -26,12 +26,9 @@ const SizeAndBase = ({ sizeAndBaseList, currency, handleSizeBaseChange }) => {
   return (
     <div
       className="size-and-base"
-      style={{ backgroundColor: "#f9f9f9", marginBottom: "20px" }}
+      style={{ marginBottom: "20px", fontSize: "20px", color: "#968EA1" }}
     >
-      <span
-        style={{ marginLeft: "10px" }}
-        className="header-text text-pizzamodal"
-      >
+      <span style={{ marginLeft: "10px" }} className="header-text ">
         Select your size & crust
       </span>
 

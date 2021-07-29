@@ -25,6 +25,7 @@ import {
   fetchRestuarantInformation,
   fetchRestuarantList,
   fetchRestuarantDeliveryRange,
+  fetchClosedInformation,
 } from "../../state-management/main/asyncActions";
 import { fetchAddressesList } from "../../state-management/user/asyncActions";
 import { setSelectedRestaurant } from "../../state-management/main/actions";
@@ -59,6 +60,7 @@ const RestaurantInformation = (props) => {
     await dispatch(fetchHappyHours(props.restaurantId));
     await dispatch(fetchMenuItems(props.restaurantId));
     await dispatch(fetchCategories(props.restaurantId));
+    await dispatch(fetchClosedInformation(props.restaurantId, props.timezone));
     setLoading(false);
     await dispatch(fetchAllForcedModifiers(props.restaurantId));
     await dispatch(fetchAllOptionalModifiers(props.restaurantId));

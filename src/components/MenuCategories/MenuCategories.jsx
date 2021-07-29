@@ -17,6 +17,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import SimpleBarReact from "simplebar-react";
 import "simplebar/src/simplebar.css";
 import RestaurantIcon from "@material-ui/icons/Restaurant";
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 
 const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
   const menu = useSelector((state) => state.menu);
@@ -59,11 +60,29 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
   console.log("loading in menucategories", loading);
 
   const onDishClick = (dish) => {
+    var x = document.getElementById("hhour");
+    var y = document.getElementById("hhour-text");
+    x.style.backgroundColor = "#f1f1f1";
+    y.style.color = "black";
+
+    var a = document.getElementById("pizza-cat");
+    var b = document.getElementById("pizza-cat-text");
+    a.style.backgroundColor = "#f1f1f1";
+    b.style.color = "black";
     showDishes(!dishes);
     drinkstatus(true);
     dispatch(displayPizzas());
   };
   const onDrinksClick = () => {
+    var x = document.getElementById("hhour");
+    var y = document.getElementById("hhour-text");
+    x.style.backgroundColor = "#f1f1f1";
+    y.style.color = "black";
+
+    var a = document.getElementById("pizza-cat");
+    var b = document.getElementById("pizza-cat-text");
+    a.style.backgroundColor = "#f1f1f1";
+    b.style.color = "black";
     showDrinks(!drinks);
     drinkstatus(true);
     // dispatch(displayPizzas());
@@ -94,13 +113,21 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
     <>
       <div
         className="box_style_1 hide-on-mobile"
-        style={{ position: "sticky", top: "65px" }}
+        style={{ position: "sticky", top: "85px" }}
       >
         <ul id="cat_nav">
           {console.log("categories", categories)}
           {console.log("menu items", menu.menuItems)}
 
-          <li style={{ cursor: "pointer" }}>
+          <li
+            style={{
+              cursor: "pointer",
+              backgroundColor: "#f1f1f1",
+              borderRadius: "8px",
+              height: "40px",
+              width: "90%",
+            }}
+          >
             <Link
               activeClass="active"
               smooth={true}
@@ -110,11 +137,22 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
               offset={0}
               onClick={onDishClick}
             >
-              Dishes <span>({categories[0]?.sub_category.length})</span>
-              <ChevronRightIcon
-                fontSize="small"
-                style={{ float: "right" }}
-              />{" "}
+              <p style={{ textAlign: "center", marginTop: "-4px" }}>
+                Dishes <span>({categories[0]?.sub_category.length})</span>
+              </p>
+
+              {!dishes ? (
+                <ChevronRightIcon
+                  fontSize="small"
+                  style={{ float: "right", marginTop: "-35px" }}
+                />
+              ) : (
+                <KeyboardArrowDownIcon
+                  className="show-down"
+                  fontSize="small"
+                  style={{ float: "right", marginTop: "-35px" }}
+                />
+              )}
             </Link>
           </li>
           {categories.map((category, i) => {
@@ -129,7 +167,17 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
               />
             ) : null;
           })}
-          <li style={{ cursor: "pointer" }}>
+
+          <li
+            style={{
+              cursor: "pointer",
+              backgroundColor: "#f1f1f1",
+              borderRadius: "8px",
+              marginTop: "15px",
+              height: "40px",
+              width: "90%",
+            }}
+          >
             <Link
               activeClass="active"
               smooth={true}
@@ -139,8 +187,21 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
               duration={3000}
               onClick={onDrinksClick}
             >
-              Drinks<span>({categories[1]?.sub_category.length})</span>{" "}
-              <ChevronRightIcon fontSize="small" style={{ float: "right" }} />
+              <p style={{ textAlign: "center", marginTop: "-4px" }}>
+                Drinks<span>({categories[1]?.sub_category.length})</span>{" "}
+              </p>
+              {!drinks ? (
+                <ChevronRightIcon
+                  fontSize="small"
+                  style={{ float: "right", marginTop: "-35px" }}
+                />
+              ) : (
+                <KeyboardArrowDownIcon
+                  className="show-down"
+                  fontSize="small"
+                  style={{ float: "right", marginTop: "-35px" }}
+                />
+              )}
             </Link>
           </li>
           {categories.map((category, i) => {
@@ -156,7 +217,18 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
             ) : null;
           })}
           {isPizzaAvailable ? (
-            <li key="pizza" style={{ cursor: "pointer" }}>
+            <li
+              key="pizza"
+              id="pizza-cat"
+              style={{
+                cursor: "pointer",
+                backgroundColor: "#f1f1f1",
+                borderRadius: "8px",
+                marginTop: "15px",
+                height: "40px",
+                width: "90%",
+              }}
+            >
               <Link
                 activeClass="active"
                 smooth={true}
@@ -165,18 +237,45 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                 duration={4000}
                 offset={-70}
                 onClick={() => {
+                  var x = document.getElementById("hhour");
+                  var y = document.getElementById("hhour-text");
+                  x.style.backgroundColor = "#f1f1f1";
+                  y.style.color = "black";
+                  var a = document.getElementById("pizza-cat");
+                  var b = document.getElementById("pizza-cat-text");
+                  a.style.backgroundColor = "#6244da";
+                  b.style.color = "white";
                   drinkstatus(true);
                   dispatch(displayPizzas());
                 }}
               >
-                Pizza's <span> ({isPizzaAvailable}) </span>{" "}
-                <ChevronRightIcon fontSize="small" style={{ float: "right" }} />
+                <p
+                  id="pizza-cat-text"
+                  style={{ textAlign: "center", marginTop: "-4px" }}
+                >
+                  Pizza's <span> ({isPizzaAvailable}) </span>{" "}
+                </p>
+                <ChevronRightIcon
+                  fontSize="small"
+                  style={{ float: "right", marginTop: "-35px" }}
+                />
               </Link>
             </li>
           ) : null}
 
           {menu.isHappyHoursApplicable && isHappyHoursActive ? (
-            <li key="happyHours" style={{ cursor: "pointer" }}>
+            <li
+              id="hhour"
+              key="happyHours"
+              style={{
+                cursor: "pointer",
+                backgroundColor: "#f1f1f1",
+                borderRadius: "8px",
+                marginTop: "15px",
+                height: "40px",
+                width: "90%",
+              }}
+            >
               <Link
                 activeClass="active"
                 smooth={true}
@@ -185,12 +284,28 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                 offset={-50}
                 duration={4000}
                 onClick={() => {
+                  var a = document.getElementById("pizza-cat");
+                  var b = document.getElementById("pizza-cat-text");
+                  a.style.backgroundColor = "#f1f1f1";
+                  b.style.color = "black";
+                  var x = document.getElementById("hhour");
+                  var y = document.getElementById("hhour-text");
+                  x.style.backgroundColor = "#6244da";
+                  y.style.color = "white";
                   drinkstatus(false);
                   dispatch(displayHappyHours());
                 }}
               >
-                Happy hours <span> ({menu?.happyHours?.length}) </span>
-                <ChevronRightIcon fontSize="small" style={{ float: "right" }} />
+                <p
+                  id="hhour-text"
+                  style={{ textAlign: "center", marginTop: "-4px" }}
+                >
+                  Happy hours <span> ({menu?.happyHours?.length}) </span>
+                </p>
+                <ChevronRightIcon
+                  fontSize="small"
+                  style={{ float: "right", marginTop: "-35px" }}
+                />
               </Link>
             </li>
           ) : null}
@@ -400,7 +515,16 @@ const MenuSubCategory = React.memo(
         >
           <li
             key={s_category.category_id}
-            style={{ cursor: "pointer" }}
+            style={{
+              cursor: "pointer",
+              borderRadius: "8px",
+              backgroundColor: "#f1f1f1",
+              marginTop: "10px",
+              height: "auto",
+              width: "70%",
+              width: "auto",
+              marginLeft: "20%",
+            }}
             className={`category ${
               isSelectedCategory(s_category.category_id, i)
                 ? "selected_cat_id"
@@ -409,13 +533,26 @@ const MenuSubCategory = React.memo(
 
             // onClick={(e) => handleClick(e, s_category)}
           >
-            <a id="subcategory_id">
+            <a
+              id="subcategory_id"
+              className={`category ${
+                isSelectedCategory(s_category.category_id, i)
+                  ? "selected_cat_id_color"
+                  : ""
+              }`}
+              style={{
+                textAlign: "center",
+                marginTop: "-12px",
+
+                // whiteSpace: "nowrap",
+              }}
+            >
               {s_category?.cname}{" "}
-              <ChevronRightIcon
+              {/* <ChevronRightIcon
                 fontSize="small"
                 className="hide-on-mobile"
                 style={{ float: "right" }}
-              />
+              /> */}
             </a>
           </li>
         </Link>

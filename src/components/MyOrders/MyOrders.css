@@ -15,6 +15,36 @@
   font-size: 1rem;
   color: black;
 }
+.sub-cat-myorder {
+  cursor: pointer;
+  height: 70px;
+  width: 114%;
+  /* border: 1px solid black; */
+  margin-left: -14px;
+}
+.img-myorder-icon {
+  height: 18px;
+  width: 18px;
+  margin-top: 25px;
+}
+.myorder-text {
+  margin-top: 21px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-left: 10px;
+}
+.myorder-icontext-parent {
+  margin-left: 15%;
+
+  display: flex;
+}
+.col-md-4 {
+  flex: 0 0 33.333333% !important;
+  max-width: 55.333333% !important;
+}
+.customise-width {
+  max-width: 20% !important;
+}
 .button-parent {
   right: 10px;
   position: absolute;
@@ -129,9 +159,15 @@
   padding: 0px;
 }
 
+.parent-container-password-height-width {
+  height: auto;
+  width: 400px;
+}
+
 @media (max-width: 768px) {
   .modal-content {
     width: 350px !important;
+
     margin: auto;
     min-height: 150px;
     min-width: 20rem;
@@ -139,6 +175,9 @@
     transform: scale(1);
     /* //box-shadow: rgb(28 28 28 / 15%) 0px 1.2rem 7rem; */
     transition: transform 0.25s ease 0s;
+  }
+  .xyz {
+    margin-left: 120px !important;
   }
 }
 
@@ -327,19 +366,51 @@
   width: 120%;
   margin-bottom: 20px;
 }
+.parent-catbar-mobile {
+  display: none;
+}
+.parent-below-row {
+  margin-left: 10%;
+}
+.margin-overflow-class {
+  margin-left: 60px;
+  overflow: hidden;
+}
 @media (max-width: 768px) {
   .parent-container {
     margin-left: 0%;
   }
-  .password-child-conatiner {
+  .add-border {
+    border-bottom: 2px solid black;
+  }
+  .parent-below-row {
     margin-left: 0%;
   }
+  .card {
+    width: 300px;
+    margin-left: 0px;
+    background-color: transparent;
+    border: 1px solid black !important;
+  }
+  .justify-content-center {
+    margin-left: 100px;
+    justify-content: center !important;
+  }
+
+  .margin-overflow-class {
+    margin-left: 0px;
+    overflow: hidden;
+  }
+  .password-child-conatiner {
+    margin-left: 15%;
+  }
   .input-passowrd-texfield {
-    width: 70%;
+    width: 140%;
   }
   .password-submit-button {
+    width: 140% !important;
     padding: 15px;
-    width: 70%;
+
     margin-bottom: 20px;
   }
   .box-passowrd-container {
@@ -348,11 +419,46 @@
   .feature_2 {
     margin-left: 0px;
   }
+  .parent-catbar-mobile {
+    display: flex;
+    flex-direction: row;
+    margin-top: 80px;
+    justify-content: space-evenly;
+  }
+  .child-catbar-mobile {
+    height: 35px;
+    width: 90px;
+  }
+  .child-catbar-text {
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .child-catbar-text-myprofile {
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-left: 10px;
+  }
+  .child-catbar-text-orderhistory {
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-left: -3px;
+  }
+
+  .parent-container-password-height-width {
+    height: auto;
+    width: 270px;
+  }
 }
 
 .add-color {
-  background-color: #6244da;
-  color: white;
+  background-color: #c9c5d1;
+  color: black;
 }
 
 .pagination {
@@ -360,7 +466,7 @@
   justify-content: space-between;
   list-style: none;
   cursor: pointer;
-  margin-left: 40px;
+  margin-left: -180px;
 }
 
 .pagination a {

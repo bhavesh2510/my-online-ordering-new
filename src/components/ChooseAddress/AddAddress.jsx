@@ -159,7 +159,12 @@ const AddAddress = (props) => {
   };
   return (
     <>
-      <Modal isOpen={true} toggle={toggle} style={{ top: "10%", left: "2%" }}>
+      <Modal
+        className="add-address-for-mobile-resp"
+        isOpen={true}
+        toggle={toggle}
+        style={{ top: "10%" }}
+      >
         <ModalHeader toggle={toggle}>
           {" "}
           {modal.modal.state.editMode ? "Edit Address" : "Add Address"}

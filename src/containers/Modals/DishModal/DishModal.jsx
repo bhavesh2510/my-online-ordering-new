@@ -202,9 +202,25 @@ const DishModal = () => {
   };
   return (
     <>
-      <Modal isOpen={true} toggle={toggle} style={{ top: "10%", left: "2%" }}>
-        <ModalHeader toggle={toggle}>{state.item.name}</ModalHeader>
-        <ModalBody style={{ maxHeight: "400px", overflowY: "scroll" }}>
+      <Modal
+        isOpen={true}
+        toggle={toggle}
+        style={{ top: "15%", left: "2%", width: "35%", borderRadius: "20px" }}
+      >
+        <ModalHeader toggle={toggle} style={{ borderBottom: "none" }}>
+          <span
+            style={{ fontSize: "20px", fontWeight: "700", marginLeft: "16px" }}
+          >
+            {state.item.name}
+          </span>
+        </ModalHeader>
+        <ModalBody
+          style={{
+            maxHeight: "400px",
+            overflowY: "scroll",
+            marginTop: "-15px",
+          }}
+        >
           <ForcedModifiers
             currency={menu.restaurantInfo.currency}
             isPriceWithoutTax={isPriceWithoutTax()}

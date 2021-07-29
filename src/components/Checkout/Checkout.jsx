@@ -100,10 +100,10 @@ const Checkout = () => {
   useEffect(() => {
     if (main.deliveryRange)
       //getDeliveryCharges();
-      dispatch(setPickupTime(data.pickupTime));
-    //getDeliveryCharges();
+      //dispatch(setPickupTime(data.pickupTime));
+      //getDeliveryCharges();
 
-    console.log("xyz", data.pickupTime);
+      console.log("xyz", data.pickupTime);
 
     const deliveryOptions = !(
       main.selectedRestaurant.order_option === "" ||
@@ -475,7 +475,7 @@ const Checkout = () => {
           "This restaurant is not taking any orders right now, please visit later",
       });
     } else if (
-      !user.isTakeAway &&
+      deliveryDetails.deliveryType == "Delivery" &&
       grandTotal < Number(main.selectedRestaurant.cost["min_order_amount"])
     ) {
       return notification["warning"]({
@@ -608,16 +608,8 @@ const Checkout = () => {
         }}
       >
         <div className="row" style={{ transform: "none" }}>
-          <div className="col-lg-7">
-            <PaymentForm
-              comm={comm}
-              onHandleCheckout={handleCheckout}
-              deliveryCharges={getDeliveryCharges}
-            />
-          </div>
-
           <div
-            className="col-lg-5"
+            className="col-lg-5 hide-on-desktop"
             id="sidebar"
             style={{
               position: "relative",
@@ -635,10 +627,27 @@ const Checkout = () => {
                 transform: "none",
               }}
             >
-              <div id="cart-box" style={{ backgroundColor: "white" }}>
-                <h3 className="cart-head">
-                  Your order <ShoppingCartIcon style={{ float: "right" }} />
-                </h3>
+              <div
+                id="cart-box"
+                style={{
+                  backgroundColor: "#eae8ed",
+                  width: "100%",
+                  borderRadius: "20px",
+                }}
+              >
+                <p
+                  style={{
+                    textAlign: "center",
+                    fontSize: "22px",
+                    fontWeight: "700",
+                    color: "black",
+                  }}
+                >
+                  Your Orders{" "}
+                  <span style={{ color: "#666171" }}>
+                    ( {menu.cart.length} items )
+                  </span>
+                </p>
                 <table
                   className="table table_summary"
                   style={{ width: "100%" }}
@@ -661,9 +670,13 @@ const Checkout = () => {
                       return (
                         <>
                           <tr>
-                            <td style={{ width: "47%" }}>
+                            <td style={{ width: "37%" }}>
                               <div
-                                style={{ marginTop: "5px", fontSize: "15px" }}
+                                style={{
+                                  marginTop: "5px",
+                                  fontSize: "15px",
+                                  color: "black",
+                                }}
                               >
                                 <b>{val.name}</b>
                                 <br />
@@ -718,6 +731,8 @@ const Checkout = () => {
                                 style={{
                                   marginTop: "5px",
                                   fontSize: "15px",
+                                  color: "#bd1e44",
+                                  fontWeight: "600",
                                 }}
                               >
                                 <span className="float-right">
@@ -754,12 +769,11 @@ const Checkout = () => {
                     </tr>
                   </tbody>
                 </table>
-
                 <hr />
                 <table className="table table_summary">
                   <tbody>
                     <tr>
-                      <td>
+                      <td style={{ fontWeight: "700", color: "black" }}>
                         Subtotal{" "}
                         <span className="float-right">{`${
                           menu.restaurantInfo.monetary_symbol
@@ -767,7 +781,7 @@ const Checkout = () => {
                       </td>
                     </tr>
                     <tr>
-                      <td>
+                      <td style={{ fontWeight: "700", color: "black" }}>
                         Taxes{" "}
                         <span className="float-right">{`${
                           menu.restaurantInfo.monetary_symbol
@@ -775,14 +789,248 @@ const Checkout = () => {
                       </td>
                     </tr>
                     <tr>
-                      <td>
+                      <td style={{ fontWeight: "700", color: "black" }}>
                         Delivery Charges
                         <span className="float-right">{`${menu.restaurantInfo.monetary_symbol} ${user.delivery_cost}  `}</span>
                       </td>
                     </tr>
 
                     <tr>
-                      <td className="total">
+                      <td
+                        className="total"
+                        style={{ fontWeight: "700", color: "black" }}
+                      >
+                        TOTAL{" "}
+                        <span className="float-right">{`${
+                          menu.restaurantInfo.monetary_symbol
+                        } ${getBillAmount()}`}</span>
+                      </td>
+                    </tr>
+                    <br />
+                    {savedAmount ? (
+                      <>
+                        <tr>
+                          <div
+                            className="savings"
+                            style={{ width: "100%", marginLeft: "0px" }}
+                          >
+                            <p
+                              className="para-savings"
+                              style={{ margin: "auto" }}
+                            >
+                              YOU SAVED{" "}
+                              {` ${savedAmount} ${menu.restaurantInfo.monetary_symbol}`}{" "}
+                              ON THE BILL
+                            </p>
+                          </div>
+                        </tr>
+                      </>
+                    ) : null}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-lg-7">
+            <PaymentForm
+              comm={comm}
+              onHandleCheckout={handleCheckout}
+              deliveryCharges={getDeliveryCharges}
+            />
+          </div>
+          <div
+            className="col-lg-5 hide-on-mobile"
+            id="sidebar"
+            style={{
+              position: "relative",
+              overflow: "visible",
+              boxSizing: "border-box",
+              minHeight: "1px",
+            }}
+          >
+            <div
+              className="theiaStickySidebar"
+              style={{
+                paddingTop: "0px",
+                paddingBottom: "1px",
+                position: "static",
+                transform: "none",
+              }}
+            >
+              <div
+                id="cart-box"
+                style={{
+                  backgroundColor: "#eae8ed",
+                  width: "80%",
+                  borderRadius: "20px",
+                }}
+              >
+                <p
+                  style={{
+                    textAlign: "center",
+                    fontSize: "22px",
+                    fontWeight: "700",
+                    color: "black",
+                  }}
+                >
+                  Your Orders{" "}
+                  <span style={{ color: "#666171" }}>
+                    ( {menu.cart.length} items )
+                  </span>
+                </p>
+                <table
+                  className="table table_summary"
+                  style={{ width: "100%" }}
+                >
+                  <tbody>
+                    {menu.cart.map((val) => {
+                      if (val.isHappyHourActive) {
+                        const result = isHappyHourStillActive(
+                          val,
+                          menu.restaurantInfo.timezone
+                        );
+                        console.log("items in itemlist", val);
+
+                        var isStillActive = result.isActive;
+                        if (isStillActive) {
+                          refIndex++;
+                          setTimer(result.distance, timeOutRef[refIndex]);
+                        }
+                      }
+                      return (
+                        <>
+                          <tr>
+                            <td style={{ width: "37%" }}>
+                              <div
+                                style={{
+                                  marginTop: "5px",
+                                  fontSize: "15px",
+                                  color: "black",
+                                }}
+                              >
+                                <b>{val.name}</b>
+                                <br />
+                                {val.modifiers ? (
+                                  <>
+                                    <div style={{ fontSize: "12px" }}>
+                                      <RenderModifiers
+                                        modifier={val.modifiers}
+                                      />
+                                    </div>
+                                  </>
+                                ) : null}
+
+                                {val.productType == "Pizza" ? (
+                                  <>
+                                    <p
+                                      className="text-pizzamodal"
+                                      style={{
+                                        marginTop: "10px",
+                                        cursor: "pointer",
+                                        fontSize: "10px",
+                                        color: "black",
+                                      }}
+                                      onClick={() => showPizzaDetails(val)}
+                                    >
+                                      view details
+                                    </p>
+                                  </>
+                                ) : null}
+                              </div>
+                              <br />
+                            </td>
+                            <td className="qty-table" style={{ width: "30%" }}>
+                              <div className="main-qty">
+                                <div
+                                  className="plus"
+                                  onClick={() => handleAddItem(val)}
+                                >
+                                  +
+                                </div>
+                                <div
+                                  className="minus"
+                                  onClick={() => handleRemoveItem(val)}
+                                >
+                                  -
+                                </div>
+                                <div className="qty">{val.qty}</div>
+                              </div>
+                            </td>
+                            <td>
+                              <div
+                                style={{
+                                  marginTop: "5px",
+                                  fontSize: "15px",
+                                  color: "#bd1e44",
+                                  fontWeight: "600",
+                                }}
+                              >
+                                <span className="float-right">
+                                  {" "}
+                                  {`${menu.restaurantInfo.monetary_symbol}`}
+                                  {` ${truncateDecimal(
+                                    getItemPrice(val, isStillActive)
+                                  )}`}
+                                </span>
+                              </div>
+                            </td>
+                          </tr>
+                        </>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                <table className="table table_summary">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div
+                          className="parent-textarea"
+                          style={{ height: "51px" }}
+                        >
+                          <textarea
+                            onChange={(e) => handleComments(e)}
+                            maxLength="140"
+                            className="textarea-class"
+                            placeholder="Any suggestions for restro ?"
+                          ></textarea>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <hr />
+                <table className="table table_summary">
+                  <tbody>
+                    <tr>
+                      <td style={{ fontWeight: "700", color: "black" }}>
+                        Subtotal{" "}
+                        <span className="float-right">{`${
+                          menu.restaurantInfo.monetary_symbol
+                        } ${getSubTotal()}`}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ fontWeight: "700", color: "black" }}>
+                        Taxes{" "}
+                        <span className="float-right">{`${
+                          menu.restaurantInfo.monetary_symbol
+                        } ${getSubTaxTotal()}`}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ fontWeight: "700", color: "black" }}>
+                        Delivery Charges
+                        <span className="float-right">{`${menu.restaurantInfo.monetary_symbol} ${user.delivery_cost}  `}</span>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td
+                        className="total"
+                        style={{ fontWeight: "700", color: "black" }}
+                      >
                         TOTAL{" "}
                         <span className="float-right">{`${
                           menu.restaurantInfo.monetary_symbol

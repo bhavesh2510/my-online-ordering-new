@@ -8,7 +8,7 @@ function PaginationOrderList(props) {
     setPosts(props.orderList);
   }, []);
   const [posts, setPosts] = useState([]);
-  const [showPerPage, setShowPerPage] = useState(9);
+  const [showPerPage, setShowPerPage] = useState(6);
   const [pagination, setPagination] = useState({
     start: 0,
     end: showPerPage,
@@ -21,13 +21,16 @@ function PaginationOrderList(props) {
 
   return (
     <div className="App">
-      <div className="container py-4 px-5">
+      <div className="container py-4 px-4 margin-overflow-class">
         <div className="row">
           {posts.slice(pagination.start, pagination.end).map((currval) => (
             <div className="col-md-4 mb-4" key={currval.id}>
               <div
                 className="card"
-                style={{ border: "1px dotted #302f31", borderRadius: "15px" }}
+                style={{
+                  border: "1px dotted #302f31",
+                  borderRadius: "15px",
+                }}
               >
                 <div className="card-body body-container">
                   <div style={{ marginBottom: "-0.5rem" }}>
@@ -71,7 +74,7 @@ function PaginationOrderList(props) {
                   </div>
                   <div
                     className="button-parent"
-                    style={{ backgroundColor: "#302f31" }}
+                    style={{ backgroundColor: "#000000" }}
                     onClick={() => props.showModal(currval)}
                   >
                     <button className="btn-submit-order-success">

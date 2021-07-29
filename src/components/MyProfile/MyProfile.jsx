@@ -144,12 +144,7 @@ const MyProfile = () => {
       </section> */}
       <div className="col-lg-6 profile-container">
         <div className="box_style_2" id="main_menu">
-          <div
-            style={{
-              height: "auto",
-              width: "400px",
-            }}
-          >
+          <div className="parent-height-width">
             <div className="profile-child-conatiner">
               <TextField
                 className="profile-textfield"
@@ -249,7 +244,9 @@ const MyProfile = () => {
                 onClick={formSubmit}
                 className="profile-submit-button"
                 style={{
-                  backgroundColor: "#302f31",
+                  height: "45px",
+                  backgroundColor: "#000000",
+                  borderRadius: "12px",
                   color: "white",
                 }}
               >

@@ -1,54 +1,95 @@
 import React, { useEffect, useState } from "react";
-// import "./RestaurantCard.scss";
+import "./RestaurantCard.css";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory, Link, Redirect, Route } from "react-router-dom";
+import { NavigateBeforeSharp } from "@material-ui/icons";
 
 const RestaurantCard = ({ restaurant }) => {
+  // var x = restaurant.order_option((ele) => ele == "xyz");
+
+  const [order, setorder] = useState([]);
+  var arr = [];
+
+  {
+    restaurant?.order_option?.split(",").map((option, i) => {
+      order.push(option);
+    });
+  }
+
+  useEffect(() => {
+    console.log("array is", order);
+  }, [order]);
+
   return (
     <>
       <a
-        className="strip_list"
+        className="hover-cat"
         href={`${`?/restId=${restaurant.restaurant_id}/menu`}`}
       >
-        <div className="ribbon_1">Popular</div>
-        <div className="desc">
-          <div className="thumb_strip">
-            <img src={restaurant.logo} alt />
-          </div>
-          {console.log(restaurant)}
-          <div className="rating">
-            <i className="icon_star voted" />
-            <i className="icon_star voted" />
-            <i className="icon_star voted" />
-            <i className="icon_star voted" />
-            <i className="icon_star" />
-          </div>
-          <h3>{restaurant.rname}</h3>
-          <div className="type">{restaurant.description}</div>
-          <div className="location">
-            {restaurant.address} {restaurant.city}
-            {restaurant.zipcode}
-            <br />
-            <span className="opening">Opens at </span>
-          </div>
-          <ul>
-            {restaurant?.order_option?.split(",").map((option, i) => {
-              return (
-                <li key={i} style={{ textTransform: "capitalize" }}>
-                  {option} &nbsp;
-                  <CheckCircleOutlineIcon
-                    style={{ color: "green" }}
-                    fontSize="small"
-                  />
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </a>
+        <div style={{ marginTop: "20px" }}>
+          <div className="restro-card-container">
+            <div className="desc">
+              <div
+                className="thumb_strip"
+                style={{
+                  marginTop: "20px",
+                  borderRadius: "15px",
+                }}
+              >
+                <img src={restaurant.logo} alt />
+              </div>
+              <p className="restro-card-rname">{restaurant.rname}</p>
 
-      {/* End desc*/}
+              <div className="location restro-card-location">
+                {restaurant.address} {restaurant.city}
+                {restaurant.zipcode}
+              </div>
+
+              <div className="rest-card-info">
+                {restaurant?.order_option?.split(",").map((option, i) => {
+                  if (option == "delivery") {
+                    return (
+                      <>
+                        <div className="rest-card-info-child">Delivery</div>
+                      </>
+                    );
+                  }
+                })}
+                {/* <div className="rest-card-info-child">Delivery</div> */}
+                &nbsp; &nbsp;
+                {restaurant?.order_option?.split(",").map((option, i) => {
+                  if (option == "pickup") {
+                    return (
+                      <>
+                        <div className="rest-card-info-child-pickup">
+                          pickup
+                        </div>
+                      </>
+                    );
+                  }
+                })}
+              </div>
+
+              <div className="rest-card-info">
+                {restaurant?.order_option?.split(",").map((option, i) => {
+                  if (option == "eatin") {
+                    return (
+                      <>
+                        <div className="rest-card-info-child-eatin">Eat-In</div>
+                        &nbsp; &nbsp;
+                      </>
+                    );
+                  }
+                })}
+
+                <div className="rest-card-info-child-opensat">Opens At</div>
+              </div>
+            </div>
+          </div>
+        </div>{" "}
+      </a>
+      &nbsp; &nbsp; &nbsp; &nbsp;
     </>
   );
 };

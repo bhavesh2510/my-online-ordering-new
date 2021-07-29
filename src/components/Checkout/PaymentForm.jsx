@@ -40,6 +40,7 @@ const PaymentForm = (props) => {
   const menu = useSelector((state) => state.menu);
   const user = useSelector((state) => state.user);
   const modal = useSelector((state) => state.modal);
+  const [range_arr, setrange_arr] = useState([]);
   const dispatch = useDispatch();
   const DELIVERY_TYPE = {
     DEFAULT: "Delivery",
@@ -47,13 +48,29 @@ const PaymentForm = (props) => {
     HOME_DELIVERY: "Delivery",
     EAT_IN: "EatIn",
   };
+
   const settime = () => {
-    console.log("format", moment().add(30, "minutes").format("HH:mm"));
+    var moment = require("moment-timezone");
+
+    var local_time = moment
+      .tz(moment(), `${menu.restaurantInfo.timezone}`)
+      .add(30, "minutes")
+
+      .format("HH:mm");
+
     console.log("open", main.opening);
     console.log("close", main.closing);
-    return moment().add(30, "minutes").format("HH:mm") >= main.opening &&
-      moment().add(30, "minutes").format("HH:mm") <= main.closing
-      ? moment().add(30, "minutes")
+    return moment
+      .tz(moment(), `${menu.restaurantInfo.timezone}`)
+      .add(30, "minutes")
+      .format("HH:mm") >= main.opening &&
+      moment
+        .tz(moment(), `${menu.restaurantInfo.timezone}`)
+        .add(30, "minutes")
+        .format("HH:mm") <= main.closing
+      ? moment
+          .tz(moment(), `${menu.restaurantInfo.timezone}`)
+          .add(30, "minutes")
       : moment(main.opening, "HH:mm");
   };
   const [api, setapi] = useState();
@@ -132,8 +149,16 @@ const PaymentForm = (props) => {
   useEffect(() => {
     // if (main.deliveryRange) getDeliveryCharges();
     if (api) {
-      dispatch(setPickupTime(data.pickupTime));
-      dispatch(setDeliveryTime(data.deliveryTime));
+      var formattedpickuptime = moment(data.pickupTime, "HH:mm").format(
+        "HH:mm"
+      );
+      var formatteddeliverytime = moment(data.deliveryTime, "HH:mm").format(
+        "HH:mm"
+      );
+      console.log("form");
+      console.log("xyz2 dek", formatteddeliverytime);
+      dispatch(setPickupTime(formattedpickuptime));
+      dispatch(setDeliveryTime(formatteddeliverytime));
       fetchAddresses();
       //getDeliveryCharges();
       console.log("api is", api);
@@ -148,7 +173,12 @@ const PaymentForm = (props) => {
 
   useEffect(() => {
     // dispatch(setSelectedAddress(user.defaultAddress));
-    const time = new Date().toLocaleTimeString();
+    // const time = new Date().toLocaleTimeString();
+
+    const time = moment
+      .tz(moment(), `${menu.restaurantInfo.timezone}`)
+
+      .format("HH:mm");
     const current_time = moment(time, "hh:mm A").format("HH:mm");
     console.log("24 hr format", current_time);
     if (current_time > main.opening && current_time < main.closing) {
@@ -234,14 +264,23 @@ const PaymentForm = (props) => {
     // }
     // we are moving in circles here, we have separate opening and closing object, this is unnecessary code.
     const selectedTime = moment(time, "HH:mm");
-    console.log("selected time", selectedTime);
+
+    console.log("selected time", timeString);
     const businessHoursFromTo = data.businessHours.split(" - ");
     const businessHoursFrom = moment(businessHoursFromTo[0], "HH:mm");
     const businessHoursTo = moment(businessHoursFromTo[1], "HH:mm");
+
     console.log("from", businessHoursFrom);
     console.log("To", businessHoursTo);
+    var local_after = moment
+      .tz(moment(), `${menu.restaurantInfo.timezone}`)
+      .add(30, "minutes")
 
-    if (selectedTime < moment().add(30, "minute")) {
+      .format("HH:mm");
+
+    console.log("after is", local_after);
+
+    if (timeString < local_after) {
       console.log("1 level");
       var formatted = moment(data.pickupTime, "HH:mm").format("hh:mm A");
 
@@ -256,10 +295,7 @@ const PaymentForm = (props) => {
         },
         placement: "topLeft",
       });
-    } else if (
-      selectedTime > businessHoursFrom &&
-      selectedTime < businessHoursTo
-    ) {
+    } else if (timeString > main.opening && timeString < main.closing) {
       setdata({ ...data, pickupTime: selectedTime });
       dispatch(setPickupTime(timeString));
       notification["success"]({
@@ -353,10 +389,11 @@ const PaymentForm = (props) => {
   };
 
   const onClick = () => {
-    console.log("distance at the time of range is", range_arr);
-    var range_arr;
+    setrange_arr(main.deliveryRange.range);
+    console.log("distance at the time of range is", main.deliveryRange.range);
+    var range;
     main.deliveryRange.range.map((val) => {
-      range_arr = val.range_to;
+      range = val.range_to;
     });
 
     if (!data.checkingChangeAddress && data.deliveryType == "Delivery") {
@@ -371,7 +408,7 @@ const PaymentForm = (props) => {
         },
         placement: "topRight",
       });
-    } else if (user.distance > range_arr && data.deliveryType == "Delivery") {
+    } else if (user.distance > range && data.deliveryType == "Delivery") {
       notification["warning"]({
         message: "This Address is out of range now !",
         style: {
@@ -424,17 +461,42 @@ const PaymentForm = (props) => {
   const getDisabledHours = () => {
     let hours = [...getMinHours(), ...getMaxHours()]; //? restricting business hours in timer, so no need for seperate validation for pickup time
     if (moment().minute() > 30) {
-      for (let i = 0; i < moment().hour() + 1; i++) {
+      for (
+        let i = 0;
+        i <
+        moment
+          .tz(moment(), `${menu.restaurantInfo.timezone}`)
+
+          .hour() +
+          1;
+        i++
+      ) {
         hours.push(i);
       }
     }
 
-    for (let i = 0; i < moment().hour(); i++) {
+    for (
+      let i = 0;
+      i <
+      moment
+        .tz(moment(), `${menu.restaurantInfo.timezone}`)
+
+        .hour();
+      i++
+    ) {
       hours.push(i);
     }
     // console.log(hours);
     return hours;
   };
+
+  console.log(
+    "disable hours",
+    moment
+      .tz(moment(), `${menu.restaurantInfo.timezone}`)
+
+      .hour()
+  );
 
   const getDisabledMinutes = () => {
     let minutes = [];
@@ -737,8 +799,8 @@ const PaymentForm = (props) => {
   return (
     <>
       <div className="box_style_2 delivery-container">
-        <h2 className="delivery-head-type">Select Delivery type</h2>
-        <div className="container-for-mobile">
+        <h2 className="delivery-head-type">Delivery type</h2>
+        <div className="container-for-mobile  margin-for-desktop">
           {data.hasDeliveryOption ? (
             <>
               <input
@@ -807,13 +869,34 @@ const PaymentForm = (props) => {
               <>
                 <h2 className="delivery-head">
                   Delivery Address{" "}
-                  <img
+                  {/* <img
                     className="delivery-tick-img"
                     src="https://i.ibb.co/TmCnRTh/Tick-Mark-Dark-512.png"
-                  />
+                  /> */}
                 </h2>
 
-                <span class="address-change" onClick={onChangeAddressCall}>
+                <div
+                  style={{
+                    marginTop: "-60px",
+                    backgroundColor: "white",
+
+                    border: "1px solid black",
+                  }}
+                  className="button-container address-add-change hide-on-mobile"
+                  onClick={onChangeAddressCall}
+                >
+                  <span
+                    className="add-to-cart-button"
+                    style={{ color: "black", fontSize: "13px" }}
+                  >
+                    Change
+                  </span>
+                </div>
+
+                <span
+                  class="address-change hide-on-desktop"
+                  onClick={onChangeAddressCall}
+                >
                   Change
                 </span>
               </>
@@ -821,14 +904,36 @@ const PaymentForm = (props) => {
               <>
                 <h2 className="delivery-head">
                   Add Delivery Address{" "}
-                  <img
+                  {/* <img
                     src="https://i.ibb.co/TmCnRTh/Tick-Mark-Dark-512.png"
                     height="50px"
                     width="50px"
-                  />
+                  /> */}
                 </h2>
 
-                <span class="address-add-change" onClick={onChangeAddressCall}>
+                <div
+                  style={{
+                    marginTop: "-70px",
+                    backgroundColor: "white",
+
+                    border: "1px solid black",
+                  }}
+                  className="button-container address-add-change hide-on-mobile"
+                  onClick={onChangeAddressCall}
+                >
+                  <span
+                    className="add-to-cart-button"
+                    style={{ color: "black" }}
+                  >
+                    Add
+                  </span>
+                </div>
+
+                <span
+                  class="address-add-change hide-on-desktop"
+                  style={{ marginTop: "-65px" }}
+                  onClick={onChangeAddressCall}
+                >
                   ADD
                 </span>
               </>
@@ -981,45 +1086,69 @@ const PaymentForm = (props) => {
                 <>
                   <section
                     className="address-section-paymentform"
+                    style={{ backgroundColor: "#eae8ed" }}
                     // key={i}
                   >
                     <Address address={address} key={i} />
                     <ul className="address-actions">
                       <li //onClick={() => callAddressModal(true, address)}
                       >
-                        <span>
-                          <h5
-                            className="actions"
-                            onClick={() => handleMultipleAddress(address)}
-                            style={{
-                              height: "35px",
-                              paddingTop: "8px",
-                              backgroundColor: "#302f31",
-                            }}
-                          >
-                            Deliver Here
-                          </h5>
-                        </span>
+                        <button
+                          onClick={() => handleMultipleAddress(address)}
+                          style={{
+                            height: "35px",
+
+                            backgroundColor: "#302f31",
+                            color: "white",
+                            borderRadius: "5px",
+                          }}
+                        >
+                          Deliver here
+                        </button>
+                        {/* <h5
+                          className="actions"
+                          onClick={() => handleMultipleAddress(address)}
+                          style={{
+                            height: "35px",
+                            paddingTop: "8px",
+                            backgroundColor: "#302f31",
+                            color: "white",
+                          }}
+                        >
+                          Deliver Here
+                        </h5> */}
+                        {/* </span> */}
                       </li>
                     </ul>
-                  </section>
+                  </section>{" "}
+                  &nbsp; &nbsp; &nbsp;
                 </>
               );
             })}
+
             <div
-              className="checkout-add-address"
-              onClick={handleAddAddressOnPaymentForm}
               style={{
-                width: "100%",
-                backgroundColor: "#f1f1f1",
-                height: "70px",
-                cursor: "pointer",
+                marginTop: "0px",
+                backgroundColor: "white",
+                color: "black",
+
+                border: "1px solid black",
               }}
+              className="button-container-add-address-mobile"
+              onClick={handleAddAddressOnPaymentForm}
             >
-              <p className="text-add-address">
-                <AddIcon />
-                &nbsp; Add New Address
+              <p
+                className="hide-on-desktop"
+                style={{ marginTop: "15px", fontSize: "20px" }}
+              >
+                ADD
               </p>
+              <span className="add-to-cart-button" style={{ color: "black" }}>
+                Add
+              </span>
+              {/* <span className="add-to-cart-button-plus">
+                <AddIcon />
+              </span> */}
             </div>
           </div>
         </>
@@ -1028,19 +1157,25 @@ const PaymentForm = (props) => {
       {user.isTakeAway ? (
         <div
           className="box_style_2"
-          style={{ cursor: "pointer" }}
+          style={{ cursor: "pointer", marginTop: "-20px" }}
           onClick={showAddressModal}
         >
           <h2 className="delivery-head">Pickup Details</h2>
           <div className="pickup-details">
             <h3>
               <strong className="delivery-head-business">
-                Business hours are {main.businessHour}
+                Business hours : {main.businessHour}
               </strong>
             </h3>
             <br />
-            <div className="address-details" style={{ color: "black" }}>
-              selected pickup time : &nbsp;
+            <div
+              className="address-details"
+              style={{
+                color: "black",
+                fontWeight: "600",
+              }}
+            >
+              Selected Pickup Time : &nbsp;
               <div className="timepicker-container">
                 <TimePicker
                   defaultValue={data.pickupTime}
@@ -1091,15 +1226,16 @@ const PaymentForm = (props) => {
         />
       </div>
 
-      <div className="box_style_2">
-        <h2 className="delivery-head">Choose Payment method</h2>
+      <div className="box_style_2" style={{ marginTop: "-30px" }}>
+        <h2 className="delivery-head">Payment method</h2>
 
-        {data.paymentOptions.map((val) => {
-          if (val == "1") {
-            return (
-              <>
-                <div className="payment_select">
-                  <input
+        <div className="payment-container">
+          {data.paymentOptions.map((val) => {
+            if (val == "1") {
+              return (
+                <>
+                  {/* <div className="payment_select"> */}
+                  {/* <input
                     type="radio"
                     name="payment"
                     id="card"
@@ -1107,16 +1243,37 @@ const PaymentForm = (props) => {
                     onChange={(e) => paymentOptionChange("1")}
                   />
                   <label className="payment-class" for="card">
-                    Pay With Card &nbsp; <CreditCardIcon />
-                  </label>
-                </div>
-              </>
-            );
-          } else if (val == "2") {
-            return (
-              <>
-                <div className="payment_select">
+                    Pay With Card
+
+                     &nbsp; <CreditCardIcon />
+                  </label> */}
+
                   <input
+                    className="check_payment"
+                    type="radio"
+                    name="payment"
+                    id="card"
+                    value="1"
+                    onChange={(e) => paymentOptionChange("1")}
+                  />
+
+                  <label
+                    className="payment-class"
+                    for="card"
+                    class="btn_radio_for_payment"
+                    style={{ whiteSpace: "nowrap" }}
+                  >
+                    Pay With Card
+                  </label>
+
+                  {/* </div> */}
+                </>
+              );
+            } else if (val == "2") {
+              return (
+                <>
+                  {/* <div className="payment_select"> */}
+                  {/* <input
                     type="radio"
                     name="payment"
                     id="cashondelivery"
@@ -1126,15 +1283,33 @@ const PaymentForm = (props) => {
                   <label className="payment-class" for="cashondelivery">
                     cash on delivery &nbsp;
                     <AccountBalanceWalletIcon />
-                  </label>
-                </div>
-              </>
-            );
-          } else if (val == "5") {
-            return (
-              <>
-                <div className="payment_select">
+                  </label> */}
+
                   <input
+                    className="check_payment"
+                    type="radio"
+                    name="payment"
+                    id="cashondelivery"
+                    value="2"
+                    onChange={(e) => paymentOptionChange("2")}
+                  />
+
+                  <label
+                    className="payment-class"
+                    for="cashondelivery"
+                    class="btn_radio_for_payment"
+                    style={{ whiteSpace: "nowrap" }}
+                  >
+                    cash on delivery
+                  </label>
+                  {/* </div> */}
+                </>
+              );
+            } else if (val == "5") {
+              return (
+                <>
+                  {/* <div className="payment_select"> */}
+                  {/* <input
                     type="radio"
                     name="payment"
                     id="paywithpoints"
@@ -1144,29 +1319,52 @@ const PaymentForm = (props) => {
                   <label className="payment-class" for="paywithpoints">
                     Open Banking &nbsp;
                     <AccountBalanceIcon />
+                  </label> */}
+
+                  <input
+                    className="check_payment"
+                    type="radio"
+                    name="payment"
+                    id="paywithpoints"
+                    value="4"
+                    onChange={(e) => paymentOptionChange("4")}
+                  />
+
+                  <label
+                    className="payment-class"
+                    for="paywithpoints"
+                    class="btn_radio_for_payment"
+                    style={{ whiteSpace: "nowrap" }}
+                  >
+                    Open Banking
                   </label>
-                </div>
-              </>
-            );
-          }
-        })}
-        <table className="table table_summary">
-          <tbody>
-            <tr>
-              <Button
-                onClick={onClick}
-                style={{
-                  backgroundColor: "#302f31",
-                  color: "white",
-                  width: "100%",
-                  padding: "10px",
-                }}
-              >
-                proceed to pay <strong>&nbsp;</strong>
-              </Button>
-            </tr>
-          </tbody>
-        </table>
+
+                  {/* <CreditCardIcon />
+                  <AccountBalanceIcon />
+                  <AccountBalanceWalletIcon /> */}
+
+                  {/* </div> */}
+                </>
+              );
+            }
+          })}
+        </div>
+        <div className="paymentform-btn-container">
+          <Button
+            onClick={onClick}
+            style={{
+              backgroundColor: "#5c48d2",
+              color: "white",
+              width: "100%",
+              padding: "10px",
+              textTransform: "none",
+              fontSize: "17px",
+              borderRadius: "10px",
+            }}
+          >
+            Proceed To Pay<strong>&nbsp;</strong>
+          </Button>
+        </div>
       </div>
 
       {modal.modal.modalToShow == "findAddress" ? (

@@ -1,12 +1,11 @@
-import React, {useEffect} from 'react'
-import {Row, Col } from 'reactstrap';
-import Slider from '../../../components/Slider/Slider';
+import React, { useEffect } from "react";
+import { Row, Col } from "reactstrap";
+import Slider from "../../../components/Slider/Slider";
 
-import RestaurantCard from './RestaurantCard/RestaurantCard';
+import RestaurantCard from "./RestaurantCard/RestaurantCard";
 // import './Restaurants.scss'
 
-const Restaurants = ({restaurants}) => {
-
+const Restaurants = ({ restaurants }) => {
   // useEffect(() => {
   //   let slider = document.getElementById("layerslider");
   //   slider.layerSlider({
@@ -23,35 +22,28 @@ const Restaurants = ({restaurants}) => {
   // });
   // }, []);
 
-
   return (
     <>
-      <Slider/>
+      {/* <Slider/> */}
       <div className="white_bg">
         <div className="container margin_60">
           <div className="main_title">
             <h2 className="nomargin_top">Choose from Most Popular</h2>
             <p>Your Favourite Restaurants</p>
           </div>
-          <Row className="row">
-            
-              {restaurants.map((restaurant)=>{
-                return (
-                  <Col key={restaurant.restaurant_id} className="col-lg-6">
-                    <RestaurantCard restaurant={restaurant} />
-                  </Col>
-                );
-              })}
-              {/* End strip_list*/}
-            
-          </Row>
+          <div style={{ display: "flex", flexWrap: "wrap" }}>
+            {restaurants.map((restaurant) => {
+              return <RestaurantCard restaurant={restaurant} />;
+            })}
+            {/* End strip_list*/}
+          </div>
+
           {/* End row */}
         </div>
         {/* End container */}
       </div>
     </>
   );
-
 };
 
-export default Restaurants
+export default Restaurants;

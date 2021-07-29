@@ -52,6 +52,10 @@ const MyOrderDetails = (props) => {
     setModal(!modal);
     fetchAndShowOrderDetails(props.orderId);
   };
+
+  useEffect(() => {
+    console.log("details are", details);
+  }, [details]);
   //   const itemList = details?.products?.map((item, i) => {
   //     let forcedModifier = "";
 

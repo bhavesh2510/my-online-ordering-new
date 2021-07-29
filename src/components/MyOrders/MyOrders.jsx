@@ -34,6 +34,10 @@ import {
   setTimer,
 } from "../../state-management/menu/utils";
 import RenderModifiers from "../../containers/Modifiers/RenderModifiers";
+import clipboard from "./Regular-1.5px-clipboard@3x.png";
+import mapicon from "./Regular-1.5px-map@3x.png";
+import bag from "./Regular-1.5px-shopping_bag@3x.png";
+import lock from "./lock@3x.png";
 
 const MyOrders = React.memo(({ restaurantId }) => {
   const main = useSelector((state) => state.main);
@@ -106,10 +110,24 @@ const MyOrders = React.memo(({ restaurantId }) => {
   }, []);
 
   useEffect(() => {
+    console.log("window screen", window.screen.width);
+  }, [window.screen.width]);
+
+  useEffect(() => {
     console.log("o list", orderList);
   }, [orderList]);
 
   const onProfileClick = () => {
+    if (window.screen.width <= 768) {
+      var x = document.getElementById("mob-parent-id-2");
+      var y = document.getElementById("mob-parent-id");
+      var z = document.getElementById("mob-parent-id-3");
+      var a = document.getElementById("mob-parent-id-4");
+      x.classList.remove("add-border");
+      y.classList.remove("add-border");
+      z.classList.remove("add-border");
+      a.classList.add("add-border");
+    }
     var x = document.getElementById("nav-parent-id-2");
     var y = document.getElementById("nav-parent-id");
     var z = document.getElementById("nav-parent-id-3");
@@ -118,6 +136,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
     y.classList.remove("add-color");
     z.classList.remove("add-color");
     a.classList.add("add-color");
+
     setstate({
       ...state,
       showprofile: true,
@@ -127,6 +146,16 @@ const MyOrders = React.memo(({ restaurantId }) => {
     });
   };
   const onOrderClick = () => {
+    if (window.screen.width <= 768) {
+      var x = document.getElementById("mob-parent-id");
+      var y = document.getElementById("mob-parent-id-2");
+      var z = document.getElementById("mob-parent-id-3");
+      var a = document.getElementById("mob-parent-id-4");
+      a.classList.remove("add-border");
+      y.classList.remove("add-border");
+      z.classList.remove("add-border");
+      x.classList.add("add-border");
+    }
     setstate({
       ...state,
       showprofile: false,
@@ -146,6 +175,17 @@ const MyOrders = React.memo(({ restaurantId }) => {
   };
 
   const onAddressClick = () => {
+    if (window.screen.width <= 768) {
+      var x = document.getElementById("mob-parent-id-2");
+      var y = document.getElementById("mob-parent-id");
+      var z = document.getElementById("mob-parent-id-3");
+      var a = document.getElementById("mob-parent-id-4");
+      a.classList.remove("add-border");
+      y.classList.remove("add-border");
+      z.classList.remove("add-border");
+
+      x.classList.add("add-border");
+    }
     var x = document.getElementById("nav-parent-id-2");
     var y = document.getElementById("nav-parent-id");
     var z = document.getElementById("nav-parent-id-3");
@@ -164,6 +204,16 @@ const MyOrders = React.memo(({ restaurantId }) => {
     });
   };
   const onChangePasswordClick = () => {
+    if (window.screen.width <= 768) {
+      var x = document.getElementById("mob-parent-id-2");
+      var y = document.getElementById("mob-parent-id");
+      var z = document.getElementById("mob-parent-id-3");
+      var a = document.getElementById("mob-parent-id-4");
+      a.classList.remove("add-border");
+      x.classList.remove("add-border");
+      y.classList.remove("add-border");
+      z.classList.add("add-border");
+    }
     var x = document.getElementById("nav-parent-id-2");
     var y = document.getElementById("nav-parent-id");
     var z = document.getElementById("nav-parent-id-3");
@@ -213,13 +263,13 @@ const MyOrders = React.memo(({ restaurantId }) => {
 
     const response = await dispatch(fetchMyOrderDetails(currentitem.order_id));
     console.log("response of order details", response);
-    var formatted = moment(
-      response.payload.data[0].delivery_time,
-      "HH:mm"
-    ).format("HH:mm A");
+    // var formatted = moment(
+    //   response.payload.data[0].delivery_time,
+    //   "HH:mm"
+    // ).format("HH:mm A");
     setextradetails(response.payload.data[0].order_time);
-    setpickuptime(response.payload.data[0].delivery_time);
-    setdeliverytime(formatted);
+    // setpickuptime(response.payload.data[0].delivery_time);
+    // setdeliverytime(formatted);
 
     setcurrentorderData(response.payload.data);
     setsubtotal(response.payload.data[0].subtotal);
@@ -238,7 +288,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
 
   useEffect(() => {
     console.log("current order  is", extradetails);
-  }, [setextradetails]);
+  }, [extradetails]);
 
   const handleOldPassword = (e) => {
     setpassworddata({ ...passworddata, oldpass: e });
@@ -349,7 +399,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
       {state.showpasswordoverlay ? <WaitingOverlay /> : null}
 
       <AppHeader />
-
+      {/* 
       <section
         className="width-of-ordersuccess"
         data-parallax="scroll"
@@ -366,277 +416,308 @@ const MyOrders = React.memo(({ restaurantId }) => {
             <h1>My Profile</h1>
           </div>
         </div>
-      </section>
-      <div
-        className="container margin_60 width-of-ordersuccess"
-        style={{ backgroundColor: "#f9f9f9", border: "1px solid #f1f1f1" }}
-      >
-        <nav className="nav-parent">
-          <ul className="ul-parent">
-            <li className="tab-current">
-              <p
-                id="nav-parent-id-2"
-                onClick={onAddressClick}
-                className="anchor-parent"
-              >
-                <span>
-                  Address &nbsp;
-                  <HomeIcon />
-                </span>
-              </p>
-            </li>
-            <li className="tab-current">
-              <p
-                id="nav-parent-id"
-                onClick={onOrderClick}
-                className="anchor-parent"
-              >
-                <span>
-                  Orders &nbsp;
-                  <FastfoodIcon />
-                </span>
-              </p>
-            </li>
+      </section> */}
 
-            <li className="tab-current">
-              <p
-                id="nav-parent-id-4"
-                onClick={onProfileClick}
-                className=" anchor-parent"
-              >
-                <span>
-                  Profile &nbsp;
-                  <PersonIcon />
-                </span>
-              </p>
-            </li>
-            <li className="tab-current">
-              <p
-                id="nav-parent-id-3"
-                onClick={onChangePasswordClick}
-                className="anchor-parent"
-              >
-                <span>
-                  Change Password
-                  <PersonIcon />
-                </span>
-              </p>
-            </li>
-          </ul>
-        </nav>
+      <div className="parent-catbar-mobile">
         <div
-          style={{
-            backgroundColor: "white",
-
-            marginTop: "-13px",
-          }}
+          className="child-catbar-mobile"
+          id="mob-parent-id-2"
+          onClick={onAddressClick}
         >
-          <div className="row">
-            {state.showorder ? (
-              <>
-                {orderList.length == 0 ? (
-                  <>
-                    <img
-                      src="https://biryaniblues.com/assets/frontend/images/empty-box.png"
-                      style={{ marginLeft: "30%" }}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <PaginationOrderList
-                      orderList={orderList}
-                      showModal={showModal}
-                    />
-                  </>
-                )}
+          <p className="child-catbar-text">My Address</p>
+        </div>
+        <div className="child-catbar-mobile" id="mob-parent-id">
+          <p className="child-catbar-text-orderhistory" onClick={onOrderClick}>
+            Order History
+          </p>
+        </div>
+        <div className="child-catbar-mobile" id="mob-parent-id-4">
+          <p className="child-catbar-text-myprofile" onClick={onProfileClick}>
+            My Profile
+          </p>
+        </div>
+        <div className="child-catbar-mobile" id="mob-parent-id-3">
+          <p className="child-catbar-text" onClick={onChangePasswordClick}>
+            My passowrd
+          </p>
+        </div>
+      </div>
 
-                {/* {orderList.map((currval) => {
+      <div className="container margin_60_35">
+        <div className="row customised_row ">
+          <div
+            className="col-lg-3 customise-width hide-on-mobile"
+            style={{
+              backgroundColor: "rgb(234, 232, 237)",
+              marginTop: "20px",
+              height: "280px",
+            }}
+          >
+            <div
+              className="sub-cat-myorder"
+              onClick={onAddressClick}
+              id="nav-parent-id-2"
+            >
+              <div className="myorder-icontext-parent">
+                <img src={mapicon} className="img-myorder-icon" />{" "}
+                <p className="myorder-text">My Address</p>
+              </div>
+            </div>
+            <div
+              className="sub-cat-myorder"
+              onClick={onOrderClick}
+              id="nav-parent-id"
+            >
+              <div className="myorder-icontext-parent">
+                <img src={bag} className="img-myorder-icon" />{" "}
+                <p className="myorder-text">Order History</p>
+              </div>
+            </div>
+            <div
+              className="sub-cat-myorder"
+              onClick={onProfileClick}
+              id="nav-parent-id-4"
+            >
+              <div className="myorder-icontext-parent">
+                <img src={clipboard} className="img-myorder-icon" />{" "}
+                <p className="myorder-text">My Profile</p>
+              </div>
+            </div>
+            <div
+              className="sub-cat-myorder"
+              onClick={onChangePasswordClick}
+              id="nav-parent-id-3"
+            >
+              <div className="myorder-icontext-parent">
+                <img src={lock} className="img-myorder-icon" />
+                <p className="myorder-text">Change Password</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-lg-9">
+            <div
+              style={{
+                backgroundColor: "white",
+
+                marginTop: "-13px",
+              }}
+            >
+              <div className="row">
+                <div className="parent-below-row">
+                  {state.showorder ? (
+                    <>
+                      {orderList.length == 0 ? (
+                        <>
+                          <img
+                            src="https://biryaniblues.com/assets/frontend/images/empty-box.png"
+                            style={{ marginLeft: "30%" }}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <PaginationOrderList
+                            orderList={orderList}
+                            showModal={showModal}
+                          />
+                        </>
+                      )}
+
+                      {/* {orderList.map((currval) => {
                   return (
                   
                   );
                 })} */}
-              </>
-            ) : null}
+                    </>
+                  ) : null}
+                </div>
 
-            {/* popup */}
-            {/* <div> */}
-            {modal ? (
-              <>
-                <div className="modal-wrapper">
-                  <div className="modal-overlay"></div>
-                  <div className="modal-content" style={{ marginTop: "50px" }}>
-                    <section className="section-header">
-                      <h2
-                        className="heading-modal"
-                        style={{ textAlign: "center" }}
+                {/* popup */}
+                {/* <div> */}
+                {modal ? (
+                  <>
+                    <div className="modal-wrapper">
+                      <div className="modal-overlay"></div>
+                      <div
+                        className="modal-content"
+                        style={{ marginTop: "50px" }}
                       >
-                        <b>Order # {currentdata.orderid}</b>
-                      </h2>
-                      <span className="close-modal">
-                        <CloseIcon
-                          onClick={closeModal}
-                          style={{ cursor: "pointer" }}
-                        />
-                      </span>
-                    </section>
-                    <section className="order-contents">
-                      <div className="restroname">
-                        <div className="namerestroflex">
-                          <div className="exactrestroname">
-                            <h4 className="headrestro">
-                              {menu.restaurantInfo.rname}
-                            </h4>
-                            <div className="restrolocation">
-                              {menu.restaurantInfo.city},{" "}
-                              {menu.restaurantInfo.country}
-                            </div>{" "}
+                        <section className="section-header">
+                          <h2
+                            className="heading-modal"
+                            style={{ textAlign: "center" }}
+                          >
+                            <b>Order # {currentdata.orderid}</b>
+                          </h2>
+                          <span className="close-modal">
+                            <CloseIcon
+                              onClick={closeModal}
+                              style={{ cursor: "pointer" }}
+                            />
+                          </span>
+                        </section>
+                        <section className="order-contents">
+                          <div className="restroname">
+                            <div className="namerestroflex">
+                              <div className="exactrestroname">
+                                <h4 className="headrestro">
+                                  {menu.restaurantInfo.rname}
+                                </h4>
+                                <div className="restrolocation">
+                                  {menu.restaurantInfo.city},{" "}
+                                  {menu.restaurantInfo.country}
+                                </div>{" "}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                      <hr style={{ width: "90%", backgroundColor: "black" }} />
-                      <div className="item-list">
-                        <h5 className="heading-list">Order List</h5>
-                        {product &&
-                          product.map((currval) => {
-                            let item = currval;
-                            let forcedModifier = "";
+                          <hr
+                            style={{ width: "90%", backgroundColor: "black" }}
+                          />
+                          <div className="item-list">
+                            <h5 className="heading-list">Order List</h5>
+                            {product &&
+                              product.map((currval) => {
+                                let item = currval;
+                                let forcedModifier = "";
 
-                            let optionalModifier = "";
+                                let optionalModifier = "";
 
-                            let toppings = "";
+                                let toppings = "";
 
-                            let sizeAndBase = "";
+                                let sizeAndBase = "";
 
-                            let halfNhalf = "";
+                                let halfNhalf = "";
 
-                            if (
-                              item.forced_modifier === undefined ||
-                              item.forced_modifier.length !== 0
-                            ) {
-                              item.forced_modifier.map(function (fm) {
-                                // check if there is detour availabe
-                                const detours = isFmHaveDetours(
-                                  fm.fmid,
-                                  item.detours
-                                );
+                                if (
+                                  item.forced_modifier === undefined ||
+                                  item.forced_modifier.length !== 0
+                                ) {
+                                  item.forced_modifier.map(function (fm) {
+                                    // check if there is detour availabe
+                                    const detours = isFmHaveDetours(
+                                      fm.fmid,
+                                      item.detours
+                                    );
 
-                                forcedModifier += `, ${fm.name}`;
-                                forcedModifier = forcedModifier
-                                  .replace(/[\s,]+/, " ")
-                                  .trim();
-                                if (detours.result) {
-                                  detours.data = detours.data
+                                    forcedModifier += `, ${fm.name}`;
+                                    forcedModifier = forcedModifier
+                                      .replace(/[\s,]+/, " ")
+                                      .trim();
+                                    if (detours.result) {
+                                      detours.data = detours.data
+                                        .replace(/[\s,]+/, " ")
+                                        .trim();
+                                      forcedModifier += `(${detours.data})`;
+                                    }
+                                  });
+                                }
+                                if (
+                                  item.optional_modifier === undefined ||
+                                  item.optional_modifier.length !== 0
+                                ) {
+                                  item.optional_modifier.map(function (om) {
+                                    optionalModifier += `, ${om.name}`;
+                                  });
+                                  optionalModifier = optionalModifier
                                     .replace(/[\s,]+/, " ")
                                     .trim();
-                                  forcedModifier += `(${detours.data})`;
                                 }
-                              });
-                            }
-                            if (
-                              item.optional_modifier === undefined ||
-                              item.optional_modifier.length !== 0
-                            ) {
-                              item.optional_modifier.map(function (om) {
-                                optionalModifier += `, ${om.name}`;
-                              });
-                              optionalModifier = optionalModifier
-                                .replace(/[\s,]+/, " ")
-                                .trim();
-                            }
 
-                            // PIZZA Details
+                                // PIZZA Details
 
-                            // Toppings
-                            if (item.toppings !== undefined) {
-                              item.toppings.map(function (top) {
-                                toppings += `, ${top.name}`;
-                              });
-                              toppings = toppings.replace(/[\s,]+/, " ").trim();
-                            }
+                                // Toppings
+                                if (item.toppings !== undefined) {
+                                  item.toppings.map(function (top) {
+                                    toppings += `, ${top.name}`;
+                                  });
+                                  toppings = toppings
+                                    .replace(/[\s,]+/, " ")
+                                    .trim();
+                                }
 
-                            // SizeAndBase
-                            if (item.base !== undefined) {
-                              console.log("pizaa bug", item);
-                              sizeAndBase = `${item.size_vlaue} ${item.base.base_name}`;
-                            }
+                                // SizeAndBase
+                                if (item.base !== undefined) {
+                                  console.log("pizaa bug", item);
+                                  sizeAndBase = `${item.size_vlaue} ${item.base.base_name}`;
+                                }
 
-                            // HalfNhalf
-                            if (
-                              item.first_half_toppings !== undefined &&
-                              item.second_half_toppings !== undefined &&
-                              item.first_half_toppings.length > 0 &&
-                              item.second_half_toppings.length > 0
-                            ) {
-                              halfNhalf = `First Half: ${item.first_half_toppings[0].name}, Second Half: ${item.second_half_toppings[0].name}`;
-                            }
+                                // HalfNhalf
+                                if (
+                                  item.first_half_toppings !== undefined &&
+                                  item.second_half_toppings !== undefined &&
+                                  item.first_half_toppings.length > 0 &&
+                                  item.second_half_toppings.length > 0
+                                ) {
+                                  halfNhalf = `First Half: ${item.first_half_toppings[0].name}, Second Half: ${item.second_half_toppings[0].name}`;
+                                }
 
-                            return (
-                              <>
-                                <div className="dish-item">
-                                  <div className="dish-name">
-                                    <div className="dish-name-child">
-                                      <div className="para-tax">
-                                        {currval.quantity} x{" "}
-                                        {currval.product_name}
-                                      </div>
+                                return (
+                                  <>
+                                    <div className="dish-item">
+                                      <div className="dish-name">
+                                        <div className="dish-name-child">
+                                          <div className="para-tax">
+                                            {currval.quantity} x{" "}
+                                            {currval.product_name}
+                                          </div>
 
-                                      <div className="para-tax">
-                                        {truncateDecimal(
-                                          Number(currval.subtotal) +
-                                            Number(currval.tax)
-                                        )}
-                                        {/* Number(currval.tax)} */}
+                                          <div className="para-tax">
+                                            {truncateDecimal(
+                                              Number(currval.subtotal) +
+                                                Number(currval.tax)
+                                            )}
+                                            {/* Number(currval.tax)} */}
+                                          </div>
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                </div>
 
-                                <div
-                                  style={{
-                                    width: "50%",
-                                    marginLeft: "28px",
-                                    marginTop: "10px",
-                                    fontSize: "13px",
-                                  }}
-                                >
-                                  {forcedModifier !== "" ? (
-                                    <section className="modifiers">
-                                      <span className="modifiers-heading">
-                                        Modifiers:
-                                      </span>
-                                      {forcedModifier}
-                                    </section>
-                                  ) : null}
-                                  {optionalModifier !== "" ? (
-                                    <section className="modifiers">
-                                      <span className="modifiers-heading">
-                                        Extras:
-                                      </span>
-                                      {optionalModifier}
-                                    </section>
-                                  ) : null}
-                                  {toppings !== "" ? (
-                                    <section className="modifiers">
-                                      <span className="modifiers-heading">
-                                        Toppings:
-                                      </span>
-                                      {toppings}
-                                    </section>
-                                  ) : null}
-                                  {halfNhalf !== "" ? (
-                                    <section className="modifiers">
-                                      <span className="modifiers-heading">
-                                        Half And Half Choice:
-                                      </span>
-                                      {halfNhalf}
-                                    </section>
-                                  ) : null}
-                                </div>
-                              </>
-                            );
-                          })}
+                                    <div
+                                      style={{
+                                        width: "50%",
+                                        marginLeft: "28px",
+                                        marginTop: "10px",
+                                        fontSize: "13px",
+                                      }}
+                                    >
+                                      {forcedModifier !== "" ? (
+                                        <section className="modifiers">
+                                          <span className="modifiers-heading">
+                                            Modifiers:
+                                          </span>
+                                          {forcedModifier}
+                                        </section>
+                                      ) : null}
+                                      {optionalModifier !== "" ? (
+                                        <section className="modifiers">
+                                          <span className="modifiers-heading">
+                                            Extras:
+                                          </span>
+                                          {optionalModifier}
+                                        </section>
+                                      ) : null}
+                                      {toppings !== "" ? (
+                                        <section className="modifiers">
+                                          <span className="modifiers-heading">
+                                            Toppings:
+                                          </span>
+                                          {toppings}
+                                        </section>
+                                      ) : null}
+                                      {halfNhalf !== "" ? (
+                                        <section className="modifiers">
+                                          <span className="modifiers-heading">
+                                            Half And Half Choice:
+                                          </span>
+                                          {halfNhalf}
+                                        </section>
+                                      ) : null}
+                                    </div>
+                                  </>
+                                );
+                              })}
 
-                        {/* <div className="dish-item">
+                            {/* <div className="dish-item">
                           <div className="dish-name">
                             <div className="dish-name-child">
                               <div className="para-tax">1 x dish1</div>
@@ -653,203 +734,219 @@ const MyOrders = React.memo(({ restaurantId }) => {
                             </div>
                           </div>
                         </div> */}
-                      </div>
-                      <hr style={{ width: "90%", backgroundColor: "black" }} />
-                      <div className="tax-area">
-                        <div className="subtotal">
-                          <p className="para-tax">Subtotal</p>
-                          <p className="para-tax">
-                            {truncateDecimal(subtotal)}
-                          </p>
-                        </div>
-
-                        <div className="subtotal">
-                          <p className="para-tax">Taxes</p>
-                          <p className="para-tax">
-                            {truncateDecimal(currentdata.tax)}
-                          </p>
-                        </div>
-
-                        <div className="subtotal">
-                          <p className="para-tax">Delivery Charge</p>
-                          <p className="para-tax">{user.delivery_cost}.00</p>
-                        </div>
-                      </div>
-
-                      {savedAmount ? (
-                        <>
-                          <div className="savings">
-                            <p className="para-savings">YOU SAVED</p>
-                            <p className="para-savings">EUR 10</p>
                           </div>
-                        </>
-                      ) : null}
-                      <hr style={{ width: "90%", backgroundColor: "black" }} />
-                      <div
-                        className="subtotal"
-                        style={{ marginLeft: "20px", marginRight: "20px" }}
-                      >
-                        <p className="para-tax">
-                          <b>GRAND TOTAL</b>
-                        </p>
-                        <p className="para-tax">
-                          <b>{truncateDecimal(currentdata.gtotal)}</b>
-                        </p>
-                      </div>
-                      <hr />
-                      <br />
-                      <div className="order-details">
-                        <h5
-                          className="order-detail-header"
-                          style={{ marginLeft: "20px" }}
-                        >
-                          <b>Order Details</b>
-                        </h5>
-                        <div className="payment-opted">
-                          <div className="pay-opt">Payment</div>
-                          <div className="pay-name">
-                            <div className="pay-method">{paymethod}</div>
+                          <hr
+                            style={{ width: "90%", backgroundColor: "black" }}
+                          />
+                          <div className="tax-area">
+                            <div className="subtotal">
+                              <p className="para-tax">Subtotal</p>
+                              <p className="para-tax">
+                                {truncateDecimal(subtotal)}
+                              </p>
+                            </div>
+
+                            <div className="subtotal">
+                              <p className="para-tax">Taxes</p>
+                              <p className="para-tax">
+                                {truncateDecimal(currentdata.tax)}
+                              </p>
+                            </div>
+
+                            <div className="subtotal">
+                              <p className="para-tax">Delivery Charge</p>
+                              <p className="para-tax">
+                                {user.delivery_cost}.00
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                        <br />
-                        <br />
-                        <div className="pay-opt">Ordered ON</div>
-                        <div className="pay-name">
-                          <div className="pay-method">{currentdata.date}</div>
-                        </div>
-                        <br />
-                        <br />
-                        <div className="pay-opt">Order Time</div>
-                        <div className="pay-name">
-                          <div className="pay-method">{extradetails}</div>
-                        </div>
-                        <br />
-                        <br />
-                        {currentdata.type == "pickup" ? (
-                          <>
-                            <div className="pay-opt">Pickup Time</div>
-                            <div className="pay-name">
-                              <div className="pay-method">
-                                {user.selectedPickUpTime}
+
+                          {savedAmount ? (
+                            <>
+                              <div className="savings">
+                                <p className="para-savings">YOU SAVED</p>
+                                <p className="para-savings">EUR 10</p>
+                              </div>
+                            </>
+                          ) : null}
+                          <hr
+                            style={{ width: "90%", backgroundColor: "black" }}
+                          />
+                          <div
+                            className="subtotal"
+                            style={{ marginLeft: "20px", marginRight: "20px" }}
+                          >
+                            <p className="para-tax">
+                              <b>GRAND TOTAL</b>
+                            </p>
+                            <p className="para-tax">
+                              <b>{truncateDecimal(currentdata.gtotal)}</b>
+                            </p>
+                          </div>
+                          <hr />
+                          <br />
+                          <div className="order-details">
+                            <h5
+                              className="order-detail-header"
+                              style={{ marginLeft: "20px" }}
+                            >
+                              <b>Order Details</b>
+                            </h5>
+                            <div className="payment-opted">
+                              <div className="pay-opt">Payment</div>
+                              <div className="pay-name">
+                                <div className="pay-method">{paymethod}</div>
                               </div>
                             </div>
                             <br />
                             <br />
-                          </>
-                        ) : null}
-                        {currentdata.type == "delivery" ? (
-                          <>
-                            <div className="pay-opt">Delivery Time</div>
+                            <div className="pay-opt">Ordered ON</div>
                             <div className="pay-name">
                               <div className="pay-method">
-                                {user.selectedDeliveryTime}
+                                {currentdata.date}
                               </div>
                             </div>
                             <br />
                             <br />
-                          </>
-                        ) : null}
+                            <div className="pay-opt">Order Time</div>
+                            <div className="pay-name">
+                              <div className="pay-method">{extradetails}</div>
+                            </div>
+                            <br />
+                            <br />
+                            {currentdata.type == "pickup" ? (
+                              <>
+                                <div className="pay-opt">Pickup Time</div>
+                                <div className="pay-name">
+                                  <div className="pay-method">
+                                    {user.selectedPickUpTime}
+                                  </div>
+                                </div>
+                                <br />
+                                <br />
+                              </>
+                            ) : null}
+                            {currentdata.type == "delivery" ? (
+                              <>
+                                <div className="pay-opt">Delivery Time</div>
+                                <div className="pay-name">
+                                  <div className="pay-method">
+                                    {user.selectedDeliveryTime}
+                                  </div>
+                                </div>
+                                <br />
+                                <br />
+                              </>
+                            ) : null}
 
-                        <div className="pay-opt">Order type</div>
-                        <div className="pay-name">
-                          <div className="pay-method">{currentdata.type}</div>
-                        </div>
-                        <br />
-                        <br />
-                      </div>
-                    </section>
-                  </div>
-                </div>
-              </>
-            ) : null}
-
-            {/* popup */}
-
-            {state.showprofile ? (
-              <>
-                <MyProfile />
-              </>
-            ) : null}
-
-            {state.showaddress ? (
-              <>
-                {" "}
-                <ManageAddress />{" "}
-              </>
-            ) : null}
-
-            {state.showpassword ? (
-              <>
-                <div className="col-lg-6 password-parent-container">
-                  <div
-                    className="box_style_2 box-passowrd-container"
-                    id="main_menu"
-                  >
-                    <div
-                      style={{
-                        height: "auto",
-                        width: "400px",
-                      }}
-                    >
-                      <div className="password-child-conatiner">
-                        <TextField
-                          size="small"
-                          className="input-passowrd-texfield"
-                          // style={{ width: "120%" }}
-                          label="Old Password"
-                          variant="outlined"
-                          value={passworddata.oldpass}
-                          onChange={(e) => handleOldPassword(e.target.value)}
-                        />
-                        <br />
-                        <br />
-                        <TextField
-                          size="small"
-                          className="input-passowrd-texfield"
-                          label="New Password"
-                          variant="outlined"
-                          value={passworddata.newpass}
-                          onChange={(e) => handleNewPassword(e.target.value)}
-                        />
-                        <br />
-                        <br />
-                        <TextField
-                          size="small"
-                          className="input-passowrd-texfield"
-                          label="New Password"
-                          variant="outlined"
-                          value={passworddata.confirmnewpass}
-                          onChange={(e) =>
-                            handleConfirmNewPassword(e.target.value)
-                          }
-                        />
-                        <br />
-                        <br />
-
-                        <Button
-                          onClick={changePasswordFormSubmit}
-                          className="password-submit-button"
-                          style={{
-                            backgroundColor: "#302f31",
-
-                            color: "white",
-                          }}
-                        >
-                          Submit
-                        </Button>
+                            <div className="pay-opt">Order type</div>
+                            <div className="pay-name">
+                              <div className="pay-method">
+                                {currentdata.type}
+                              </div>
+                            </div>
+                            <br />
+                            <br />
+                          </div>
+                        </section>
                       </div>
                     </div>
-                  </div>
-                  {/* End box_style_1 */}
-                </div>
-              </>
-            ) : null}
+                  </>
+                ) : null}
+
+                {/* popup */}
+
+                {state.showprofile ? (
+                  <>
+                    <div style={{ marginLeft: "-10%" }}>
+                      <MyProfile />
+                    </div>
+                  </>
+                ) : null}
+
+                {state.showaddress ? (
+                  <>
+                    {" "}
+                    <ManageAddress />{" "}
+                  </>
+                ) : null}
+
+                {state.showpassword ? (
+                  <>
+                    <div style={{ marginLeft: "-15%" }}>
+                      <div className="col-lg-6 password-parent-container">
+                        <div
+                          className="box_style_2 box-passowrd-container"
+                          id="main_menu"
+                        >
+                          <div className="parent-container-password-height-width">
+                            <div className="password-child-conatiner">
+                              <TextField
+                                size="small"
+                                className="input-passowrd-texfield"
+                                // style={{ width: "120%" }}
+                                label="Old Password"
+                                variant="outlined"
+                                value={passworddata.oldpass}
+                                onChange={(e) =>
+                                  handleOldPassword(e.target.value)
+                                }
+                              />
+                              <br />
+                              <br />
+                              <TextField
+                                size="small"
+                                className="input-passowrd-texfield"
+                                label="New Password"
+                                variant="outlined"
+                                value={passworddata.newpass}
+                                onChange={(e) =>
+                                  handleNewPassword(e.target.value)
+                                }
+                              />
+                              <br />
+                              <br />
+                              <TextField
+                                size="small"
+                                className="input-passowrd-texfield"
+                                label="New Password"
+                                variant="outlined"
+                                value={passworddata.confirmnewpass}
+                                onChange={(e) =>
+                                  handleConfirmNewPassword(e.target.value)
+                                }
+                              />
+                              <br />
+                              <br />
+
+                              <Button
+                                onClick={changePasswordFormSubmit}
+                                className="password-submit-button"
+                                style={{
+                                  height: "45px",
+                                  backgroundColor: "#000000",
+
+                                  borderRadius: "12px",
+
+                                  color: "white",
+                                }}
+                              >
+                                Submit
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                        {/* End box_style_1 */}
+                      </div>
+                    </div>
+                  </>
+                ) : null}
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* {modal.modal.modalToShow == "findAddress" ? <ChooseAddress /> : null}
-      {modal.modal.modalToShow == "AddAddress" ? <AddAddress /> : null} */}
       <Footer />
     </>
   );

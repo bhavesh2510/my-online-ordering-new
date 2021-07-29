@@ -11,7 +11,7 @@ const FooterModifier = ({
   <ModalFooter>
     <Button
       className={`${disabled ? "disabled" : ""}`}
-      style={{ width: "100%", backgroundColor: "black", color: "whitesmoke" }}
+      style={{ width: "100%", backgroundColor: "#5c48d2", color: "whitesmoke" }}
       onClick={onClick}
     >
       {buttonTitle}

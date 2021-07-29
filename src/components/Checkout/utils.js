@@ -122,6 +122,13 @@ export function getFormattedRequestPayload(
   );
   const otherTaxItem = formattedItems.find((item) => item["other_tax"] !== 0);
   const vatTaxItem = formattedItems.find((item) => item["vat"] !== 0);
+  var moment = require("moment-timezone");
+
+  var local_time = moment
+    .tz(moment(), `${restaurant.timezone}`)
+
+    .format("HH:mm");
+  console.log("timezon in util", local_time);
   const payload = {
     ...user,
     ...restaurant,
@@ -129,7 +136,7 @@ export function getFormattedRequestPayload(
     rest_id: restaurant.restaurant_id,
     delivery_date: moment().format("yyyy-MM-DD"),
     order_date: moment().format("yyyy-MM-DD"),
-    order_time: moment().format("HH:mm:ss"),
+    order_time: moment.tz(moment(), `${restaurant.timezone}`).format("HH:mm"),
     is_online: "1",
     payment_method: delivery.paymentMethod,
     comments: delivery.comments,
@@ -199,8 +206,7 @@ export function getFormattedRequestPayload(
         delivery_option: delivery.deliveryType.toLowerCase(),
         order_location: null,
         time_for_delivery: user.selectedDeliveryTime,
-        delivery_time: user.selectedPickUpTime,
-        distance,
+        delivery_time: user.selectedDeliveryTime,
         delivery_cost: deliveryCharges,
         phone: "",
       }
@@ -214,7 +220,7 @@ export function getFormattedRequestPayload(
         delivery_option: delivery.deliveryType.toLowerCase(),
         order_location: null,
         time_for_delivery: "",
-        delivery_time: user.selectedPickUpTime,
+        delivery_time: "",
         distance: "",
         phone: user.user.mobile,
         delivery_phone: user.user.mobile,

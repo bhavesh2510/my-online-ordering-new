@@ -286,7 +286,37 @@ const Cart = (props) => {
           border: "1px solid #b7eb8f",
           backgroundColor: "#f6ffed",
         },
-        message: "Oops ! Restaurant is closed. Please Try Agin Later.",
+        message: "Oops ! Restaurant is closed.",
+      });
+    } else if (main.isClosedForWeekday) {
+      return notification["warning"]({
+        style: {
+          marginTop: "50px",
+          color: "rgba(0, 0, 0, 0.65)",
+          border: "1px solid #b7eb8f",
+          backgroundColor: "#f6ffed",
+        },
+        message: `${main.messageForWeekday}`,
+      });
+    } else if (main.isClosedForMonth) {
+      return notification["warning"]({
+        style: {
+          marginTop: "50px",
+          color: "rgba(0, 0, 0, 0.65)",
+          border: "1px solid #b7eb8f",
+          backgroundColor: "#f6ffed",
+        },
+        message: `${main.messageForMonth}`,
+      });
+    } else if (main.isClosedForOnceAMonth) {
+      return notification["warning"]({
+        style: {
+          marginTop: "50px",
+          color: "rgba(0, 0, 0, 0.65)",
+          border: "1px solid #b7eb8f",
+          backgroundColor: "#f6ffed",
+        },
+        message: `${main.messageForOnceAMonth}`,
       });
     } else {
       History.push(`/restId=${menu.restaurantInfo.restaurant_id}/checkout`);
@@ -294,12 +324,8 @@ const Cart = (props) => {
   };
 
   return (
-    <div id="cart_box">
-      <h3
-        style={{ backgroundColor: "#666171", color: "white" }}
-        id="Your Order"
-        className="hide-on-mobile"
-      >
+    <div id="cart_box" style={{ backgroundColor: "#f8f8f8" }}>
+      <h3 id="Your Order" className="hide-on-mobile">
         Your order <ShoppingCartIcon style={{ float: "right" }} />
       </h3>
 
@@ -419,18 +445,18 @@ const Cart = (props) => {
       {user.user.isUserLoggedIn ? (
         <button
           onClick={goToCheckout}
-          className="btn_full "
+          className="btn_full hide-on-mobile "
           // href="cart.html"
-          style={{ backgroundColor: "#302f32" }}
+          style={{ backgroundColor: "#5C48D2" }}
         >
           Checkout
         </button>
       ) : (
         <button
           onClick={callLoginForm}
-          className="btn_full"
+          className="btn_full hide-on-mobile"
           // href="cart.html"
-          style={{ backgroundColor: "#302f32" }}
+          style={{ backgroundColor: "#5C48D2" }}
         >
           Proceed to Login
         </button>

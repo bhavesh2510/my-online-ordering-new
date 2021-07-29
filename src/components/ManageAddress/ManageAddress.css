@@ -1,6 +1,7 @@
 .address-container {
   height: 100%;
   width: 100%;
+
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -12,18 +13,21 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  width: 110%;
 }
 .add-address {
-  margin-left: 70px;
+  cursor: pointer;
+  margin-left: 0px;
   margin-top: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 2px dotted #6244da;
+  border: 2px solid rgb(234, 232, 237);
   padding: 100px;
-  height: 265px !important;
-  width: 18rem;
+  height: 220px !important;
+  width: 14rem;
+  border-radius: 10px;
 }
 
 .address-section {
@@ -32,14 +36,18 @@
   flex-direction: column;
   height: auto;
   justify-content: space-between;
-  border: 2px solid gainsboro;
+  /* border: 2px solid gainsboro; */
+  /* padding: 15px 20px; */
   padding: 15px 20px;
-  background: #f1f1f1;
+  background: rgb(234, 232, 237);
+
   box-shadow: inset;
-  border-radius: 5px;
+  border-radius: 10px;
   padding-bottom: 5px;
   margin-left: 70px;
-  width: 18rem;
+  width: 14rem;
+  height: 220px !important;
+
   margin-bottom: 3%;
 }
 
@@ -60,19 +68,25 @@ h5 {
 }
 
 .actions {
-  padding: 5px 10px;
+  /* padding: 5px 10px; */
   cursor: pointer;
-  background: #6244da;
+  /* background: #6244da;
   border-radius: 10px;
   margin-bottom: 5px;
-  color: whitesmoke;
+  color: whitesmoke; */
+  text-decoration: underline;
+  text-decoration-color: rgb(168, 166, 170);
+  /* padding-bottom: 10px; */
+  /* text-decoration-style: dotted; */
 }
-.actions:hover {
+/* .actions:hover {
   background-color: #6244da;
   color: white;
-}
+} */
 .default {
-  background-color: black;
+  color: #6244da;
+  font-weight: 600;
+  text-decoration: none;
 }
 
 .address-lines {
@@ -85,10 +99,47 @@ h5 {
   font-weight: 700;
 }
 @media (max-width: 768px) {
+  .main-container {
+    width: 100% !important;
+  }
   .add-address {
     margin-left: 35px;
   }
   .address-section {
     margin-left: 35px;
+  }
+  .add-address-for-mobile {
+    height: 40px;
+    width: 120px;
+    border-radius: 5px;
+    border: 1px solid black;
+    margin-left: 60%;
+  }
+  .add-for-mobile-text {
+    font-size: 17px;
+    margin-top: 4px;
+    margin-left: 10px;
+  }
+  .address-section {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    justify-content: space-between;
+
+    padding: 15px 20px;
+    background: rgb(234, 232, 237);
+
+    box-shadow: inset;
+    border-radius: 10px;
+    padding-bottom: 5px;
+    margin-left: 10px;
+    width: 20rem;
+    height: 200px !important;
+
+    margin-bottom: 3%;
+  }
+  .for-mobile {
+    display: flex;
   }
 }

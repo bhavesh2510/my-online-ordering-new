@@ -136,7 +136,7 @@ const Detours = React.memo(
                 style={{ textAlign: "right", fontSize: "13px" }}
                 className={`modifier-amount ${strikeOutFree}`}
               >
-                {currency} {getModifierPrice(option.price)}
+                ( {currency} {getModifierPrice(option.price)} )
               </p>
             </div>
             {/* </section> */}
@@ -146,31 +146,49 @@ const Detours = React.memo(
     }
 
     return (
-      <div
-        className="detour-options"
-        style={{
-          marginLeft: "0px",
-          marginTop: "10px",
-          border: "1px solid black",
-          padding: "10px",
-          borderRadius: "8px",
-        }}
-        key={optionalModifierId.om_cat_id}
-      >
-        <h5 className="category-name">{detourOptions[0].om_cat_name}</h5>
-        <span className="modifier-category-instruction">
-          {detourOptions[0].free_limit > 0
-            ? `Cheapest ${detourOptions[0].free_limit} options will be free`
-            : null}
-          {detourOptions[0].free_limit > 0 && detourOptions[0].max_limit > 0
-            ? ", "
-            : null}
-          {detourOptions[0].max_limit > 0
-            ? `You can choose max upto ${detourOptions[0].max_limit} options`
-            : null}
-        </span>
-        {renderOptions()}
-      </div>
+      <>
+        <hr
+          style={{
+            backgroundColor: "#f1f1f1",
+
+            marginLeft: "22px",
+            marginTop: "10px",
+          }}
+        />
+        <div
+          className="detour-options"
+          style={{
+            marginLeft: "12px",
+            marginTop: "-15px",
+            // border: "1px solid black",
+            padding: "10px",
+            borderRadius: "8px",
+          }}
+          key={optionalModifierId.om_cat_id}
+        >
+          <h5 className="category-name">{detourOptions[0].om_cat_name}</h5>
+          <span className="modifier-category-instruction">
+            {detourOptions[0].free_limit > 0
+              ? `Cheapest ${detourOptions[0].free_limit} options will be free`
+              : null}
+            {detourOptions[0].free_limit > 0 && detourOptions[0].max_limit > 0
+              ? ", "
+              : null}
+            {detourOptions[0].max_limit > 0
+              ? `You can choose max upto ${detourOptions[0].max_limit} options`
+              : null}
+          </span>
+          {renderOptions()}
+        </div>
+        <hr
+          style={{
+            backgroundColor: "#f1f1f1",
+
+            marginLeft: "22px",
+            marginTop: "0px",
+          }}
+        />
+      </>
     );
   }
 );

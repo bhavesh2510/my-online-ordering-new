@@ -18,6 +18,11 @@ import "./MenuTable.css";
 import Skeleton from "react-loading-skeleton";
 import { modalNames } from "../../components/AppModal/constants";
 import RemoveIcon from "@material-ui/icons/Remove";
+import img1 from "./388@2x.png";
+import img2 from "./387@2x.png";
+import img3 from "./389@2x.png";
+import img4 from "./391@2x.png";
+import img5 from "./390@2x.png";
 
 const MenuTable = ({
   onAddItem,
@@ -278,9 +283,10 @@ const MenuTable = ({
         </>
       ) : (
         <>
-          <div className="category-separator"></div>
+          {/* <div className="category-separator"></div> */}
           <h4
             className="category-name-head text-pizzamodal"
+            style={{ letterSpacing: "0.1em" }}
             id={getSelectedCategoryName(list)}
           >
             {category_name == "Happy Hours"
@@ -342,48 +348,83 @@ const MenuTable = ({
                                       <img
                                         className="properties-img"
                                         alt="lactose free"
-                                        src="https://i.ibb.co/JsCzXxm/lactose.png"
+                                        src={img1}
                                       />
                                     </span>
                                   ) : null}
                                   {item.nuts_free === "1" ? (
-                                    <span title="Nuts Free">
+                                    <span
+                                      title="Nuts Free"
+                                      style={{ marginLeft: "10px" }}
+                                    >
                                       <img
                                         className="properties-img"
                                         alt="nuts free"
-                                        src="https://ciboapp.com/feedmi/static/media/nuts_free.6df579b7.png"
+                                        src={img3}
                                       />
                                     </span>
                                   ) : null}
                                   {item.is_hot === "1" ? (
-                                    <span title="Hot">
+                                    <span
+                                      title="Hot"
+                                      style={{ marginLeft: "10px" }}
+                                    >
                                       <img
                                         className="properties-img"
                                         alt="hot"
-                                        src="https://ciboapp.com/feedmi/static/media/hot.9360d00d.png"
+                                        src={img4}
                                       />
                                     </span>
                                   ) : null}
                                   {item.is_vegan === "1" ? (
-                                    <span title="It's Vegan">
+                                    <span
+                                      title="It's Vegan"
+                                      style={{ marginLeft: "10px" }}
+                                    >
                                       <img
                                         className="properties-img"
                                         alt="it's vegan"
-                                        src="https://i.ibb.co/xHDRm3s/vegan.png"
+                                        src={img5}
                                       />
                                     </span>
                                   ) : null}
                                   {item.gluten_free === "1" ? (
-                                    <span title="Gluten Free">
+                                    <span
+                                      title="Gluten Free"
+                                      style={{ marginLeft: "10px" }}
+                                    >
                                       <img
                                         className="properties-img"
                                         alt="gluten free"
-                                        src="https://i.ibb.co/23JCVwx/glute.png"
+                                        src={img2}
                                       />
                                     </span>
                                   ) : null}
                                 </div>
                               </div>
+
+                              {item.description ? (
+                                <>
+                                  <p className="food-description">
+                                    {item.description.slice(0, 50)}
+                                    <span id={`${item.id}dots`}>...</span>
+                                    <span
+                                      id={`${item.id}myBtn`}
+                                      className="read-more"
+                                      onClick={() => myFunction(item.id)}
+                                    >
+                                      read more
+                                    </span>
+                                    <p
+                                      className="food-description"
+                                      id={`${item.id}more`}
+                                      style={{ display: "none" }}
+                                    >
+                                      {item.description.slice(51, 10000)}
+                                    </p>
+                                  </p>
+                                </>
+                              ) : null}
 
                               <div className="item-price-parent-div">
                                 <span className="item-price">{`${symbol} ${getActualPrice(
@@ -561,29 +602,6 @@ const MenuTable = ({
                                   style={{ color: "red", fontWeight: "700" }}
                                   ref={timeOutRef[refIndex]}
                                 />
-                              </p>
-                            </>
-                          ) : null}
-
-                          {item.description ? (
-                            <>
-                              <p className="food-description">
-                                {item.description.slice(0, 50)}
-                                <span id={`${item.id}dots`}>...</span>
-                                <span
-                                  id={`${item.id}myBtn`}
-                                  className="read-more"
-                                  onClick={() => myFunction(item.id)}
-                                >
-                                  read more
-                                </span>
-                                <p
-                                  className="food-description"
-                                  id={`${item.id}more`}
-                                  style={{ display: "none" }}
-                                >
-                                  {item.description.slice(51, 10000)}
-                                </p>
                               </p>
                             </>
                           ) : null}

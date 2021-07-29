@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Radio } from "antd";
 import { ModifierOption } from "../../ModifierOption";
-//import "./ModifierCategory.scss";
+import "./ModifierCategory.css";
 import "../../../Modals/PizzaModal/PizzaModal.css";
 
 export const ModifierCategory = ({
@@ -31,18 +31,19 @@ export const ModifierCategory = ({
       <div
         className="modifier-category"
         style={{
-          backgroundColor: "#f1f1f1",
+          // backgroundColor: "#f1f1f1",
           marginBottom: "10px",
           paddingTop: "10px",
           paddingBottom: "20px",
         }}
       >
         <p
-          className="modifier-category-name text-pizzamodal"
+          className="modifier-category-name "
           style={{
             marginLeft: "15px",
             fontSize: "20px",
-            color: "black",
+            fontWeight: "700",
+            color: "#5c48d2",
           }}
         >
           {forceModifier.fm_cat_name}
@@ -50,12 +51,13 @@ export const ModifierCategory = ({
         <br />
 
         <p
-          className="modifier-category-instruction text-pizzamodal"
+          className="modifier-category-instruction "
           style={{
-            marginLeft: "20px",
-            fontSize: "13px",
-            marginTop: "-15px",
+            marginLeft: "15px",
+            fontSize: "15px",
+            marginTop: "-35px",
             marginBottom: "20px",
+            color: "#968EA1",
           }}
         >
           You can choose only 1 option

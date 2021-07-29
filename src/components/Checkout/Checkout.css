@@ -56,19 +56,38 @@ td {
   padding-bottom: 12px;
   margin: 20px;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 10px;
+
   /* margin-left: 0px;
  
  
   /* width: 100%; */
 
-  background-color: #f1f1f1;
+  background-color: #eae8ed;
+  color: black;
+}
+
+.btn_radio_for_payment {
+  padding-left: 28px;
+  padding-right: 28px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+
+  margin: 20px;
+  cursor: pointer;
+  border-radius: 10px;
+  /* margin-left: 0px;
+ 
+ 
+  /* width: 100%; */
+
+  background-color: #eae8ed;
   color: black;
 }
 .delivery-head {
-  font-size: 32px;
-  font-weight: 600;
-  color: #282c3f;
+  font-size: 22px;
+  font-weight: 700 !important;
+  color: black;
   margin-bottom: 32px;
 }
 .main-qty {
@@ -211,8 +230,8 @@ input[type="radio"] {
   font-size: 30px;
   /* border: 2px solid black; */
   border-radius: 5px;
-  padding: 0px 30px;
-  display: flex;
+  padding: 0px 10px;
+  /* display: flex; */
   align-items: center;
 }
 .payment-class:before {
@@ -248,20 +267,21 @@ input[type="radio"]:checked + .payment-class:before {
   color: green;
 }
 .address-section-paymentform {
-  margin-top: 30px;
+  margin-top: 0px;
   display: inline-flex;
   flex-direction: column;
   height: auto;
   /* justify-content: space-between; */
   border: 1px solid gainsboro;
   padding: 25px 30px;
-  box-shadow: 2px 2px 8px 8px #f1f1f1;
+  /* box-shadow: 2px 2px 8px 8px #f1f1f1; */
   background: white;
   box-shadow: inset;
   border-radius: 5px;
   padding-bottom: 5px;
-  margin-left: 30px;
+  margin-left: 0px;
   width: 40%;
+
   margin-bottom: 3%;
 }
 .checkout-add-address:hover {
@@ -269,10 +289,10 @@ input[type="radio"]:checked + .payment-class:before {
   box-shadow: 1px 1px 5px 5px gainsboro;
 }
 .text-add-address {
-  margin: 20px;
-  font-size: 25px;
-  padding-left: 20px;
-  padding-top: 18px;
+  /* margin: 20px; */
+  font-size: 22px;
+  padding-left: 60px;
+  padding-top: 8px !important;
   text-transform: uppercase;
 }
 .delivery-tick-img {
@@ -289,30 +309,69 @@ input[type="radio"]:checked + .payment-class:before {
   margin-right: 0px;
 }
 .delivery-head-business {
-  font-size: 32px;
+  font-size: 19px;
   font-weight: 600;
-  color: #282c3f;
+  color: #968ea1;
   margin-bottom: 32px;
 }
 .delivery-head-type {
-  font-size: 32px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
   color: #282c3f;
   margin-bottom: 32px;
   margin-left: 05px;
 }
 .timepicker-container {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 .container-for-mobile {
   width: 110%;
   margin-left: 0px;
   margin-top: -20px;
 }
+.pickup-details {
+  margin-top: -20px;
+}
+.payment-container {
+  display: flex;
+  flex-direction: row;
+  margin-left: -15px;
+  margin-top: -20px;
+}
+.paymentform-btn-container {
+  margin-left: 25%;
+  width: 50%;
+  margin-top: 20px;
+}
+.margin-for-desktop {
+  margin-left: -15px !important;
+}
+
+.button-container-add-address-mobile {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  width: 5.5rem;
+  height: 2.5rem;
+  border: 1px solid #5c48d2;
+  border-radius: 0.3rem;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+
+  background: #5c48d2;
+  margin-top: 80px;
+}
 @media (max-width: 768px) {
   .address-section-paymentform {
+    display: flex;
     width: 90%;
-    margin-left: 15px;
+    margin-left: 0px;
+  }
+  .margin-for-desktop {
+    margin-left: 0px !important;
   }
   .text-add-address {
     margin: 10px;
@@ -327,10 +386,37 @@ input[type="radio"]:checked + .payment-class:before {
     padding-top: 12px;
     padding-bottom: 12px;
     margin: 20px;
-    margin-left: -5px;
+    margin-left: -8px;
     cursor: pointer;
     border-radius: 5px;
     /* width: 100%; */
+  }
+  .paymentform-btn-container {
+    margin-left: 9%;
+    width: 80%;
+    margin-top: 20px;
+    white-space: nowrap;
+  }
+  .payment-container {
+    display: block;
+    /* flex-direction: row; */
+    margin-left: 8px;
+    margin-top: 20px;
+  }
+
+  .btn_radio_for_payment {
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-left: -13px;
+    margin-top: -10px;
+
+    cursor: pointer;
+    border-radius: 5px;
+
+    background-color: #eae8ed;
+    color: black;
   }
   .delivery-head {
     font-size: 29px;

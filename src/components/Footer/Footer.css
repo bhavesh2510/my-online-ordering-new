@@ -1,0 +1,31 @@
+.footer-parent {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.main-footer-container {
+  display: flex;
+  flex-direction: row;
+}
+.logo-measurements {
+  height: 50px;
+  width: 150px;
+}
+@media (max-width: 768px) {
+  .footer-parent {
+    display: flex;
+    flex-direction: row;
+  }
+  .main-footer-container {
+    display: flex;
+    flex-direction: row;
+    width: 200%;
+  }
+  .logo-measurements {
+    height: 40px;
+    width: 120px;
+  }
+  .margin-for-mobile {
+    margin-top: 40px;
+  }
+}

@@ -320,7 +320,7 @@ a.dropdown-toggle.icon-search {
     left: 0;
     right: 0;
     height: 2px;
-    background: white;
+    background: black;
   }
 
   .cmn-toggle-switch span::before,
@@ -330,7 +330,7 @@ a.dropdown-toggle.icon-search {
     left: 0;
     width: 100%;
     height: 2px;
-    background-color: #fff;
+    background-color: black;
     content: "";
   }
 

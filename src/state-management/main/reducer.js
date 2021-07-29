@@ -1,7 +1,12 @@
 import * as actionTypes from "./actionTypes";
 import { persistState, getPersistedState, clearState } from "../operations";
 import { CLEAR_STATE } from "../menu/actionTypes";
-import { getBusinessHours } from "./operations";
+import {
+  getBusinessHours,
+  getClosedForWeekday,
+  getClosedForMonth,
+  getClosedForOnceAMonth,
+} from "./operations";
 
 const REDUCER_KEY = "main-reducer";
 const initialState = {
@@ -13,11 +18,18 @@ const initialState = {
   viewType: "restaurantList",
   ...getPersistedState("restaurantList", "", REDUCER_KEY),
   deliveryRange: null,
+  closed_info: null,
   businessHour: "",
   opening: "",
   closing: "",
   isClosed: false,
   phonecode: "",
+  isClosedForWeekday: false,
+  messageForWeekday: "",
+  isClosedForMonth: false,
+  messageForMonth: "",
+  isClosedForOnceAMonth: false,
+  messageForOnceAMonth: "",
 };
 
 const itemsToPersist = ["selectedRestaurant", "chainId", "restId"];
@@ -65,6 +77,18 @@ const mainReducer = (state = initialState, action) => {
 
       return newState;
     }
+    case actionTypes.FETCH_CLOSED_INFORMATION_SUCCESS: {
+      newState = {
+        ...state,
+        closed_info: action.payload,
+
+        ...getClosedForWeekday(action.payload, action.timezone),
+        ...getClosedForMonth(action.payload, action.timezone),
+        ...getClosedForOnceAMonth(action.payload, action.timezone),
+      };
+
+      return newState;
+    }
     case actionTypes.FETCH_RESTURANT_INFORMATION_SUCCESS: {
       newState = {
         ...state,
@@ -81,7 +105,7 @@ const mainReducer = (state = initialState, action) => {
       };
       return newState;
     }
-   
+
     case CLEAR_STATE: {
       newState = {
         ...state,

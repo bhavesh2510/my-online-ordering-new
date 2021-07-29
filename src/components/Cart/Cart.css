@@ -7,3 +7,24 @@
   margin-left: -10px;
   border: none;
 }
+#cart_box {
+  max-height: 500px;
+  overflow-y: scroll;
+}
+#cart_box::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: #f1f1f1;
+}
+
+#cart_box::-webkit-scrollbar {
+  width: 7px;
+
+  background-color: #f1f1f1;
+}
+
+#cart_box::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  height: 10px;
+
+  background-color: #d6cfcf;
+}

@@ -10,6 +10,9 @@ import {
 // import "./AppHeader.scss";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CloseIcon from "@material-ui/icons/Close";
+import "./AppHeader.css";
+import img1 from "./Bold-2px-person.png";
+import PersonIcon from "@material-ui/icons/Person";
 
 const Appheader = () => {
   const History = useHistory();
@@ -53,13 +56,7 @@ const Appheader = () => {
   };
 
   return (
-    <header
-      className="main-header"
-      style={{
-        background: `${navbar ? "black" : "black"}`,
-        boxShadow: "1px 6px 18px -4px #000000",
-      }}
-    >
+    <header className="main-header header-bg">
       <div className="container-fluid">
         <div className="row">
           <div
@@ -67,20 +64,62 @@ const Appheader = () => {
             style={{ fontSize: "1.2rem", color: "black" }}
           >
             {/* paste logo here */}
-            <img
+            {/* <img
               style={{ marginTop: "-12px" }}
               width="130px"
               height="50px"
               src={main.selectedRestaurant.logo}
               alt="zotto"
-            />
+
+            /> */}
+            <div className="left-parent hide-on-mobile">
+              <ul>
+                {Number(menu.restaurantInfo["chain_owner_id"]) ? (
+                  <>
+                    <>
+                      <li key={11} className="navigation-buttons">
+                        <a
+                          className="text-pizzamodal"
+                          style={{
+                            color: "black",
+                            fontWeight: "600",
+                            fontSize: "16px",
+                          }}
+                          href={`?/chainId=${menu.restaurantInfo.chain_owner_id}`}
+                        >
+                          HOME
+                        </a>
+                      </li>
+                    </>
+                  </>
+                ) : null}
+              </ul>
+
+              <ul style={{ marginLeft: "40px" }}>
+                <li onClick={() => History.push("menu")}>
+                  <a
+                    style={{
+                      color: "black",
+                      cursor: "pointer",
+                      color: "black",
+                      fontWeight: "600",
+                      fontSize: "16px",
+                    }}
+                    className="text-pizzamodal"
+                    // href={`?/restId=${menu.restaurantInfo.restaurant_id}/menu`}
+                  >
+                    MENU
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
           <nav className="col-md-8 col-sm-8 col-8">
             <a
-              className="cmn-toggle-switch cmn-toggle-switch__htx open_close"
+              className="cmn-toggle-switch cmn-toggle-switch__htx open_close "
               onClick={showMobileMenu}
             >
-              <span>Menu mobile</span>
+              <span className="color-black">Menu mobile</span>
             </a>
 
             <div className="main-menu" id="main-menu-id">
@@ -103,26 +142,37 @@ const Appheader = () => {
               <ul>
                 {Number(menu.restaurantInfo["chain_owner_id"]) ? (
                   <>
-                    {/* {main.restaurants.lenth >= 1 ? ( */}
-                    <>
-                      <li key={11} className="navigation-buttons">
-                        {/* Should figure out why Link is not working as expected, page getting redirected */}
-                        <a
-                          href={`?/chainId=${menu.restaurantInfo.chain_owner_id}`}
-                        >
-                          Home
-                        </a>
-                      </li>
-                    </>
-                    {/* ) : null} */}
+                    <li>
+                      {" "}
+                      <a
+                        style={{
+                          color: "black",
+                          cursor: "pointer",
+                          color: "black",
+                          fontWeight: "600",
+                          fontSize: "16px",
+                          letterSpacing: "0.15em",
+                        }}
+                        className="hide-on-desktop text-pizzamodal"
+                        href={`?/chainId=${menu.restaurantInfo.chain_owner_id}`}
+                      >
+                        Home
+                      </a>
+                    </li>
                   </>
                 ) : null}
-                <li
-                  style={{ color: "white", cursor: "pointer" }}
-                  onClick={() => History.push("menu")}
-                >
+                <li onClick={() => History.push("menu")}>
                   <a
-                  // href={`?/restId=${menu.restaurantInfo.restaurant_id}/menu`}
+                    style={{
+                      color: "black",
+                      cursor: "pointer",
+                      color: "black",
+                      fontWeight: "600",
+                      fontSize: "16px",
+                      letterSpacing: "0.15em",
+                    }}
+                    className="hide-on-desktop text-pizzamodal"
+                    // href={`?/restId=${menu.restaurantInfo.restaurant_id}/menu`}
                   >
                     Menu
                   </a>
@@ -131,19 +181,35 @@ const Appheader = () => {
                 {user.user.isUserLoggedIn ? (
                   <li
                     className="submenu"
-                    style={{ color: "white", cursor: "pointer" }}
+                    style={{ color: "black", cursor: "pointer" }}
                     onClick={showEditProfileOnMobile}
                   >
                     {user.user.isUserLoggedIn ? (
-                      <a className="show-submenu">
-                        {user.user.firstName}
-                        <ExpandMoreIcon
-                          fontSize="small"
-                          style={{ float: "right" }}
-                        />
+                      <a
+                        className="show-submenu text-pizzamodal"
+                        style={{
+                          color: "black",
+                          fontWeight: "600",
+                          fontSize: "16px",
+                          letterSpacing: "0.15em",
+                          marginTop: "-0px",
+                        }}
+                      >
+                        {user.user.firstName} &nbsp;
+                        {/* <PersonIcon
+                          style={{
+                            float: "right",
+                            color: "black",
+                            marginTop: "7px",
+                          }}
+                        /> */}
+                        <img src={img1} className="img-profile" />
                       </a>
                     ) : (
-                      <a className="show-submenu">
+                      <a
+                        className="show-submenu text-pizzamodal"
+                        style={{ fontWeight: "600" }}
+                      >
                         user
                         <ExpandMoreIcon fontSize="small" />
                       </a>
@@ -156,7 +222,7 @@ const Appheader = () => {
                     <ul className="" id="editprofile">
                       <li
                         style={{
-                          color: "white",
+                          color: "black",
                           cursor: "pointer",
                         }}
                         onClick={() => History.push("myOrders")}
@@ -208,7 +274,13 @@ const Appheader = () => {
                   <>
                     <li>
                       <a
-                        style={{ color: "white", cursor: "pointer" }}
+                        className="text-pizzamodal"
+                        style={{
+                          color: "black",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                          fontSize: "16px",
+                        }}
                         onClick={() => {
                           var x = document.getElementById("main-menu-id");
                           x.classList.remove("show");
@@ -222,7 +294,14 @@ const Appheader = () => {
                     </li>
                     <li>
                       <a
-                        style={{ color: "white", cursor: "pointer" }}
+                        className="text-pizzamodal"
+                        style={{
+                          color: "black",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                          fontSize: "16px",
+                          marginLeft: "10px",
+                        }}
                         onClick={() => {
                           var x = document.getElementById("main-menu-id");
                           x.classList.remove("show");
@@ -235,18 +314,7 @@ const Appheader = () => {
                       </a>
                     </li>
                   </>
-                ) : (
-                  <li>
-                    <a
-                      style={{ color: "white", cursor: "pointer" }}
-                      // onClick={() => dispatch(showRegisterFormMethod())}
-                      data-toggle="modal"
-                      data-target="#login_2"
-                    >
-                      Help
-                    </a>
-                  </li>
-                )}
+                ) : null}
               </ul>
             </div>
             {/* End main-menu */}

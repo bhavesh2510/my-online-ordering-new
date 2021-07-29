@@ -11,10 +11,13 @@
   background-color: red;
 }
 .img-of-pizza-modal {
-  margin-left: -17px;
+  margin-left: -18px;
   margin-top: -20px;
   height: 190px;
-  width: 499px;
+  width: 405px;
+}
+.ant-radio-wrapper {
+  font-weight: 500 !important;
 }
 
 @media (max-width: 768px) {
