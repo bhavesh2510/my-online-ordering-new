@@ -6,6 +6,13 @@
   font-weight: 500;
   color: rgb(105, 105, 105);
 }
+.body-container-for-one-order {
+  width: 600px;
+  height: 370px;
+}
+.hide-hr {
+  width: 0px;
+}
 .number {
   overflow: hidden;
   white-space: nowrap;

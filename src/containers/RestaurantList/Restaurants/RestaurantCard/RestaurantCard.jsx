@@ -27,7 +27,7 @@ const RestaurantCard = ({ restaurant }) => {
         className="hover-cat"
         href={`${`?/restId=${restaurant.restaurant_id}/menu`}`}
       >
-        <div style={{ marginTop: "20px" }}>
+        <div style={{ marginTop: "20px", marginLeft: "15px" }}>
           <div className="restro-card-container">
             <div className="desc">
               <div
@@ -44,6 +44,9 @@ const RestaurantCard = ({ restaurant }) => {
               <div className="location restro-card-location">
                 {restaurant.address} {restaurant.city}
                 {restaurant.zipcode}
+              </div>
+              <div style={{ fontWeight: "700", color: "#6244da" }}>
+                Opens at
               </div>
 
               <div className="rest-card-info">
@@ -83,13 +86,19 @@ const RestaurantCard = ({ restaurant }) => {
                   }
                 })}
 
-                <div className="rest-card-info-child-opensat">Opens At</div>
+                {/* <div
+                  className="rest-card-info-child-opensat"
+                  style={{ paddingTop: "0px" }}
+                >
+                  Opens at 11
+                  <p style={{ marginTop: "-10px" }}> pm</p>
+                </div> */}
               </div>
             </div>
           </div>
         </div>{" "}
       </a>
-      &nbsp; &nbsp; &nbsp; &nbsp;
+      {/* &nbsp; &nbsp; */}
     </>
   );
 };

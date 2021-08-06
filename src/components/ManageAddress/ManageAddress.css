@@ -98,6 +98,12 @@ h5 {
 .address_name {
   font-weight: 700;
 }
+.add-for-mobile-text {
+  font-size: 17px;
+  margin-top: 4px;
+  margin-left: 10px;
+  color: white;
+}
 @media (max-width: 768px) {
   .main-container {
     width: 100% !important;
@@ -119,6 +125,7 @@ h5 {
     font-size: 17px;
     margin-top: 4px;
     margin-left: 10px;
+    color: black;
   }
   .address-section {
     margin-top: 30px;

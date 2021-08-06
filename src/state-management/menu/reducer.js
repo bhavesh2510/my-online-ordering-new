@@ -35,6 +35,8 @@ const initialState = {
   displayAddressModal: true,
   isLoading: false,
   choosenCategory: "happy_hours",
+  coupons: [],
+  status_of_coupon: "",
 };
 const itemsToPersist = [
   "cart",
@@ -308,6 +310,19 @@ const menuReducer = (state = initialState, action) => {
         displayAddressModal: action.isDisplay,
       };
     }
+    case actionTypes.FETCH_COUPONS_SUCCESS: {
+      return {
+        ...state,
+        coupons: action.data,
+      };
+    }
+    case actionTypes.CHECK_COUPONS_SUCCESS: {
+      return {
+        ...state,
+        status_of_coupon: action.data,
+      };
+    }
+
     default:
       return state;
   }

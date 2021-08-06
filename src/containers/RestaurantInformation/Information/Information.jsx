@@ -190,7 +190,6 @@ const Information = (props) => {
 
   var arr = [];
   arr.push(menu.restaurantInfo?.order_option?.split(","));
-  console.log("order option arr", arr[0].length);
 
   return (
     <>
@@ -398,8 +397,8 @@ const Information = (props) => {
                   // style={{ marginLeft: "-90px" }}
                 >
                   <p
-                    className="info-box-freedelivery-text"
-                    style={{ marginTop: "4px" }}
+                    className="info-box-freedelivery-text margin-for-text"
+                    // style={{ marginTop: "4px" }}
                   >
                     Free Delivery{" "}
                   </p>
@@ -497,21 +496,23 @@ const Information = (props) => {
                 className="parent-mob-child"
                 onClick={() => setdraweropen(true)}
               >
-                <div className="parent-mob-item-container">
-                  <p className="parent-mob-item-text">
-                    {menu.cart.length} ITEMS
-                  </p>
+                <div>
                   <p
-                    className="parent-mob-viewcart-text"
                     style={{
-                      color: "white",
-                      lineHeight: "0.5",
-                      fontSize: "15px",
+                      fontSize: "18px",
+                      marginTop: "12px",
+                      marginLeft: "16px",
+                      whiteSpace: "nowrap",
                     }}
                   >
-                    VIEW CART <LocalMallIcon fontSize="small" />
+                    View cart ( {menu.cart.length} items )
                   </p>
                 </div>
+                {/* <div className="parent-mob-item-container">
+                  <p className="parent-mob-item-text">
+                    view cart ( {menu.cart.length} ) items
+                  </p>
+                </div> */}
               </div>
 
               {user.user.isUserLoggedIn ? (

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "./Pagination";
 import { useSelector } from "react-redux";
-
+import "./MyOrders.css";
 function PaginationOrderList(props) {
   const menu = useSelector((state) => state.menu);
   useEffect(() => {
@@ -32,7 +32,13 @@ function PaginationOrderList(props) {
                   borderRadius: "15px",
                 }}
               >
-                <div className="card-body body-container">
+                <div
+                  className={
+                    posts.length == 1
+                      ? " card-body body-container-for-one-order"
+                      : "card-body body-container"
+                  }
+                >
                   <div style={{ marginBottom: "-0.5rem" }}>
                     <p
                       className="para"
@@ -49,7 +55,7 @@ function PaginationOrderList(props) {
                       {menu.restaurantInfo.city}, {menu.restaurantInfo.country}
                     </p>
                   </div>
-                  <hr />
+                  <hr className={posts.length == 1 ? " hide-hr" : ""} />
                   <div style={{ marginBottom: "1.2rem" }}>
                     <p className="para">Order Number</p>
                     <p className="number">{currval.order_id}</p>

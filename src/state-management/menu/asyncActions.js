@@ -205,3 +205,86 @@ export function placeOrder(order) {
     }
   };
 }
+
+export function fetchCoupons(date, restaurantId) {
+  console.log("date in menu", date, restaurantId);
+  return async (dispatch) => {
+    dispatch(actions.fetchCouponsRequest());
+    var axios = require("axios");
+    var FormData = require("form-data");
+    var data = new FormData();
+    data.append("date", `${date}`);
+    data.append("restaurant_id", `${restaurantId}`);
+
+    var config = {
+      method: "post",
+      url: "https://ciboapp.com/api/mobileApi/v2/app/getCoupons",
+      data: data,
+    };
+    axios(config)
+      .then(function (response) {
+        console.log("response of coupons", response.data.data);
+        dispatch(actions.fetchCouponsSuccess(response.data.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+        dispatch(actions.fetchCouponsFailure(error));
+      });
+  };
+}
+
+export function checkCoupons(clientId, date, restaurantId, couponcode) {
+  console.log(
+    "data of coupon check :",
+    clientId,
+    date,
+    restaurantId,
+    couponcode
+  );
+  return async (dispatch) => {
+    dispatch(actions.checkCouponsRequest());
+    var axios = require("axios");
+    var FormData = require("form-data");
+    var data_form = new FormData();
+    data_form.append("client_id", `${clientId}`);
+    data_form.append("date", `${date}`);
+    data_form.append("restaurant_id", `${restaurantId}`);
+    data_form.append("code", `${couponcode}`);
+    const url = "https://ciboapp.com/api/mobileApi/v2/app/checkCoupon";
+
+    try {
+      const { data } = await axios.post(url, data_form);
+
+      return dispatch(actions.checkCouponsSuccess(data));
+    } catch (error) {
+      return dispatch(actions.checkCouponsFailure(error));
+    }
+  };
+}
+
+export function couponRedeem(clientId, restaurantId, couponId) {
+  console.log("im in line 259");
+  console.log("im in line 260", clientId, restaurantId, couponId);
+  console.log("data of coupon redeem :", clientId, restaurantId, couponId);
+  return async (dispatch) => {
+    dispatch(actions.redeemCouponRequest());
+    var axios = require("axios");
+    var FormData = require("form-data");
+    var data_form = new FormData();
+    data_form.append("client_id", `${clientId}`);
+
+    data_form.append("restaurant_id", `${restaurantId}`);
+    data_form.append("coupon_id", `${couponId}`);
+    const url = "https://ciboapp.com/api/mobileApi/v2/app/redeem";
+    console.log("im in line 270");
+
+    try {
+      const { data } = await axios.post(url, data_form);
+      console.log("response of redeem data", data);
+
+      return dispatch(actions.redeemCouponSuccess(data));
+    } catch (error) {
+      return dispatch(actions.redeemCouponFailure(error));
+    }
+  };
+}

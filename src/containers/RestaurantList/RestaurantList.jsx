@@ -106,10 +106,7 @@ class RestaurantList extends React.PureComponent {
               {/* Should fimd a way to redirect 404 */}
             </Switch>
 
-            {console.log(
-              "selectedRestaurant",
-              this.props.selectedRestaurant.timezone
-            )}
+            {console.log("selectedRestaurant", this.props.selectedRestaurant)}
             {this.props.selectedRestaurant ? (
               <RestaurantInformation
                 timezone={this.props.selectedRestaurant.timezone}

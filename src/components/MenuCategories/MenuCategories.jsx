@@ -18,6 +18,14 @@ import SimpleBarReact from "simplebar-react";
 import "simplebar/src/simplebar.css";
 import RestaurantIcon from "@material-ui/icons/Restaurant";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+//import CloseIcon from "@material-ui/icons/Close";
+import { Box, Drawer, ListItem, SwipeableDrawer } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
+const useStyle = makeStyles({
+  list: {
+    width: 200,
+  },
+});
 
 const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
   const menu = useSelector((state) => state.menu);
@@ -47,11 +55,14 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
     // props.showHideOverlay(true);
     setDisplayCategoryInMobile("show-mobile-category-list");
     setdisplayHideCategory(true);
+    setdraweropen(true);
   };
 
   const hideCategory = () => {
     setDisplayCategoryInMobile("");
     setdisplayHideCategory(false);
+    setdraweropen(false);
+
     // props.showHideOverlay(false);
   };
 
@@ -59,7 +70,7 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
   const isHappyHoursActive = isHappyHoursActiveInMenu();
   console.log("loading in menucategories", loading);
 
-  const onDishClick = (dish) => {
+  const onDishClick = () => {
     var x = document.getElementById("hhour");
     var y = document.getElementById("hhour-text");
     x.style.backgroundColor = "#f1f1f1";
@@ -85,6 +96,7 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
     b.style.color = "black";
     showDrinks(!drinks);
     drinkstatus(true);
+
     // dispatch(displayPizzas());
   };
   function isHappyHoursActiveInMenu() {
@@ -108,6 +120,9 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
     }
     hideCategory();
   }
+
+  const [draweropen, setdraweropen] = useState(false);
+  const classes = useStyle();
 
   return (
     <>
@@ -314,12 +329,10 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
 
       {/* section of mobile start */}
 
-      <SimpleBarReact
+      {/* <SimpleBarReact
         autoHide={true}
         className={`${displayCategoryInMobile} menu-categories-container`}
       >
-        {/* <div style={{ display: "flex", flexDirection: "column" }}> */}
-        {/* <nav className="categories-container"> */}
         {menu.isHappyHoursApplicable && isHappyHoursActive ? (
           <>
             <li
@@ -333,8 +346,6 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                 activeClass="active"
                 smooth={true}
                 spy={true}
-                //to="Kebabs"
-                //to={dishes ? "" : categories[0]?.cname}
                 offset={0}
                 onClick={onDishClick}
               >
@@ -387,7 +398,6 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                   setSelectedCategoryId={setSelectedCategoryId}
                   drinkstatus={drinkstatus}
                   hide={() => hideCategory()}
-                  // hideCategoryList={() => hideCategory()}
                 />
               ) : null;
             })}
@@ -424,7 +434,11 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
         {menu.isHappyHoursApplicable && isHappyHoursActive ? (
           <li
             key="happyHours"
-            style={{ cursor: "pointer", listStyle: "none", marginTop: "10px" }}
+            style={{
+              cursor: "pointer",
+              listStyle: "none",
+              marginTop: "10px",
+            }}
           >
             <Link
               activeClass="active"
@@ -443,27 +457,235 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
             </Link>
           </li>
         ) : null}
-        {/* </nav> */}
-        {/* </div> */}
-      </SimpleBarReact>
+      </SimpleBarReact> */}
+
+      <SwipeableDrawer
+        anchor={"left"}
+        open={draweropen}
+        onClose={() => setdraweropen(false)}
+        onOpen={() => {}}
+      >
+        <div className={classes.list} style={{ marginTop: "50px" }}>
+          <ul id="cat_nav">
+            {console.log("categories", categories)}
+            {console.log("menu items", menu.menuItems)}
+
+            <li
+              style={{
+                cursor: "pointer",
+                backgroundColor: "#f1f1f1",
+                borderRadius: "8px",
+                height: "40px",
+                width: "85%",
+                marginLeft: "15px",
+              }}
+            >
+              <Link
+                activeClass="active"
+                smooth={true}
+                spy={true}
+                //to="Kebabs"
+                //to={dishes ? "" : categories[0]?.cname}
+                offset={0}
+                onClick={onDishClick}
+              >
+                <p style={{ textAlign: "center", marginTop: "-4px" }}>
+                  Dishes <span>({categories[0]?.sub_category.length})</span>
+                </p>
+
+                {!dishes ? (
+                  <ChevronRightIcon
+                    fontSize="small"
+                    style={{ float: "right", marginTop: "-35px" }}
+                  />
+                ) : (
+                  <KeyboardArrowDownIcon
+                    className="show-down"
+                    fontSize="small"
+                    style={{ float: "right", marginTop: "-35px" }}
+                  />
+                )}
+              </Link>
+            </li>
+            {categories.map((category, i) => {
+              return category.cname === "Dishes" && dishes ? (
+                <MenuSubCategory
+                  list={category.sub_category}
+                  searchQuery={menu.searchQuery}
+                  selectedCategoryId={menu.selectedCategoryId}
+                  setSelectedCategoryId={setSelectedCategoryId}
+                  drinkstatus={drinkstatus}
+                  hide={() => hideCategory()}
+                />
+              ) : null;
+            })}
+
+            <li
+              style={{
+                cursor: "pointer",
+                backgroundColor: "#f1f1f1",
+                borderRadius: "8px",
+                marginTop: "15px",
+                height: "40px",
+                width: "85%",
+                marginLeft: "15px",
+              }}
+            >
+              <Link
+                activeClass="active"
+                smooth={true}
+                spy={true}
+                to={drinks ? "" : categories[1]?.cname}
+                offset={-50}
+                duration={3000}
+                onClick={onDrinksClick}
+              >
+                <p style={{ textAlign: "center", marginTop: "-4px" }}>
+                  Drinks<span>({categories[1]?.sub_category.length})</span>{" "}
+                </p>
+                {!drinks ? (
+                  <ChevronRightIcon
+                    fontSize="small"
+                    style={{ float: "right", marginTop: "-35px" }}
+                  />
+                ) : (
+                  <KeyboardArrowDownIcon
+                    className="show-down"
+                    fontSize="small"
+                    style={{ float: "right", marginTop: "-35px" }}
+                  />
+                )}
+              </Link>
+            </li>
+            {categories.map((category, i) => {
+              return category.cname === "Drinks" && drinks ? (
+                <MenuSubCategory
+                  list={category.sub_category}
+                  searchQuery={menu.searchQuery}
+                  selectedCategoryId={menu.selectedCategoryId}
+                  setSelectedCategoryId={setSelectedCategoryId}
+                  drinkstatus={drinkstatus}
+                  hide={() => hideCategory()}
+                />
+              ) : null;
+            })}
+            {isPizzaAvailable ? (
+              <li
+                key="pizza"
+                id="pizza-cat"
+                style={{
+                  cursor: "pointer",
+                  backgroundColor: "#f1f1f1",
+                  borderRadius: "8px",
+                  marginTop: "15px",
+                  height: "40px",
+                  width: "85%",
+                  marginLeft: "15px",
+                }}
+              >
+                <Link
+                  activeClass="active"
+                  smooth={true}
+                  spy={true}
+                  to="Pizza"
+                  duration={4000}
+                  offset={-70}
+                  onClick={() => {
+                    var x = document.getElementById("hhour");
+                    var y = document.getElementById("hhour-text");
+                    x.style.backgroundColor = "#f1f1f1";
+                    y.style.color = "black";
+                    var a = document.getElementById("pizza-cat");
+                    var b = document.getElementById("pizza-cat-text");
+                    a.style.backgroundColor = "#6244da";
+                    b.style.color = "white";
+                    drinkstatus(true);
+                    dispatch(displayPizzas());
+                    setdraweropen(false);
+                  }}
+                >
+                  <p
+                    id="pizza-cat-text"
+                    style={{ textAlign: "center", marginTop: "-4px" }}
+                  >
+                    Pizza's <span> ({isPizzaAvailable}) </span>{" "}
+                  </p>
+                  <ChevronRightIcon
+                    fontSize="small"
+                    style={{ float: "right", marginTop: "-35px" }}
+                  />
+                </Link>
+              </li>
+            ) : null}
+
+            {menu.isHappyHoursApplicable && isHappyHoursActive ? (
+              <li
+                id="hhour"
+                key="happyHours"
+                style={{
+                  cursor: "pointer",
+                  backgroundColor: "#f1f1f1",
+                  borderRadius: "8px",
+                  marginTop: "15px",
+                  height: "40px",
+                  width: "85%",
+                  marginLeft: "15px",
+                }}
+              >
+                <Link
+                  activeClass="active"
+                  smooth={true}
+                  spy={true}
+                  to="Happy Hours"
+                  offset={-50}
+                  duration={4000}
+                  onClick={() => {
+                    var a = document.getElementById("pizza-cat");
+                    var b = document.getElementById("pizza-cat-text");
+                    a.style.backgroundColor = "#f1f1f1";
+                    b.style.color = "black";
+                    var x = document.getElementById("hhour");
+                    var y = document.getElementById("hhour-text");
+                    x.style.backgroundColor = "#6244da";
+                    y.style.color = "white";
+                    drinkstatus(false);
+                    dispatch(displayHappyHours());
+                    setdraweropen(false);
+                  }}
+                >
+                  <p
+                    id="hhour-text"
+                    style={{ textAlign: "center", marginTop: "-4px" }}
+                  >
+                    Happy hours <span> ({menu?.happyHours?.length}) </span>
+                  </p>
+                  <ChevronRightIcon
+                    fontSize="small"
+                    style={{ float: "right", marginTop: "-35px" }}
+                  />
+                </Link>
+              </li>
+            ) : null}
+          </ul>
+        </div>
+      </SwipeableDrawer>
 
       {/* section of mobile end */}
 
-      {!displayHideCategory ? (
-        <section className="mobile-menu-categories" id="id-of-menu">
-          <span onClick={showCategoryMobile} className="categories-button">
-            <RestaurantIcon style={{ marginTop: "-5px" }} fontSize="small" />{" "}
-            MENU
-          </span>
-        </section>
-      ) : null}
-      {displayHideCategory ? (
+      {/* {!displayHideCategory ? ( */}
+      <section className="mobile-menu-categories" id="id-of-menu">
+        <span onClick={showCategoryMobile} className="categories-button">
+          <RestaurantIcon style={{ marginTop: "-5px" }} fontSize="small" /> MENU
+        </span>
+      </section>
+      {/* ) : null} */}
+      {/* {displayHideCategory ? (
         <section className="mobile-menu-categories" id="id-of-menu">
           <span onClick={hideCategoryMobile} className="categories-button">
-            <CloseIcon style={{ marginTop: "-5px" }} /> Close
+            <CloseIcon style={{ marginTop: "-5px" }} /> Menu
           </span>
         </section>
-      ) : null}
+      ) : null} */}
     </>
   );
 });
@@ -515,6 +737,7 @@ const MenuSubCategory = React.memo(
         >
           <li
             key={s_category.category_id}
+            className="categories-list-in-menu"
             style={{
               cursor: "pointer",
               borderRadius: "8px",

@@ -100,6 +100,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
       showpassword: false,
     });
     var x = document.getElementById("nav-parent-id-2");
+    var y = document.getElementById("mob-parent-id-2");
     // var y = document.getElementById("nav-parent-id-2");
     // var z = document.getElementById("nav-parent-id-3");
     // var a = document.getElementById("nav-parent-id-4");
@@ -107,6 +108,9 @@ const MyOrders = React.memo(({ restaurantId }) => {
     // y.classList.remove("add-color");
     // z.classList.remove("add-color");
     x.classList.add("add-color");
+    if (window.screen.width <= 768) {
+      y.classList.add("add-border");
+    }
   }, []);
 
   useEffect(() => {

@@ -39,6 +39,7 @@ export function getBusinessHours(payload) {
 }
 
 export function getClosedForWeekday(payload, timezone) {
+  console.log("timezon in operation", timezone);
   var moment = require("moment-timezone");
   const options = {
     timeZone: timezone,

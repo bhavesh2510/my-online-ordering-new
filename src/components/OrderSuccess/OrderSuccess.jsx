@@ -29,6 +29,7 @@ const OrderSuccess = () => {
   var ordersList = [];
   var ordersData = [];
   const [orderCoompleteDetails, setorderCoompleteDetails] = useState({});
+  const [savedcouponamount, setsavedcouponamount] = useState();
 
   const fetchdata = async () => {
     setstate({ ...state, loadingData: true });
@@ -86,6 +87,7 @@ const OrderSuccess = () => {
     if (response_2.payload.status == 200) {
       //orderCoompleteDetails = response_2.payload.data;
       setorderCoompleteDetails(response_2.payload.data[0]);
+      setsavedcouponamount(response_2.payload.data[0].savings);
     }
     console.log("complete details", orderCoompleteDetails);
     var order_session = "";
@@ -133,6 +135,20 @@ const OrderSuccess = () => {
                       </>
                     );
                   })}
+
+                {savedcouponamount ? (
+                  <>
+                    <div className="list-of-orders">
+                      <p
+                        className="list-of-order-text"
+                        style={{ color: "#6244da" }}
+                      >
+                        You SAVED {savedcouponamount}{" "}
+                        {orderCoompleteDetails.currency} !
+                      </p>
+                    </div>
+                  </>
+                ) : null}
 
                 <div className="list-of-orders">
                   <p className="list-of-order-text">Total</p>

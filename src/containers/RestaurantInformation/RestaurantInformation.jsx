@@ -10,6 +10,7 @@ import {
   fetchAllForcedModifiers,
   fetchAllOptionalModifiers,
   fetchHappyHours,
+  fetchCoupons,
 } from "../../state-management/menu/asyncActions";
 import {
   setLoadingDisplay,
@@ -49,18 +50,35 @@ import {
   isHappyHourStillActive,
   setTimer,
 } from "../../state-management/menu/utils";
+import {
+  postMyProfileForm,
+  postProfile,
+} from "../../state-management/user/asyncActions";
+import moment from "moment";
 const RestaurantInformation = (props) => {
   const dispatch = useDispatch();
+
   const user = useSelector((state) => state.user);
   const main = useSelector((state) => state.main);
   const menu = useSelector((state) => state.menu);
   const [loading, setLoading] = useState(true);
+
+  const dataforcoupon = {
+    date: moment().format("yyyy-MM-DD"),
+    restaurant_id: props.restaurantId,
+  };
+
   const initialize = async () => {
     await dispatch(initializeStoreState(props.restaurantId));
+    await dispatch(postMyProfileForm(user.user.clientId));
     await dispatch(fetchHappyHours(props.restaurantId));
     await dispatch(fetchMenuItems(props.restaurantId));
     await dispatch(fetchCategories(props.restaurantId));
+
     await dispatch(fetchClosedInformation(props.restaurantId, props.timezone));
+    await dispatch(
+      fetchCoupons(moment().format("yyyy-MM-DD"), props.restaurantId)
+    );
     setLoading(false);
     await dispatch(fetchAllForcedModifiers(props.restaurantId));
     await dispatch(fetchAllOptionalModifiers(props.restaurantId));

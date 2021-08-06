@@ -261,3 +261,57 @@ export function changechoosencategory(newvalue) {
     newvalue,
   };
 }
+
+export function fetchCouponsRequest() {
+  return { type: actionTypes.FETCH_COUPONS_REQUEST };
+}
+
+export function fetchCouponsSuccess(data) {
+  return {
+    type: actionTypes.FETCH_COUPONS_SUCCESS,
+    data,
+  };
+}
+
+export function fetchCouponsFailure(error) {
+  return {
+    type: actionTypes.FETCH_COUPONS_FAILURE,
+    error,
+  };
+}
+
+export function checkCouponsRequest() {
+  return { type: actionTypes.CHECK_COUPONS_REQUEST };
+}
+
+export function checkCouponsSuccess(data) {
+  return {
+    type: actionTypes.CHECK_COUPONS_SUCCESS,
+    data,
+  };
+}
+
+export function checkCouponsFailure(error) {
+  return {
+    type: actionTypes.CHECK_COUPONS_FAILURE,
+    error,
+  };
+}
+
+export function redeemCouponRequest() {
+  return {
+    type: actionTypes.REDEEM_COUPON_REQUEST,
+  };
+}
+
+export function redeemCouponSuccess() {
+  return {
+    type: actionTypes.REDEEM_COUPON_SUCCESS,
+  };
+}
+
+export function redeemCouponFailure() {
+  return {
+    type: actionTypes.REDEEM_COUPON_FAILURE,
+  };
+}

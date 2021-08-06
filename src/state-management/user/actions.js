@@ -3,6 +3,7 @@ import * as actionTypes from "./actionTypes";
 // SET USER LOGGED IN/OUT
 
 export function setUserLoggedIn(payload) {
+  console.log("login user details", payload);
   return {
     type: actionTypes.SET_USER_LOGGED_IN,
     payload,
@@ -171,6 +172,7 @@ export function postMyProfileFormRequest() {
 }
 
 export function postMyProfileFormSuccess(payload) {
+  console.log("update payload details", payload);
   return {
     type: actionTypes.POST_MYPROFILE_FORM_SUCCESS,
     payload,

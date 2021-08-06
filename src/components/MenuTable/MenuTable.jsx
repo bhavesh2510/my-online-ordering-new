@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "react-scroll";
 //import Button from "@material-ui/core/Button";
 //import AddIcon from "@material-ui/icons/Add";
@@ -296,6 +296,9 @@ const MenuTable = ({
           <>
             {list.map((item) => {
               const sizeAndBaseCollection = getSizeAndBase(item);
+              const isImageUrl = require("is-image-url");
+              var checkImageUrl = isImageUrl(item.image_url);
+              console.log("npm url is", checkImageUrl);
               let isStillActive = false;
               console.log("menuItems in this file", item);
 
@@ -325,11 +328,10 @@ const MenuTable = ({
                             <img
                               className="food-image"
                               src={
-                                item.image_url
+                                checkImageUrl
                                   ? item.image_url
                                   : "https://cutt.ly/gkb8C6Z"
                               }
-                              //src="https://cutt.ly/gkb8C6Z"
                             ></img>
                           </div>
                         </div>
@@ -591,7 +593,7 @@ const MenuTable = ({
                             <>
                               <p
                                 className="food-description"
-                                style={{ color: "red", fontWeight: "600" }}
+                                style={{ color: "#bd1e44", fontWeight: "600" }}
                               >
                                 {item.happyHourDetail.happyHourDisplayText}
                               </p>
@@ -599,7 +601,10 @@ const MenuTable = ({
                                 {/* <AccessTimeIcon style={{ color: "red" }} />{" "} */}
 
                                 <span
-                                  style={{ color: "red", fontWeight: "700" }}
+                                  style={{
+                                    color: "#bd1e44",
+                                    fontWeight: "700",
+                                  }}
                                   ref={timeOutRef[refIndex]}
                                 />
                               </p>

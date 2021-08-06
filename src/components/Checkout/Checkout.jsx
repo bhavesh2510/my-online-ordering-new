@@ -25,7 +25,11 @@ import { notification } from "antd";
 import "antd/dist/antd.css";
 import { getFormattedRequestPayload } from "../Checkout/utils";
 import PaymentForm from "../Checkout/PaymentForm";
-import { placeOrder } from "../../state-management/menu/asyncActions";
+import {
+  checkCoupons,
+  placeOrder,
+  couponRedeem,
+} from "../../state-management/menu/asyncActions";
 import axios from "axios";
 import sha256 from "js-sha256";
 import { CompassCalibrationOutlined } from "@material-ui/icons";
@@ -39,6 +43,20 @@ import { modalNames } from "../AppModal/constants";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { closeModal, openModal } from "../../state-management/modal/actions";
 import { setComment } from "../../state-management/menu/actions";
+import { makeStyles } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
+//import { checkCoupons } from "../../state-management/menu/asyncActions";
+import { Box, Drawer, ListItem, SwipeableDrawer } from "@material-ui/core";
+const useStyle = makeStyles({
+  list: {
+    width: 450,
+  },
+  "@media (max-width:768px)": {
+    list: {
+      width: 250,
+    },
+  },
+});
 
 const Checkout = () => {
   //const format = "HH:mm";
@@ -47,6 +65,23 @@ const Checkout = () => {
   const main = useSelector((state) => state.main);
   const menu = useSelector((state) => state.menu);
   const user = useSelector((state) => state.user);
+
+  const [couponisapplied, setcouponisapplied] = useState(false);
+  const [amountaftercouponapplied, setamountaftercouponapplied] = useState();
+  const [couponappliedname, setcouponappliedname] = useState();
+  const [couponamount, setcouponamount] = useState();
+  const [couponId, setcouponId] = useState();
+  const [couponredeemed, setcouponredeemed] = useState(false);
+  const [couponredeemedmessage, setcouponredeemedmessage] = useState();
+  const [coupontypeisdiscount, setcoupontypeisdiscount] = useState(false);
+
+  useEffect(() => {
+    console.log("coupon id is", couponId);
+  }, [couponId]);
+  useEffect(() => {
+    console.log("coupon id is amount", couponamount);
+  }, [couponamount]);
+
   const dispatch = useDispatch();
   let refIndex = -1;
   const timeOutRef = Array.from({ length: 100 }, () => React.createRef());
@@ -96,6 +131,7 @@ const Checkout = () => {
       : Number(number).toFixed(2);
   };
   const grandTotal = Number(getGrandTotal());
+  const [billPercentAmount, setbillPercentAmount] = useState();
 
   useEffect(() => {
     if (main.deliveryRange)
@@ -127,6 +163,7 @@ const Checkout = () => {
       ...data,
     });
     console.log("dtaa is", data);
+    setbillPercentAmount(getBillAmount() / 100);
   }, []);
 
   const isPriceWithoutTax = () => {
@@ -281,9 +318,16 @@ const Checkout = () => {
 
   // const deliveryCharges = 0;
   const getBillAmount = () => {
-    const finalAmount = (
-      Number(user.delivery_cost) + Number(getGrandTotal())
-    ).toFixed(2);
+    var finalAmount;
+    if (couponisapplied) {
+      var finalAmount =
+        (Number(user.delivery_cost) + Number(getGrandTotal())).toFixed(2) -
+        couponamount;
+    } else {
+      var finalAmount = (
+        Number(user.delivery_cost) + Number(getGrandTotal())
+      ).toFixed(2);
+    }
     const showAmountInDecimal =
       Number(menu.restaurantInfo["show_prices_in_decimal_flag"]) === 1;
 
@@ -364,6 +408,7 @@ const Checkout = () => {
     return 0;
   };
 
+  const [updatedcouponamount, setupdatedcouponamount] = useState();
   const handleAddItem = (item) => {
     dispatch(
       addItem(item, item.modifiers || 0, item.subTotal, menu.restaurantInfo)
@@ -441,6 +486,9 @@ const Checkout = () => {
   };
   const handleCheckout = async (deliveryDetails) => {
     console.log("deliveryDetails is ", deliveryDetails);
+    var cpamount = couponamount;
+    var cpid = couponId;
+    console.log("couponamount is ", cpamount);
 
     if (!deliveryDetails.delivery_option) {
       return notification["warning"]({
@@ -506,10 +554,12 @@ const Checkout = () => {
         menu.cart,
         user.distance,
         savedAmount,
-        getSavedAmount(),
+        // getSavedAmount(),
         getDeliveryCharges(),
         user.user.phonecode,
-        user.selectedDeliveryTime
+        user.selectedDeliveryTime,
+        cpid,
+        cpamount
       );
 
       console.log("payload is", response_format);
@@ -530,10 +580,12 @@ const Checkout = () => {
             menu.cart,
             user.distance,
             savedAmount,
-            getSavedAmount(),
+            // getSavedAmount(),
             getDeliveryCharges(),
             user.user.phonecode,
-            user.user.selectedDeliveryTime
+            user.user.selectedDeliveryTime,
+            cpid,
+            cpamount
           ),
           user.user.token
         )
@@ -548,11 +600,20 @@ const Checkout = () => {
         console.log("if statement", deliveryDetails.paymentMethod);
         if (deliveryDetails.paymentMethod == "1") {
           sendpaymentreq("1", orderId);
+
           dispatch(clearMenuState());
         } else if (deliveryDetails.paymentMethod == "4") {
           sendpaymentreq("2", orderId);
+
           dispatch(clearMenuState());
         } else {
+          dispatch(
+            couponRedeem(
+              user.user.clientId,
+              menu.restaurantInfo.restaurant_id,
+              couponId
+            )
+          );
           dispatch(clearMenuState());
           History.push(
             `/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${response_format.order_id}`
@@ -577,6 +638,99 @@ const Checkout = () => {
     dispatch(setComment(e.target.value));
     setcomm(e.target.value);
   }
+
+  const [discountnumber, setdiscountnumber] = useState();
+  const [maxdiscountnumber, setmaxdiscountnumber] = useState();
+  useEffect(() => {
+    if (coupontypeisdiscount) {
+      var amt = (Number(user.delivery_cost) + Number(getGrandTotal())).toFixed(
+        2
+      );
+      var fp = amt / 100;
+      var cp = truncateDecimal(fp * discountnumber);
+      // setupdatedcouponamount(cp);
+      console.log("cp & max", cp, maxdiscountnumber);
+      if (maxdiscountnumber > cp || maxdiscountnumber == 0) {
+        setcouponamount(cp);
+      } else if (maxdiscountnumber < cp) {
+        setcouponamount(maxdiscountnumber);
+      }
+    }
+  }, [getBillAmount()]);
+
+  useEffect(() => {
+    console.log("updated coupon amount is", discountnumber);
+  }, [maxdiscountnumber]);
+
+  const [draweropen, setdraweropen] = useState(false);
+  const classes = useStyle();
+
+  const redeemCoupon = async (code, couponId) => {
+    setdata({ ...state, displayloader: true });
+    const response = await dispatch(
+      checkCoupons(
+        user.user.clientId,
+        moment().format("yyyy-MM-DD"),
+        menu.restaurantInfo.restaurant_id,
+        code
+      )
+    );
+
+    if (response.data.status == "200") {
+      if (response.data.data.type == "amount") {
+        setcoupontypeisdiscount(false);
+        setamountaftercouponapplied(
+          getBillAmount() - response.data.data.amount
+        );
+        setcouponisapplied(true);
+        setcouponappliedname(response.data.data.coupon_name);
+        setcouponamount(response.data.data.amount);
+        setcouponId(response.data.data.coupon_id);
+        setcouponredeemed(false);
+      } else if (response.data.data.type == "discount") {
+        setcoupontypeisdiscount(true);
+        console.log("updated coupon amount is", response.data.data.discount);
+        setdiscountnumber(response.data.data.discount);
+
+        var billPercentAmount = getBillAmount() / 100;
+        var percent_amount = truncateDecimal(
+          response.data.data.discount * billPercentAmount
+        );
+
+        var max_amount = truncateDecimal(response.data.data.max_discount);
+        setmaxdiscountnumber(truncateDecimal(response.data.data.max_discount));
+        //  var max_amount = 30;
+
+        // setmaxdiscountnumber(truncateDecimal(30.0));
+
+        if (max_amount > percent_amount || max_amount == 0) {
+          setcouponisapplied(true);
+          setcouponappliedname(response.data.data.coupon_name);
+          setcouponamount(percent_amount);
+          setcouponId(response.data.data.coupon_id);
+          setcouponredeemed(false);
+        } else if (max_amount < percent_amount) {
+          setcouponisapplied(true);
+          setcouponappliedname(response.data.data.coupon_name);
+          setcouponamount(max_amount);
+          setcouponId(response.data.data.coupon_id);
+          setcouponredeemed(false);
+        }
+      }
+    } else if (response.data.status == "201") {
+      var amount = 0;
+      setcouponisapplied(false);
+      setcouponredeemed(true);
+      setcouponamount(amount);
+
+      setcouponredeemedmessage(response.data.message);
+    }
+    console.log("response of redeem", setamountaftercouponapplied);
+
+    setdraweropen(false);
+    setdata({ ...state, displayloader: false });
+  };
+
   return (
     <>
       {/* <section
@@ -770,6 +924,92 @@ const Checkout = () => {
                   </tbody>
                 </table>
                 <hr />
+
+                <div
+                  className="coupon-container"
+                  onClick={() => setdraweropen(true)}
+                >
+                  <p className="coupon-text">Apply Coupon</p>
+                </div>
+                <SwipeableDrawer
+                  anchor={"right"}
+                  open={draweropen}
+                  onClose={() => setdraweropen(false)}
+                  onOpen={() => {}}
+                >
+                  <div className={classes.list}>
+                    <div style={{ marginTop: "20%" }}>
+                      <h3
+                        style={{
+                          marginLeft: "40px",
+                          color: "black",
+                          fontSize: "23px",
+                          fontWeight: "700",
+                        }}
+                      >
+                        Available Coupons{" "}
+                        <CloseIcon
+                          onClick={() => setdraweropen(false)}
+                          style={{
+                            float: "right",
+                            marginRight: "20px",
+                            cursor: "pointer",
+                          }}
+                        />
+                      </h3>
+
+                      {menu.coupons.map((coupon) => {
+                        var valid_from = moment(coupon.date_start).format(
+                          "MMMM Do YYYY"
+                        );
+                        var valid_to = moment(coupon.date_end).format(
+                          "MMMM Do YYYY"
+                        );
+                        console.log("valid from date", valid_from);
+                        return (
+                          <>
+                            <div className="coupon-code-container">
+                              <div>
+                                <div>
+                                  <div className="coupon-code-parent">
+                                    <p className="ccode-text">
+                                      {coupon.coupon_name}
+                                    </p>
+                                  </div>
+                                  <br />
+                                  <div className="coupon-code-border">
+                                    <div className="coupon-img"></div>
+                                    <div className="coupon-text-1">
+                                      Description For Future use
+                                    </div>
+                                    <div className="coupon-text-2">
+                                      coupon is valid from {valid_from} to{" "}
+                                      {valid_to}
+                                    </div>
+                                    <button
+                                      className="apply-coupon-btn"
+                                      onClick={() =>
+                                        redeemCoupon(
+                                          coupon.code,
+                                          coupon.coupon_id
+                                        )
+                                      }
+                                    >
+                                      APPLY COUPON
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <br />
+                          </>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </SwipeableDrawer>
+
                 <table className="table table_summary">
                   <tbody>
                     <tr>
@@ -794,6 +1034,46 @@ const Checkout = () => {
                         <span className="float-right">{`${menu.restaurantInfo.monetary_symbol} ${user.delivery_cost}  `}</span>
                       </td>
                     </tr>
+
+                    {couponisapplied ? (
+                      <>
+                        <tr>
+                          <td
+                            className="total"
+                            style={{
+                              fontSize: "14px",
+                              fontWeight: "750",
+                              color: "#25A09E",
+                            }}
+                          >
+                            {couponappliedname} Offer
+                            <span className="float-right">
+                              - {menu.restaurantInfo.monetary_symbol}{" "}
+                              {couponamount}
+                            </span>
+                          </td>
+                        </tr>
+                        <br />
+                      </>
+                    ) : null}
+
+                    {couponredeemed ? (
+                      <>
+                        <tr>
+                          <td
+                            className="total"
+                            style={{
+                              fontSize: "14px",
+                              fontWeight: "750",
+                              color: "red",
+                            }}
+                          >
+                            {couponredeemedmessage} !
+                          </td>
+                        </tr>
+                        <br />
+                      </>
+                    ) : null}
 
                     <tr>
                       <td
@@ -1000,6 +1280,92 @@ const Checkout = () => {
                     </tr>
                   </tbody>
                 </table>
+
+                <div
+                  className="coupon-container"
+                  onClick={() => setdraweropen(true)}
+                >
+                  <p className="coupon-text">Apply Coupon</p>
+                </div>
+                <SwipeableDrawer
+                  anchor={"right"}
+                  open={draweropen}
+                  onClose={() => setdraweropen(false)}
+                  onOpen={() => {}}
+                >
+                  <div className={classes.list}>
+                    <div style={{ marginTop: "20%" }}>
+                      <h3
+                        style={{
+                          marginLeft: "40px",
+                          color: "black",
+                          fontSize: "23px",
+                          fontWeight: "700",
+                        }}
+                      >
+                        Available Coupons{" "}
+                        <CloseIcon
+                          onClick={() => setdraweropen(false)}
+                          style={{
+                            float: "right",
+                            marginRight: "20px",
+                            cursor: "pointer",
+                          }}
+                        />
+                      </h3>
+
+                      {menu.coupons.map((coupon) => {
+                        var valid_from = moment(coupon.date_start).format(
+                          "MMMM Do YYYY"
+                        );
+                        var valid_to = moment(coupon.date_end).format(
+                          "MMMM Do YYYY"
+                        );
+                        console.log("valid from date", valid_from);
+                        return (
+                          <>
+                            <div className="coupon-code-container">
+                              <div>
+                                <div>
+                                  <div className="coupon-code-parent">
+                                    <p className="ccode-text">
+                                      {coupon.coupon_name}
+                                    </p>
+                                  </div>
+                                  <br />
+                                  <div className="coupon-code-border">
+                                    <div className="coupon-img"></div>
+                                    <div className="coupon-text-1">
+                                      Description For Future use
+                                    </div>
+                                    <div className="coupon-text-2">
+                                      coupon is valid from {valid_from} to{" "}
+                                      {valid_to}
+                                    </div>
+                                    <button
+                                      className="apply-coupon-btn"
+                                      onClick={() =>
+                                        redeemCoupon(
+                                          coupon.code,
+                                          coupon.coupon_id
+                                        )
+                                      }
+                                    >
+                                      APPLY COUPON
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <br />
+                          </>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </SwipeableDrawer>
+
                 <hr />
                 <table className="table table_summary">
                   <tbody>
@@ -1025,6 +1391,46 @@ const Checkout = () => {
                         <span className="float-right">{`${menu.restaurantInfo.monetary_symbol} ${user.delivery_cost}  `}</span>
                       </td>
                     </tr>
+
+                    {couponisapplied ? (
+                      <>
+                        <tr>
+                          <td
+                            className="total"
+                            style={{
+                              fontSize: "14px",
+                              fontWeight: "750",
+                              color: "#25A09E",
+                            }}
+                          >
+                            {couponappliedname} Offer
+                            <span className="float-right">
+                              - {menu.restaurantInfo.monetary_symbol}{" "}
+                              {couponamount}
+                            </span>
+                          </td>
+                        </tr>
+                        <br />
+                      </>
+                    ) : null}
+
+                    {couponredeemed ? (
+                      <>
+                        <tr>
+                          <td
+                            className="total"
+                            style={{
+                              fontSize: "14px",
+                              fontWeight: "750",
+                              color: "red",
+                            }}
+                          >
+                            {couponredeemedmessage} !
+                          </td>
+                        </tr>
+                        <br />
+                      </>
+                    ) : null}
 
                     <tr>
                       <td

@@ -86,9 +86,8 @@ const PaymentForm = (props) => {
     setdata({ ...data, comments: props.comm });
   }, [props.comm]);
   const [data, setdata] = useState({
-    deliveryType: user.isTakeAway
-      ? DELIVERY_TYPE.TAKE_AWAY
-      : DELIVERY_TYPE.HOME_DELIVERY,
+    deliveryType: user.isTakeAway ? DELIVERY_TYPE.TAKE_AWAY : "",
+    // instead of "" --> DELIVERY_TYPE.HOME_DELIVERY
     selectedAddress: user.selectedAddress,
     delivery_option: false,
     //selectedAddress: "",
@@ -220,6 +219,7 @@ const PaymentForm = (props) => {
       delivery_option: true,
     });
     dispatch(setIsTakeAway(type === DELIVERY_TYPE.TAKE_AWAY));
+    getDeliveryCharges(user.distance);
     if (headingfornoaddress) {
       getDeliveryCharges(user.distance);
       //setdata({ ...data, checkingChangeAddress: true });
@@ -387,6 +387,10 @@ const PaymentForm = (props) => {
       });
     }
   };
+
+  useEffect(() => {
+    console.log("data in payment", data);
+  }, [data]);
 
   const onClick = () => {
     setrange_arr(main.deliveryRange.range);

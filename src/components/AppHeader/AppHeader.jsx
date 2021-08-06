@@ -115,29 +115,27 @@ const Appheader = () => {
             </div>
           </div>
           <nav className="col-md-8 col-sm-8 col-8">
-            <a
-              className="cmn-toggle-switch cmn-toggle-switch__htx open_close "
-              onClick={showMobileMenu}
-            >
-              <span className="color-black">Menu mobile</span>
-            </a>
+            <div className="hide-on-desktop hamburger-container">
+              <a
+                className="cmn-toggle-switch cmn-toggle-switch__htx open_close "
+                style={{
+                  marginTop: "12px",
+                }}
+                onClick={showMobileMenu}
+              >
+                <span className="color-black">Menu mobile</span>
+              </a>
+            </div>
 
             <div className="main-menu" id="main-menu-id">
-              <div id="header_menu" style={{ backgroundColor: "black" }}>
-                <img
-                  src={main.selectedRestaurant.logo}
-                  width="150px"
-                  height="50px"
-                  alt
-                />
-              </div>
+              <div id="header_menu" style={{ backgroundColor: "white" }}></div>
               <a
                 href="#"
                 className="open_close"
                 id="close_in"
                 onClick={closemobilemenu}
               >
-                <CloseIcon style={{ color: "white" }} />
+                <CloseIcon style={{ color: "black" }} />
               </a>
               <ul>
                 {Number(menu.restaurantInfo["chain_owner_id"]) ? (
@@ -300,7 +298,6 @@ const Appheader = () => {
                           cursor: "pointer",
                           fontWeight: "600",
                           fontSize: "16px",
-                          marginLeft: "10px",
                         }}
                         onClick={() => {
                           var x = document.getElementById("main-menu-id");

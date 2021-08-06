@@ -107,11 +107,15 @@ export function getFormattedRequestPayload(
   savedAmount,
   deliveryCharges,
   phone_code,
-  delivery_time
+  delivery_time,
+  couponId,
+  couponAmount
 ) {
   // const menu = useSelector((state) => state.menu);
   console.log("arguments", cartList);
   console.log("user in utils", user);
+
+  console.log("coupon id is", couponId, couponAmount);
   //const user1 = useSelector((state) => state.user);
 
   const formattedItems = getFormmatedItems(cartList, restaurant);
@@ -163,6 +167,8 @@ export function getFormattedRequestPayload(
     comments: delivery.comments,
     delivery_cost: deliveryCharges,
     phone_code: phone_code,
+    coupon_id: couponId,
+    savings: couponAmount,
   };
 
   console.log("Formatted Request Payload", payload);
@@ -209,6 +215,8 @@ export function getFormattedRequestPayload(
         delivery_time: user.selectedDeliveryTime,
         delivery_cost: deliveryCharges,
         phone: "",
+        coupon_id: couponId,
+        savings: couponAmount,
       }
     : {
         ...payload,
@@ -224,6 +232,8 @@ export function getFormattedRequestPayload(
         distance: "",
         phone: user.user.mobile,
         delivery_phone: user.user.mobile,
+        coupon_id: couponId,
+        savings: couponAmount,
       };
 }
 //console.log("check", getFormattedRequestPayload());
