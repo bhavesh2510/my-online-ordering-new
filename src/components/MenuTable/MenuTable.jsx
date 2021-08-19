@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { openModal, closeModal } from "../../state-management/modal/actions";
 import MenuModal from "../../containers/Modals/DishModal/DishModal";
 import { addItem, removeItem } from "../../state-management/menu/actions";
+import DemoFoodImage from "./demo-food.png";
 import {
   isHappyHourStillActive,
   setTimer,
@@ -328,9 +329,7 @@ const MenuTable = ({
                             <img
                               className="food-image"
                               src={
-                                checkImageUrl
-                                  ? item.image_url
-                                  : "https://cutt.ly/gkb8C6Z"
+                                checkImageUrl ? item.image_url : DemoFoodImage
                               }
                             ></img>
                           </div>

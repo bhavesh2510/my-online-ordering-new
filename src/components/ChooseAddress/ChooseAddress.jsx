@@ -615,7 +615,7 @@ const ChooseAddress = (props) => {
         className="xyz"
         isOpen={true}
         toggle={toggle}
-        style={{ top: "15%" }}
+        style={{ top: "5%" }}
       >
         <ModalHeader style={{ height: "60px" }} toggle={toggle}>
           {" "}

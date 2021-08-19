@@ -38,6 +38,7 @@ import clipboard from "./Regular-1.5px-clipboard@3x.png";
 import mapicon from "./Regular-1.5px-map@3x.png";
 import bag from "./Regular-1.5px-shopping_bag@3x.png";
 import lock from "./lock@3x.png";
+import RestrictUser from "../RestrictUser/RestrictUser";
 
 const MyOrders = React.memo(({ restaurantId }) => {
   const main = useSelector((state) => state.main);
@@ -45,6 +46,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
   const user = useSelector((state) => state.user);
   const menu = useSelector((state) => state.menu);
   const dispatch = useDispatch();
+  const [restrict, setRestrict] = useState(false);
   const [passworddata, setpassworddata] = useState({
     oldpass: "",
     newpass: "",
@@ -90,6 +92,9 @@ const MyOrders = React.memo(({ restaurantId }) => {
   };
 
   useEffect(() => {
+    if (!user.user.isUserLoggedIn) {
+      setRestrict(true);
+    }
     fetchdata();
 
     setstate({
@@ -399,329 +404,326 @@ const MyOrders = React.memo(({ restaurantId }) => {
 
   return (
     <>
-      {state.showloader ? <WaitingOverlay /> : null}
-      {state.showpasswordoverlay ? <WaitingOverlay /> : null}
+      {restrict ? (
+        <RestrictUser />
+      ) : (
+        <>
+          {state.showloader ? <WaitingOverlay /> : null}
+          {state.showpasswordoverlay ? <WaitingOverlay /> : null}
 
-      <AppHeader />
-      {/* 
-      <section
-        className="width-of-ordersuccess"
-        data-parallax="scroll"
-        // data-image-src="https://cutt.ly/Kkb7BY9"
-        style={{
-          background: `url('https://cutt.ly/Kkb7BY9') no-repeat center`,
-          backgroundSize: "cover",
-        }}
-        data-natural-width={1400}
-        data-natural-height={470}
-      >
-        <div id="subheader_myprofile">
-          <div id="sub_content">
-            <h1>My Profile</h1>
-          </div>
-        </div>
-      </section> */}
+          <AppHeader />
 
-      <div className="parent-catbar-mobile">
-        <div
-          className="child-catbar-mobile"
-          id="mob-parent-id-2"
-          onClick={onAddressClick}
-        >
-          <p className="child-catbar-text">My Address</p>
-        </div>
-        <div className="child-catbar-mobile" id="mob-parent-id">
-          <p className="child-catbar-text-orderhistory" onClick={onOrderClick}>
-            Order History
-          </p>
-        </div>
-        <div className="child-catbar-mobile" id="mob-parent-id-4">
-          <p className="child-catbar-text-myprofile" onClick={onProfileClick}>
-            My Profile
-          </p>
-        </div>
-        <div className="child-catbar-mobile" id="mob-parent-id-3">
-          <p className="child-catbar-text" onClick={onChangePasswordClick}>
-            My passowrd
-          </p>
-        </div>
-      </div>
-
-      <div className="container margin_60_35">
-        <div className="row customised_row ">
-          <div
-            className="col-lg-3 customise-width hide-on-mobile"
-            style={{
-              backgroundColor: "rgb(234, 232, 237)",
-              marginTop: "20px",
-              height: "280px",
-            }}
-          >
+          <div className='parent-catbar-mobile'>
             <div
-              className="sub-cat-myorder"
+              className='child-catbar-mobile'
+              id='mob-parent-id-2'
               onClick={onAddressClick}
-              id="nav-parent-id-2"
             >
-              <div className="myorder-icontext-parent">
-                <img src={mapicon} className="img-myorder-icon" />{" "}
-                <p className="myorder-text">My Address</p>
-              </div>
+              <p className='child-catbar-text'>My Address</p>
             </div>
-            <div
-              className="sub-cat-myorder"
-              onClick={onOrderClick}
-              id="nav-parent-id"
-            >
-              <div className="myorder-icontext-parent">
-                <img src={bag} className="img-myorder-icon" />{" "}
-                <p className="myorder-text">Order History</p>
-              </div>
+            <div className='child-catbar-mobile' id='mob-parent-id'>
+              <p
+                className='child-catbar-text-orderhistory'
+                onClick={onOrderClick}
+              >
+                Order History
+              </p>
             </div>
-            <div
-              className="sub-cat-myorder"
-              onClick={onProfileClick}
-              id="nav-parent-id-4"
-            >
-              <div className="myorder-icontext-parent">
-                <img src={clipboard} className="img-myorder-icon" />{" "}
-                <p className="myorder-text">My Profile</p>
-              </div>
+            <div className='child-catbar-mobile' id='mob-parent-id-4'>
+              <p
+                className='child-catbar-text-myprofile'
+                onClick={onProfileClick}
+              >
+                My Profile
+              </p>
             </div>
-            <div
-              className="sub-cat-myorder"
-              onClick={onChangePasswordClick}
-              id="nav-parent-id-3"
-            >
-              <div className="myorder-icontext-parent">
-                <img src={lock} className="img-myorder-icon" />
-                <p className="myorder-text">Change Password</p>
-              </div>
+            <div className='child-catbar-mobile' id='mob-parent-id-3'>
+              <p className='child-catbar-text' onClick={onChangePasswordClick}>
+                My passowrd
+              </p>
             </div>
           </div>
 
-          <div className="col-lg-9">
-            <div
-              style={{
-                backgroundColor: "white",
+          <div className='container margin_60_35'>
+            <div className='row customised_row '>
+              <div
+                className='col-lg-3 customise-width hide-on-mobile'
+                style={{
+                  backgroundColor: "rgb(234, 232, 237)",
+                  marginTop: "20px",
+                  height: "280px",
+                }}
+              >
+                <div
+                  className='sub-cat-myorder'
+                  onClick={onAddressClick}
+                  id='nav-parent-id-2'
+                >
+                  <div className='myorder-icontext-parent'>
+                    <img src={mapicon} className='img-myorder-icon' />{" "}
+                    <p className='myorder-text'>My Address</p>
+                  </div>
+                </div>
+                <div
+                  className='sub-cat-myorder'
+                  onClick={onOrderClick}
+                  id='nav-parent-id'
+                >
+                  <div className='myorder-icontext-parent'>
+                    <img src={bag} className='img-myorder-icon' />{" "}
+                    <p className='myorder-text'>Order History</p>
+                  </div>
+                </div>
+                <div
+                  className='sub-cat-myorder'
+                  onClick={onProfileClick}
+                  id='nav-parent-id-4'
+                >
+                  <div className='myorder-icontext-parent'>
+                    <img src={clipboard} className='img-myorder-icon' />{" "}
+                    <p className='myorder-text'>My Profile</p>
+                  </div>
+                </div>
+                <div
+                  className='sub-cat-myorder'
+                  onClick={onChangePasswordClick}
+                  id='nav-parent-id-3'
+                >
+                  <div className='myorder-icontext-parent'>
+                    <img src={lock} className='img-myorder-icon' />
+                    <p className='myorder-text'>Change Password</p>
+                  </div>
+                </div>
+              </div>
 
-                marginTop: "-13px",
-              }}
-            >
-              <div className="row">
-                <div className="parent-below-row">
-                  {state.showorder ? (
-                    <>
-                      {orderList.length == 0 ? (
-                        <>
-                          <img
-                            src="https://biryaniblues.com/assets/frontend/images/empty-box.png"
-                            style={{ marginLeft: "30%" }}
-                          />
-                        </>
-                      ) : (
-                        <>
-                          <PaginationOrderList
-                            orderList={orderList}
-                            showModal={showModal}
-                          />
-                        </>
-                      )}
+              <div className='col-lg-9'>
+                <div
+                  style={{
+                    backgroundColor: "white",
 
-                      {/* {orderList.map((currval) => {
+                    marginTop: "-13px",
+                  }}
+                >
+                  <div className='row'>
+                    <div className='parent-below-row'>
+                      {state.showorder ? (
+                        <>
+                          {orderList.length == 0 ? (
+                            <>
+                              <img
+                                src='https://biryaniblues.com/assets/frontend/images/empty-box.png'
+                                style={{ marginLeft: "30%" }}
+                              />
+                            </>
+                          ) : (
+                            <>
+                              <PaginationOrderList
+                                orderList={orderList}
+                                showModal={showModal}
+                              />
+                            </>
+                          )}
+
+                          {/* {orderList.map((currval) => {
                   return (
                   
                   );
                 })} */}
-                    </>
-                  ) : null}
-                </div>
+                        </>
+                      ) : null}
+                    </div>
 
-                {/* popup */}
-                {/* <div> */}
-                {modal ? (
-                  <>
-                    <div className="modal-wrapper">
-                      <div className="modal-overlay"></div>
-                      <div
-                        className="modal-content"
-                        style={{ marginTop: "50px" }}
-                      >
-                        <section className="section-header">
-                          <h2
-                            className="heading-modal"
-                            style={{ textAlign: "center" }}
+                    {/* popup */}
+                    {/* <div> */}
+                    {modal ? (
+                      <>
+                        <div className='modal-wrapper'>
+                          <div className='modal-overlay'></div>
+                          <div
+                            className='modal-content'
+                            style={{ marginTop: "50px" }}
                           >
-                            <b>Order # {currentdata.orderid}</b>
-                          </h2>
-                          <span className="close-modal">
-                            <CloseIcon
-                              onClick={closeModal}
-                              style={{ cursor: "pointer" }}
-                            />
-                          </span>
-                        </section>
-                        <section className="order-contents">
-                          <div className="restroname">
-                            <div className="namerestroflex">
-                              <div className="exactrestroname">
-                                <h4 className="headrestro">
-                                  {menu.restaurantInfo.rname}
-                                </h4>
-                                <div className="restrolocation">
-                                  {menu.restaurantInfo.city},{" "}
-                                  {menu.restaurantInfo.country}
-                                </div>{" "}
+                            <section className='section-header'>
+                              <h2
+                                className='heading-modal'
+                                style={{ textAlign: "center" }}
+                              >
+                                <b>Order # {currentdata.orderid}</b>
+                              </h2>
+                              <span className='close-modal'>
+                                <CloseIcon
+                                  onClick={closeModal}
+                                  style={{ cursor: "pointer" }}
+                                />
+                              </span>
+                            </section>
+                            <section className='order-contents'>
+                              <div className='restroname'>
+                                <div className='namerestroflex'>
+                                  <div className='exactrestroname'>
+                                    <h4 className='headrestro'>
+                                      {menu.restaurantInfo.rname}
+                                    </h4>
+                                    <div className='restrolocation'>
+                                      {menu.restaurantInfo.city},{" "}
+                                      {menu.restaurantInfo.country}
+                                    </div>{" "}
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                          <hr
-                            style={{ width: "90%", backgroundColor: "black" }}
-                          />
-                          <div className="item-list">
-                            <h5 className="heading-list">Order List</h5>
-                            {product &&
-                              product.map((currval) => {
-                                let item = currval;
-                                let forcedModifier = "";
+                              <hr
+                                style={{
+                                  width: "90%",
+                                  backgroundColor: "black",
+                                }}
+                              />
+                              <div className='item-list'>
+                                <h5 className='heading-list'>Order List</h5>
+                                {product &&
+                                  product.map((currval) => {
+                                    let item = currval;
+                                    let forcedModifier = "";
 
-                                let optionalModifier = "";
+                                    let optionalModifier = "";
 
-                                let toppings = "";
+                                    let toppings = "";
 
-                                let sizeAndBase = "";
+                                    let sizeAndBase = "";
 
-                                let halfNhalf = "";
+                                    let halfNhalf = "";
 
-                                if (
-                                  item.forced_modifier === undefined ||
-                                  item.forced_modifier.length !== 0
-                                ) {
-                                  item.forced_modifier.map(function (fm) {
-                                    // check if there is detour availabe
-                                    const detours = isFmHaveDetours(
-                                      fm.fmid,
-                                      item.detours
-                                    );
+                                    if (
+                                      item.forced_modifier === undefined ||
+                                      item.forced_modifier.length !== 0
+                                    ) {
+                                      item.forced_modifier.map(function (fm) {
+                                        // check if there is detour availabe
+                                        const detours = isFmHaveDetours(
+                                          fm.fmid,
+                                          item.detours
+                                        );
 
-                                    forcedModifier += `, ${fm.name}`;
-                                    forcedModifier = forcedModifier
-                                      .replace(/[\s,]+/, " ")
-                                      .trim();
-                                    if (detours.result) {
-                                      detours.data = detours.data
+                                        forcedModifier += `, ${fm.name}`;
+                                        forcedModifier = forcedModifier
+                                          .replace(/[\s,]+/, " ")
+                                          .trim();
+                                        if (detours.result) {
+                                          detours.data = detours.data
+                                            .replace(/[\s,]+/, " ")
+                                            .trim();
+                                          forcedModifier += `(${detours.data})`;
+                                        }
+                                      });
+                                    }
+                                    if (
+                                      item.optional_modifier === undefined ||
+                                      item.optional_modifier.length !== 0
+                                    ) {
+                                      item.optional_modifier.map(function (om) {
+                                        optionalModifier += `, ${om.name}`;
+                                      });
+                                      optionalModifier = optionalModifier
                                         .replace(/[\s,]+/, " ")
                                         .trim();
-                                      forcedModifier += `(${detours.data})`;
                                     }
-                                  });
-                                }
-                                if (
-                                  item.optional_modifier === undefined ||
-                                  item.optional_modifier.length !== 0
-                                ) {
-                                  item.optional_modifier.map(function (om) {
-                                    optionalModifier += `, ${om.name}`;
-                                  });
-                                  optionalModifier = optionalModifier
-                                    .replace(/[\s,]+/, " ")
-                                    .trim();
-                                }
 
-                                // PIZZA Details
+                                    // PIZZA Details
 
-                                // Toppings
-                                if (item.toppings !== undefined) {
-                                  item.toppings.map(function (top) {
-                                    toppings += `, ${top.name}`;
-                                  });
-                                  toppings = toppings
-                                    .replace(/[\s,]+/, " ")
-                                    .trim();
-                                }
+                                    // Toppings
+                                    if (item.toppings !== undefined) {
+                                      item.toppings.map(function (top) {
+                                        toppings += `, ${top.name}`;
+                                      });
+                                      toppings = toppings
+                                        .replace(/[\s,]+/, " ")
+                                        .trim();
+                                    }
 
-                                // SizeAndBase
-                                if (item.base !== undefined) {
-                                  console.log("pizaa bug", item);
-                                  sizeAndBase = `${item.size_vlaue} ${item.base.base_name}`;
-                                }
+                                    // SizeAndBase
+                                    if (item.base !== undefined) {
+                                      console.log("pizaa bug", item);
+                                      sizeAndBase = `${item.size_vlaue} ${item.base.base_name}`;
+                                    }
 
-                                // HalfNhalf
-                                if (
-                                  item.first_half_toppings !== undefined &&
-                                  item.second_half_toppings !== undefined &&
-                                  item.first_half_toppings.length > 0 &&
-                                  item.second_half_toppings.length > 0
-                                ) {
-                                  halfNhalf = `First Half: ${item.first_half_toppings[0].name}, Second Half: ${item.second_half_toppings[0].name}`;
-                                }
+                                    // HalfNhalf
+                                    if (
+                                      item.first_half_toppings !== undefined &&
+                                      item.second_half_toppings !== undefined &&
+                                      item.first_half_toppings.length > 0 &&
+                                      item.second_half_toppings.length > 0
+                                    ) {
+                                      halfNhalf = `First Half: ${item.first_half_toppings[0].name}, Second Half: ${item.second_half_toppings[0].name}`;
+                                    }
 
-                                return (
-                                  <>
-                                    <div className="dish-item">
-                                      <div className="dish-name">
-                                        <div className="dish-name-child">
-                                          <div className="para-tax">
-                                            {currval.quantity} x{" "}
-                                            {currval.product_name}
-                                          </div>
+                                    console.log("half n half is", halfNhalf);
 
-                                          <div className="para-tax">
-                                            {truncateDecimal(
-                                              Number(currval.subtotal) +
-                                                Number(currval.tax)
-                                            )}
-                                            {/* Number(currval.tax)} */}
+                                    return (
+                                      <>
+                                        <div className='dish-item'>
+                                          <div className='dish-name'>
+                                            <div className='dish-name-child'>
+                                              <div className='para-tax'>
+                                                {currval.quantity} x{" "}
+                                                {currval.product_name}
+                                              </div>
+
+                                              <div className='para-tax'>
+                                                {truncateDecimal(
+                                                  Number(currval.subtotal) +
+                                                    Number(currval.tax)
+                                                )}
+                                                {/* Number(currval.tax)} */}
+                                              </div>
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    </div>
 
-                                    <div
-                                      style={{
-                                        width: "50%",
-                                        marginLeft: "28px",
-                                        marginTop: "10px",
-                                        fontSize: "13px",
-                                      }}
-                                    >
-                                      {forcedModifier !== "" ? (
-                                        <section className="modifiers">
-                                          <span className="modifiers-heading">
-                                            Modifiers:
-                                          </span>
-                                          {forcedModifier}
-                                        </section>
-                                      ) : null}
-                                      {optionalModifier !== "" ? (
-                                        <section className="modifiers">
-                                          <span className="modifiers-heading">
-                                            Extras:
-                                          </span>
-                                          {optionalModifier}
-                                        </section>
-                                      ) : null}
-                                      {toppings !== "" ? (
-                                        <section className="modifiers">
-                                          <span className="modifiers-heading">
-                                            Toppings:
-                                          </span>
-                                          {toppings}
-                                        </section>
-                                      ) : null}
-                                      {halfNhalf !== "" ? (
-                                        <section className="modifiers">
-                                          <span className="modifiers-heading">
-                                            Half And Half Choice:
-                                          </span>
-                                          {halfNhalf}
-                                        </section>
-                                      ) : null}
-                                    </div>
-                                  </>
-                                );
-                              })}
+                                        <div
+                                          style={{
+                                            width: "50%",
+                                            marginLeft: "28px",
+                                            marginTop: "10px",
+                                            fontSize: "13px",
+                                          }}
+                                        >
+                                          {forcedModifier !== "" ? (
+                                            <section className='modifiers'>
+                                              <span className='modifiers-heading'>
+                                                Modifiers:
+                                              </span>
+                                              {forcedModifier}
+                                            </section>
+                                          ) : null}
+                                          {optionalModifier !== "" ? (
+                                            <section className='modifiers'>
+                                              <span className='modifiers-heading'>
+                                                Extras:
+                                              </span>
+                                              {optionalModifier}
+                                            </section>
+                                          ) : null}
+                                          {toppings !== "" ? (
+                                            <section className='modifiers'>
+                                              <span className='modifiers-heading'>
+                                                Toppings:
+                                              </span>
+                                              {toppings}
+                                            </section>
+                                          ) : null}
+                                          {halfNhalf !== "" ? (
+                                            <section className='modifiers'>
+                                              <span className='modifiers-heading'>
+                                                Half And Half Choice:
+                                              </span>
+                                              {halfNhalf}
+                                            </section>
+                                          ) : null}
+                                        </div>
+                                      </>
+                                    );
+                                  })}
 
-                            {/* <div className="dish-item">
+                                {/* <div className="dish-item">
                           <div className="dish-name">
                             <div className="dish-name-child">
                               <div className="para-tax">1 x dish1</div>
@@ -738,220 +740,235 @@ const MyOrders = React.memo(({ restaurantId }) => {
                             </div>
                           </div>
                         </div> */}
-                          </div>
-                          <hr
-                            style={{ width: "90%", backgroundColor: "black" }}
-                          />
-                          <div className="tax-area">
-                            <div className="subtotal">
-                              <p className="para-tax">Subtotal</p>
-                              <p className="para-tax">
-                                {truncateDecimal(subtotal)}
-                              </p>
-                            </div>
-
-                            <div className="subtotal">
-                              <p className="para-tax">Taxes</p>
-                              <p className="para-tax">
-                                {truncateDecimal(currentdata.tax)}
-                              </p>
-                            </div>
-
-                            <div className="subtotal">
-                              <p className="para-tax">Delivery Charge</p>
-                              <p className="para-tax">
-                                {user.delivery_cost}.00
-                              </p>
-                            </div>
-                          </div>
-
-                          {savedAmount ? (
-                            <>
-                              <div className="savings">
-                                <p className="para-savings">YOU SAVED</p>
-                                <p className="para-savings">EUR 10</p>
                               </div>
-                            </>
-                          ) : null}
-                          <hr
-                            style={{ width: "90%", backgroundColor: "black" }}
-                          />
-                          <div
-                            className="subtotal"
-                            style={{ marginLeft: "20px", marginRight: "20px" }}
-                          >
-                            <p className="para-tax">
-                              <b>GRAND TOTAL</b>
-                            </p>
-                            <p className="para-tax">
-                              <b>{truncateDecimal(currentdata.gtotal)}</b>
-                            </p>
-                          </div>
-                          <hr />
-                          <br />
-                          <div className="order-details">
-                            <h5
-                              className="order-detail-header"
-                              style={{ marginLeft: "20px" }}
-                            >
-                              <b>Order Details</b>
-                            </h5>
-                            <div className="payment-opted">
-                              <div className="pay-opt">Payment</div>
-                              <div className="pay-name">
-                                <div className="pay-method">{paymethod}</div>
-                              </div>
-                            </div>
-                            <br />
-                            <br />
-                            <div className="pay-opt">Ordered ON</div>
-                            <div className="pay-name">
-                              <div className="pay-method">
-                                {currentdata.date}
-                              </div>
-                            </div>
-                            <br />
-                            <br />
-                            <div className="pay-opt">Order Time</div>
-                            <div className="pay-name">
-                              <div className="pay-method">{extradetails}</div>
-                            </div>
-                            <br />
-                            <br />
-                            {currentdata.type == "pickup" ? (
-                              <>
-                                <div className="pay-opt">Pickup Time</div>
-                                <div className="pay-name">
-                                  <div className="pay-method">
-                                    {user.selectedPickUpTime}
-                                  </div>
-                                </div>
-                                <br />
-                                <br />
-                              </>
-                            ) : null}
-                            {currentdata.type == "delivery" ? (
-                              <>
-                                <div className="pay-opt">Delivery Time</div>
-                                <div className="pay-name">
-                                  <div className="pay-method">
-                                    {user.selectedDeliveryTime}
-                                  </div>
-                                </div>
-                                <br />
-                                <br />
-                              </>
-                            ) : null}
-
-                            <div className="pay-opt">Order type</div>
-                            <div className="pay-name">
-                              <div className="pay-method">
-                                {currentdata.type}
-                              </div>
-                            </div>
-                            <br />
-                            <br />
-                          </div>
-                        </section>
-                      </div>
-                    </div>
-                  </>
-                ) : null}
-
-                {/* popup */}
-
-                {state.showprofile ? (
-                  <>
-                    <div style={{ marginLeft: "-10%" }}>
-                      <MyProfile />
-                    </div>
-                  </>
-                ) : null}
-
-                {state.showaddress ? (
-                  <>
-                    {" "}
-                    <ManageAddress />{" "}
-                  </>
-                ) : null}
-
-                {state.showpassword ? (
-                  <>
-                    <div style={{ marginLeft: "-15%" }}>
-                      <div className="col-lg-6 password-parent-container">
-                        <div
-                          className="box_style_2 box-passowrd-container"
-                          id="main_menu"
-                        >
-                          <div className="parent-container-password-height-width">
-                            <div className="password-child-conatiner">
-                              <TextField
-                                size="small"
-                                className="input-passowrd-texfield"
-                                // style={{ width: "120%" }}
-                                label="Old Password"
-                                variant="outlined"
-                                value={passworddata.oldpass}
-                                onChange={(e) =>
-                                  handleOldPassword(e.target.value)
-                                }
-                              />
-                              <br />
-                              <br />
-                              <TextField
-                                size="small"
-                                className="input-passowrd-texfield"
-                                label="New Password"
-                                variant="outlined"
-                                value={passworddata.newpass}
-                                onChange={(e) =>
-                                  handleNewPassword(e.target.value)
-                                }
-                              />
-                              <br />
-                              <br />
-                              <TextField
-                                size="small"
-                                className="input-passowrd-texfield"
-                                label="New Password"
-                                variant="outlined"
-                                value={passworddata.confirmnewpass}
-                                onChange={(e) =>
-                                  handleConfirmNewPassword(e.target.value)
-                                }
-                              />
-                              <br />
-                              <br />
-
-                              <Button
-                                onClick={changePasswordFormSubmit}
-                                className="password-submit-button"
+                              <hr
                                 style={{
-                                  height: "45px",
-                                  backgroundColor: "#000000",
+                                  width: "90%",
+                                  backgroundColor: "black",
+                                }}
+                              />
+                              <div className='tax-area'>
+                                <div className='subtotal'>
+                                  <p className='para-tax'>Subtotal</p>
+                                  <p className='para-tax'>
+                                    {truncateDecimal(subtotal)}
+                                  </p>
+                                </div>
 
-                                  borderRadius: "12px",
+                                <div className='subtotal'>
+                                  <p className='para-tax'>Taxes</p>
+                                  <p className='para-tax'>
+                                    {truncateDecimal(currentdata.tax)}
+                                  </p>
+                                </div>
 
-                                  color: "white",
+                                <div className='subtotal'>
+                                  <p className='para-tax'>Delivery Charge</p>
+                                  <p className='para-tax'>
+                                    {user.delivery_cost}.00
+                                  </p>
+                                </div>
+                              </div>
+
+                              {savedAmount ? (
+                                <>
+                                  <div className='savings'>
+                                    <p className='para-savings'>YOU SAVED</p>
+                                    <p className='para-savings'>EUR 10</p>
+                                  </div>
+                                </>
+                              ) : null}
+                              <hr
+                                style={{
+                                  width: "90%",
+                                  backgroundColor: "black",
+                                }}
+                              />
+                              <div
+                                className='subtotal'
+                                style={{
+                                  marginLeft: "20px",
+                                  marginRight: "20px",
                                 }}
                               >
-                                Submit
-                              </Button>
-                            </div>
+                                <p className='para-tax'>
+                                  <b>GRAND TOTAL</b>
+                                </p>
+                                <p className='para-tax'>
+                                  <b>{truncateDecimal(currentdata.gtotal)}</b>
+                                </p>
+                              </div>
+                              <hr />
+                              <br />
+                              <div className='order-details'>
+                                <h5
+                                  className='order-detail-header'
+                                  style={{ marginLeft: "20px" }}
+                                >
+                                  <b>Order Details</b>
+                                </h5>
+                                <div className='payment-opted'>
+                                  <div className='pay-opt'>Payment</div>
+                                  <div className='pay-name'>
+                                    <div className='pay-method'>
+                                      {paymethod}
+                                    </div>
+                                  </div>
+                                </div>
+                                <br />
+                                <br />
+                                <div className='pay-opt'>Ordered ON</div>
+                                <div className='pay-name'>
+                                  <div className='pay-method'>
+                                    {currentdata.date}
+                                  </div>
+                                </div>
+                                <br />
+                                <br />
+                                <div className='pay-opt'>Order Time</div>
+                                <div className='pay-name'>
+                                  <div className='pay-method'>
+                                    {extradetails}
+                                  </div>
+                                </div>
+                                <br />
+                                <br />
+                                {currentdata.type == "pickup" ? (
+                                  <>
+                                    <div className='pay-opt'>Pickup Time</div>
+                                    <div className='pay-name'>
+                                      <div className='pay-method'>
+                                        {user.selectedPickUpTime}
+                                      </div>
+                                    </div>
+                                    <br />
+                                    <br />
+                                  </>
+                                ) : null}
+                                {currentdata.type == "delivery" ? (
+                                  <>
+                                    <div className='pay-opt'>Delivery Time</div>
+                                    <div className='pay-name'>
+                                      <div className='pay-method'>
+                                        {user.selectedDeliveryTime}
+                                      </div>
+                                    </div>
+                                    <br />
+                                    <br />
+                                  </>
+                                ) : null}
+
+                                <div className='pay-opt'>Order type</div>
+                                <div className='pay-name'>
+                                  <div className='pay-method'>
+                                    {currentdata.type}
+                                  </div>
+                                </div>
+                                <br />
+                                <br />
+                              </div>
+                            </section>
                           </div>
                         </div>
-                        {/* End box_style_1 */}
-                      </div>
-                    </div>
-                  </>
-                ) : null}
+                      </>
+                    ) : null}
+
+                    {/* popup */}
+
+                    {state.showprofile ? (
+                      <>
+                        <div style={{ marginLeft: "-10%" }}>
+                          <MyProfile />
+                        </div>
+                      </>
+                    ) : null}
+
+                    {state.showaddress ? (
+                      <>
+                        {" "}
+                        <ManageAddress />{" "}
+                      </>
+                    ) : null}
+
+                    {state.showpassword ? (
+                      <>
+                        <div style={{ marginLeft: "-15%" }}>
+                          <div className='col-lg-6 password-parent-container'>
+                            <div
+                              className='box_style_2 box-passowrd-container'
+                              id='main_menu'
+                            >
+                              <div className='parent-container-password-height-width'>
+                                <div className='password-child-conatiner'>
+                                  <TextField
+                                    size='small'
+                                    className='input-passowrd-texfield'
+                                    // style={{ width: "120%" }}
+                                    label='Old Password'
+                                    variant='outlined'
+                                    value={passworddata.oldpass}
+                                    onChange={(e) =>
+                                      handleOldPassword(e.target.value)
+                                    }
+                                  />
+                                  <br />
+                                  <br />
+                                  <TextField
+                                    size='small'
+                                    className='input-passowrd-texfield'
+                                    label='New Password'
+                                    variant='outlined'
+                                    value={passworddata.newpass}
+                                    onChange={(e) =>
+                                      handleNewPassword(e.target.value)
+                                    }
+                                  />
+                                  <br />
+                                  <br />
+                                  <TextField
+                                    size='small'
+                                    className='input-passowrd-texfield'
+                                    label='New Password'
+                                    variant='outlined'
+                                    value={passworddata.confirmnewpass}
+                                    onChange={(e) =>
+                                      handleConfirmNewPassword(e.target.value)
+                                    }
+                                  />
+                                  <br />
+                                  <br />
+
+                                  <Button
+                                    onClick={changePasswordFormSubmit}
+                                    className='password-submit-button'
+                                    style={{
+                                      height: "45px",
+                                      backgroundColor: "#000000",
+
+                                      borderRadius: "12px",
+
+                                      color: "white",
+                                    }}
+                                  >
+                                    Submit
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                            {/* End box_style_1 */}
+                          </div>
+                        </div>
+                      </>
+                    ) : null}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <Footer />
+          <Footer />
+        </>
+      )}
     </>
   );
 });

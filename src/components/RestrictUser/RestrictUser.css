@@ -1,0 +1,10 @@
+.restrict-container {
+  align-items: center;
+  margin-top: 10%;
+}
+.restrict-user {
+  font-size: 35px;
+  font-weight: 700;
+  /* margin-top: 20%; */
+  text-align: center;
+}

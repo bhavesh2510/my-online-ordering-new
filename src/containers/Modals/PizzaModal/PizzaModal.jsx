@@ -72,6 +72,8 @@ class PizzaModal extends React.PureComponent {
         halfAndHalfPizzaList: payload.halfnhalf,
         isToppingFetched: true,
       });
+
+      console.log("pizza state is", this.state);
     }
     //throw error if no information is available
   }
@@ -217,6 +219,7 @@ class PizzaModal extends React.PureComponent {
   handleSizeBaseChange = async (sizeBaseId) => {
     this.setState({ isToppingFetched: false });
     const sizeBase = sizeBaseId.split(",");
+    console.log("id of pizza", sizeBase);
 
     if (sizeBase[0] === this.state.selectedSizeId) {
       this.setState({
@@ -376,16 +379,16 @@ class PizzaModal extends React.PureComponent {
       <>
         <Modal
           //className={custom - pizza - modal}
-          size="lg"
+          size='lg'
           isOpen={true}
           toggle={this.toggle}
           style={{ top: "15%", left: "2%", width: "35%" }}
         >
           <ModalHeader>
             <img
-              className="img-of-pizza-modal"
+              className='img-of-pizza-modal'
               // style={{ marginLeft: "-17px", marginTop: "-20px" }}
-              src="https://i.ibb.co/qWc9P0d/piiza-3.jpg"
+              src='https://i.ibb.co/qWc9P0d/piiza-3.jpg'
               // height="190px"
               // width="499px"
             />
@@ -401,12 +404,12 @@ class PizzaModal extends React.PureComponent {
               }}
             >
               <CloseIcon
-                className="pizza-modal-close"
+                className='pizza-modal-close'
                 style={{ color: "black" }}
               />
             </div>
             <p
-              className="text-pizzamodal"
+              className='text-pizzamodal'
               style={{
                 fontWeight: "800",
                 color: "#5c48d2",
@@ -459,7 +462,7 @@ class PizzaModal extends React.PureComponent {
             buttonTitle={`ADD TO ORDER - ${this.props.currency} ${Number(
               this.getTotalPrice()
             ).toFixed(2)}`}
-            btnCls="cart"
+            btnCls='cart'
             disabled={this.isConfirmationDisabled()}
             onClick={this.handleAddItem}
           />

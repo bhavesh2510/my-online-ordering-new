@@ -228,7 +228,7 @@ export function getFormattedRequestPayload(
         delivery_option: delivery.deliveryType.toLowerCase(),
         order_location: null,
         time_for_delivery: "",
-        delivery_time: "",
+        delivery_time: user.selectedPickUpTime,
         distance: "",
         phone: user.user.mobile,
         delivery_phone: user.user.mobile,

@@ -152,9 +152,9 @@ const ManageAddress = (props) => {
   return (
     <>
       <div id="address-container">
-        <main class="main-container">
+        <main class="main-container customised-main-container">
           <div
-            className="add-address-for-mobile"
+            className="add-address-for-mobile hide-on-desktop"
             onClick={() => callAddressModal(false, {})}
           >
             <p className="add-for-mobile-text">Add Address</p>

@@ -160,10 +160,10 @@ const AddAddress = (props) => {
   return (
     <>
       <Modal
-        className="add-address-for-mobile-resp"
+        className="add-address-for-mobile-resp "
         isOpen={true}
         toggle={toggle}
-        style={{ top: "10%" }}
+        style={{ top: "5%" }}
       >
         <ModalHeader toggle={toggle}>
           {" "}

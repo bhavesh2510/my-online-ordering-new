@@ -15,6 +15,7 @@
   .footer-parent {
     display: flex;
     flex-direction: row;
+    justify-items: center;
   }
   .main-footer-container {
     display: flex;

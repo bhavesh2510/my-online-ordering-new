@@ -12,11 +12,14 @@ import { truncateDecimal } from "../../state-management/menu/utils";
 import HelpIcon from "@material-ui/icons/Help";
 import "./OrderSuccess.css";
 import icon from "./dersucces-icon.png";
+import { clearMenuState } from "../../state-management/menu/actions";
+import RestrictUser from "../RestrictUser/RestrictUser";
 
 const OrderSuccess = () => {
   const dispatch = useDispatch();
   const menu = useSelector((state) => state.menu);
   const user = useSelector((state) => state.user);
+  const [restrict, setRestrict] = useState(false);
   const [ordersession, setordersession] = useState();
 
   const [state, setstate] = useState({
@@ -30,6 +33,7 @@ const OrderSuccess = () => {
   var ordersData = [];
   const [orderCoompleteDetails, setorderCoompleteDetails] = useState({});
   const [savedcouponamount, setsavedcouponamount] = useState();
+  const [waitfordata, setwaitfordata] = useState(true);
 
   const fetchdata = async () => {
     setstate({ ...state, loadingData: true });
@@ -84,10 +88,30 @@ const OrderSuccess = () => {
 
     console.log("response_2 in ordersuccess", response_2);
 
+    var i = 0;
+
     if (response_2.payload.status == 200) {
       //orderCoompleteDetails = response_2.payload.data;
       setorderCoompleteDetails(response_2.payload.data[0]);
       setsavedcouponamount(response_2.payload.data[0].savings);
+      dispatch(clearMenuState());
+      setwaitfordata(false);
+    } else if (response_2.payload.status == 201) {
+      setTimeout(async function () {
+        var order_session_for_card = "";
+        for (const entry of urlParams.entries()) {
+          order_session_for_card = entry[1].slice("30");
+        }
+        console.log("after 20 seconds", order_session_for_card);
+        const response_2_for_payments = await dispatch(
+          fetchMyOrderDetails(order_session_for_card)
+        );
+        setorderCoompleteDetails(response_2_for_payments.payload.data[0]);
+        setsavedcouponamount(response_2_for_payments.payload.data[0].savings);
+        dispatch(clearMenuState());
+        setwaitfordata(false);
+        var order_session_for_card = "";
+      }, 25000);
     }
     console.log("complete details", orderCoompleteDetails);
     var order_session = "";
@@ -95,113 +119,168 @@ const OrderSuccess = () => {
   };
 
   useEffect(() => {
-    fetchdata();
+    if (!user.user.isUserLoggedIn) {
+      setRestrict(true);
+    } else {
+      fetchdata();
+    }
   }, []);
+
+  // useEffect(() => {
+
+  // }, [apicall]);
 
   return (
     <>
-      <AppHeader />
-      <div className="container margin_60_35">
-        {/* style={{ marginTop: "20px" }} */}
-        <div className="row justify-content-center">
-          <div className="col-md-6">
-            <div style={{ marginTop: "80px" }}>
-              <img src={icon} style={{ height: "400px" }} />
-              <div className="myorder-parent">
-                <p className="order-confirm-text">Order confirmed !</p>
+      {restrict ? (
+        <RestrictUser />
+      ) : (
+        <>
+          {waitfordata ? (
+            <>
+              <p
+                style={{
+                  textAlign: "center",
+                  marginTop: "180px",
+                  fontSize: "30px",
+                }}
+              >
+                Order Confirmed ! <br />
+                We are fetching your details Please Wait !
+              </p>
+              <div class='lds-default'>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </>
+          ) : (
+            <>
+              <AppHeader />
+              <div className='container margin_60_35'>
+                {/* style={{ marginTop: "20px" }} */}
+                <div className='row justify-content-center'>
+                  <div className='col-md-6'>
+                    <div style={{ marginTop: "80px" }}>
+                      <img src={icon} style={{ height: "400px" }} />
+                      <div className='myorder-parent'>
+                        <p className='order-confirm-text'>Order confirmed !</p>
 
-                <p className="hi-text">Hi {user.user.firstName} !</p>
-                <p className="hi-text-2">Thanks for your order !</p>
-                <p className="order-number-text">
-                  Order Number : {orderCoompleteDetails.order_id}
-                </p>
+                        <p className='hi-text'>Hi {user.user.firstName} !</p>
+                        <p className='hi-text-2'>Thanks for your order !</p>
 
-                {orderCoompleteDetails.products &&
-                  orderCoompleteDetails.products.map((currval) => {
-                    return (
-                      <>
-                        <div className="list-of-orders">
-                          <p className="list-of-order-text">
-                            {currval.product_name} &nbsp; x {currval.quantity}
-                          </p>
-                          <p className="list-of-order-text2">
-                            {orderCoompleteDetails.currency}{" "}
-                            {truncateDecimal(
-                              Number(currval.subtotal) + Number(currval.tax)
-                            )}
+                        <p className='order-number-text'>
+                          Order Number : {orderCoompleteDetails.order_id}
+                        </p>
+
+                        {orderCoompleteDetails.products &&
+                          orderCoompleteDetails.products.map((currval) => {
+                            return (
+                              <>
+                                <div className='list-of-orders'>
+                                  <p className='list-of-order-text'>
+                                    {currval.product_name} &nbsp; x{" "}
+                                    {currval.quantity}
+                                  </p>
+                                  <p className='list-of-order-text2'>
+                                    {orderCoompleteDetails.currency}{" "}
+                                    {truncateDecimal(
+                                      Number(currval.subtotal) +
+                                        Number(currval.tax)
+                                    )}
+                                  </p>
+                                </div>
+                                <hr style={{ marginTop: "0px" }} />
+                              </>
+                            );
+                          })}
+
+                        {savedcouponamount ? (
+                          <>
+                            <div className='list-of-orders'>
+                              <p
+                                className='list-of-order-text'
+                                style={{ color: "#6244da" }}
+                              >
+                                You SAVED {savedcouponamount}{" "}
+                                {orderCoompleteDetails.currency} !
+                              </p>
+                            </div>
+                          </>
+                        ) : null}
+
+                        <div className='list-of-orders'>
+                          <p className='list-of-order-text'>Total</p>
+                          <p
+                            className='list-of-order-text2'
+                            style={{ color: "black" }}
+                          >
+                            {orderCoompleteDetails.currency}&nbsp;
+                            {orderCoompleteDetails.total}
                           </p>
                         </div>
-                        <hr style={{ marginTop: "0px" }} />
-                      </>
-                    );
-                  })}
 
-                {savedcouponamount ? (
-                  <>
-                    <div className="list-of-orders">
-                      <p
-                        className="list-of-order-text"
-                        style={{ color: "#6244da" }}
-                      >
-                        You SAVED {savedcouponamount}{" "}
-                        {orderCoompleteDetails.currency} !
-                      </p>
+                        <div className='list-of-orders'>
+                          <p className='list-of-order-text'>Payment method</p>
+                          <p
+                            className='list-of-order-text2'
+                            style={{ color: "black" }}
+                          >
+                            {orderCoompleteDetails.pay_method}
+                          </p>
+                        </div>
+
+                        <div className='list-of-orders'>
+                          <p className='list-of-order-text'>Order Option</p>
+
+                          {orderCoompleteDetails.delivery_option == "pickup" ? (
+                            <>
+                              <p
+                                className='list-of-order-text2'
+                                style={{ color: "black" }}
+                              >
+                                {orderCoompleteDetails.delivery_option}
+                              </p>
+                            </>
+                          ) : null}
+                          {orderCoompleteDetails.delivery_option == "eatin" ? (
+                            <p
+                              className='list-of-order-text2'
+                              style={{ color: "black" }}
+                            >
+                              {orderCoompleteDetails.delivery_option}
+                            </p>
+                          ) : null}
+                          {orderCoompleteDetails.delivery_option ==
+                          "delivery" ? (
+                            <p
+                              className='list-of-order-text2'
+                              style={{ color: "black" }}
+                            >
+                              {orderCoompleteDetails.delivery_option}
+                            </p>
+                          ) : null}
+                        </div>
+                      </div>
                     </div>
-                  </>
-                ) : null}
-
-                <div className="list-of-orders">
-                  <p className="list-of-order-text">Total</p>
-                  <p className="list-of-order-text2" style={{ color: "black" }}>
-                    {orderCoompleteDetails.currency}&nbsp;
-                    {orderCoompleteDetails.total}
-                  </p>
-                </div>
-
-                <div className="list-of-orders">
-                  <p className="list-of-order-text">Payment method</p>
-                  <p className="list-of-order-text2" style={{ color: "black" }}>
-                    {orderCoompleteDetails.pay_method}
-                  </p>
-                </div>
-
-                <div className="list-of-orders">
-                  <p className="list-of-order-text">Order Option</p>
-
-                  {orderCoompleteDetails.delivery_option == "pickup" ? (
-                    <>
-                      <p
-                        className="list-of-order-text2"
-                        style={{ color: "black" }}
-                      >
-                        {orderCoompleteDetails.delivery_option}
-                      </p>
-                    </>
-                  ) : null}
-                  {orderCoompleteDetails.delivery_option == "eatin" ? (
-                    <p
-                      className="list-of-order-text2"
-                      style={{ color: "black" }}
-                    >
-                      {orderCoompleteDetails.delivery_option}
-                    </p>
-                  ) : null}
-                  {orderCoompleteDetails.delivery_option == "delivery" ? (
-                    <p
-                      className="list-of-order-text2"
-                      style={{ color: "black" }}
-                    >
-                      {orderCoompleteDetails.delivery_option}
-                    </p>
-                  ) : null}
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
+            </>
+          )}
 
-      {/* <Footer /> */}
+          {/* <Footer /> */}
+        </>
+      )}
     </>
   );
 };

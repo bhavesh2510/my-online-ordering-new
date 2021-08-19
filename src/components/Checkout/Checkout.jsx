@@ -47,6 +47,9 @@ import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 //import { checkCoupons } from "../../state-management/menu/asyncActions";
 import { Box, Drawer, ListItem, SwipeableDrawer } from "@material-ui/core";
+import LoadingBar from "../../components/LoadingBar/LoadingBar";
+
+import RestrictUser from "../RestrictUser/RestrictUser";
 const useStyle = makeStyles({
   list: {
     width: 450,
@@ -132,8 +135,12 @@ const Checkout = () => {
   };
   const grandTotal = Number(getGrandTotal());
   const [billPercentAmount, setbillPercentAmount] = useState();
+  const [restrict, setRestrict] = useState(false);
 
   useEffect(() => {
+    if (!user.user.isUserLoggedIn) {
+      setRestrict(true);
+    }
     if (main.deliveryRange)
       //getDeliveryCharges();
       //dispatch(setPickupTime(data.pickupTime));
@@ -444,14 +451,17 @@ const Checkout = () => {
   const savedAmount = Math.abs(getSavedAmount());
 
   const sendpaymentreq = (type, orderId) => {
-    var errorurl = `http://ciboapp.me/feedmii/?/${menu.restaurantInfo.restaurant_id}/paymentfailed`;
-    var failedurl = `http://ciboapp.me/feedmii/?/${menu.restaurantInfo.restaurant_id}/paymentfailed`;
-    var accepturl = `http://ciboapp.me/feedmii/?/${menu.restaurantInfo.restaurant_id}/ordersuccess/orderid=${orderId}`;
+    var errorurl = `https://ciboapp.me/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`;
+    var failedurl = `https://ciboapp.me/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`;
+    //var failedurl = `http://localhost:3000/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`;
+    var accepturl = `https://ciboapp.me/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${orderId}`;
+    //var accepturl = `http://localhost:3000/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${orderId}`;
+    var callbackurl = "https://ciboapp.com/api/mobileApi/v2/app/callback";
     var mkey = menu.restaurantInfo.merchant_key;
     var sec = menu.restaurantInfo.secret;
     var userid = "123";
 
-    let str = `${getBillAmount()}${
+    let str = `${getBillAmount()}${callbackurl}${
       menu.restaurantInfo.currency
     }${errorurl}${failedurl}${mkey}${orderId}${accepturl}${sec}`;
 
@@ -471,6 +481,7 @@ const Checkout = () => {
       accept_url: accepturl,
       failed_url: failedurl,
       error_url: errorurl,
+      callback_url: callbackurl,
     };
 
     axios
@@ -538,6 +549,7 @@ const Checkout = () => {
       });
     } else {
       setdata({ ...state, displayloader: true });
+      // return;
 
       const orderId = getOrderId();
       var savedAmount = "1";
@@ -600,12 +612,26 @@ const Checkout = () => {
         console.log("if statement", deliveryDetails.paymentMethod);
         if (deliveryDetails.paymentMethod == "1") {
           sendpaymentreq("1", orderId);
+          dispatch(
+            couponRedeem(
+              user.user.clientId,
+              menu.restaurantInfo.restaurant_id,
+              couponId
+            )
+          );
 
-          dispatch(clearMenuState());
+          //dispatch(clearMenuState());
         } else if (deliveryDetails.paymentMethod == "4") {
           sendpaymentreq("2", orderId);
+          dispatch(
+            couponRedeem(
+              user.user.clientId,
+              menu.restaurantInfo.restaurant_id,
+              couponId
+            )
+          );
 
-          dispatch(clearMenuState());
+          // dispatch(clearMenuState());
         } else {
           dispatch(
             couponRedeem(
@@ -733,744 +759,743 @@ const Checkout = () => {
 
   return (
     <>
-      {/* <section
-        className="parallax-window_myprofile "
-        data-parallax="scroll"
-        // data-image-src="https://cutt.ly/Kkb7BY9"
-        style={{
-          background: `url('https://cutt.ly/Kkb7BY9') no-repeat center`,
-          backgroundSize: "cover",
-        }}
-        data-natural-width={1400}
-        data-natural-height={470}
-      >
-        <div id="subheader_myprofile">
-          <div id="sub_content">
-            <h1>Place Your Order</h1>
-          </div>
-        </div>
-      </section> */}
-
-      {data.displayloader ? <WaitingOverlay /> : null}
-      <AppHeader />
-      <div
-        className="container margin_60_35"
-        style={{
-          transform: "none",
-
-          marginTop: "50px",
-        }}
-      >
-        <div className="row" style={{ transform: "none" }}>
+      {restrict ? (
+        <>
+          <RestrictUser />
+        </>
+      ) : (
+        <>
+          {data.displayloader ? <LoadingBar /> : null}
           <div
-            className="col-lg-5 hide-on-desktop"
-            id="sidebar"
+            className='container margin_60_35'
             style={{
-              position: "relative",
-              overflow: "visible",
-              boxSizing: "border-box",
-              minHeight: "1px",
+              transform: "none",
+
+              marginTop: "50px",
             }}
           >
-            <div
-              className="theiaStickySidebar"
-              style={{
-                paddingTop: "0px",
-                paddingBottom: "1px",
-                position: "static",
-                transform: "none",
-              }}
-            >
+            <div className='row' style={{ transform: "none" }}>
               <div
-                id="cart-box"
+                className='col-lg-5 hide-on-desktop'
+                id='sidebar'
                 style={{
-                  backgroundColor: "#eae8ed",
-                  width: "100%",
-                  borderRadius: "20px",
+                  position: "relative",
+                  overflow: "visible",
+                  boxSizing: "border-box",
+                  minHeight: "1px",
                 }}
               >
-                <p
+                <div
+                  className='theiaStickySidebar'
                   style={{
-                    textAlign: "center",
-                    fontSize: "22px",
-                    fontWeight: "700",
-                    color: "black",
+                    paddingTop: "0px",
+                    paddingBottom: "1px",
+                    position: "static",
+                    transform: "none",
                   }}
                 >
-                  Your Orders{" "}
-                  <span style={{ color: "#666171" }}>
-                    ( {menu.cart.length} items )
-                  </span>
-                </p>
-                <table
-                  className="table table_summary"
-                  style={{ width: "100%" }}
-                >
-                  <tbody>
-                    {menu.cart.map((val) => {
-                      if (val.isHappyHourActive) {
-                        const result = isHappyHourStillActive(
-                          val,
-                          menu.restaurantInfo.timezone
-                        );
-                        console.log("items in itemlist", val);
+                  <div
+                    id='cart-box'
+                    style={{
+                      backgroundColor: "#eae8ed",
+                      width: "100%",
+                      borderRadius: "20px",
+                    }}
+                  >
+                    <p
+                      style={{
+                        textAlign: "center",
+                        fontSize: "22px",
+                        fontWeight: "700",
+                        color: "black",
+                      }}
+                    >
+                      Your Orders{" "}
+                      <span style={{ color: "#666171" }}>
+                        ( {menu.cart.length} items )
+                      </span>
+                    </p>
+                    <table
+                      className='table table_summary'
+                      style={{ width: "100%" }}
+                    >
+                      <tbody>
+                        {menu.cart.map((val) => {
+                          if (val.isHappyHourActive) {
+                            const result = isHappyHourStillActive(
+                              val,
+                              menu.restaurantInfo.timezone
+                            );
+                            console.log("items in itemlist", val);
 
-                        var isStillActive = result.isActive;
-                        if (isStillActive) {
-                          refIndex++;
-                          setTimer(result.distance, timeOutRef[refIndex]);
-                        }
-                      }
-                      return (
-                        <>
-                          <tr>
-                            <td style={{ width: "37%" }}>
-                              <div
-                                style={{
-                                  marginTop: "5px",
-                                  fontSize: "15px",
-                                  color: "black",
-                                }}
-                              >
-                                <b>{val.name}</b>
-                                <br />
-                                {val.modifiers ? (
-                                  <>
-                                    <div style={{ fontSize: "12px" }}>
-                                      <RenderModifiers
-                                        modifier={val.modifiers}
-                                      />
-                                    </div>
-                                  </>
-                                ) : null}
+                            var isStillActive = result.isActive;
+                            if (isStillActive) {
+                              refIndex++;
+                              setTimer(result.distance, timeOutRef[refIndex]);
+                            }
+                          }
+                          return (
+                            <>
+                              <tr>
+                                <td style={{ width: "37%" }}>
+                                  <div
+                                    style={{
+                                      marginTop: "5px",
+                                      fontSize: "15px",
+                                      color: "black",
+                                    }}
+                                  >
+                                    <b>{val.name}</b>
+                                    <br />
+                                    {val.modifiers ? (
+                                      <>
+                                        <div style={{ fontSize: "12px" }}>
+                                          <RenderModifiers
+                                            modifier={val.modifiers}
+                                          />
+                                        </div>
+                                      </>
+                                    ) : null}
 
-                                {val.productType == "Pizza" ? (
-                                  <>
-                                    <p
-                                      className="text-pizzamodal"
-                                      style={{
-                                        marginTop: "10px",
-                                        cursor: "pointer",
-                                        fontSize: "10px",
-                                        color: "black",
-                                      }}
-                                      onClick={() => showPizzaDetails(val)}
-                                    >
-                                      view details
-                                    </p>
-                                  </>
-                                ) : null}
-                              </div>
-                              <br />
-                            </td>
-                            <td className="qty-table" style={{ width: "30%" }}>
-                              <div className="main-qty">
-                                <div
-                                  className="plus"
-                                  onClick={() => handleAddItem(val)}
-                                >
-                                  +
-                                </div>
-                                <div
-                                  className="minus"
-                                  onClick={() => handleRemoveItem(val)}
-                                >
-                                  -
-                                </div>
-                                <div className="qty">{val.qty}</div>
-                              </div>
-                            </td>
-                            <td>
-                              <div
-                                style={{
-                                  marginTop: "5px",
-                                  fontSize: "15px",
-                                  color: "#bd1e44",
-                                  fontWeight: "600",
-                                }}
-                              >
-                                <span className="float-right">
-                                  {" "}
-                                  {`${menu.restaurantInfo.monetary_symbol}`}
-                                  {` ${truncateDecimal(
-                                    getItemPrice(val, isStillActive)
-                                  )}`}
-                                </span>
-                              </div>
-                            </td>
-                          </tr>
-                        </>
-                      );
-                    })}
-                  </tbody>
-                </table>
-                <table className="table table_summary">
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div
-                          className="parent-textarea"
-                          style={{ height: "51px" }}
-                        >
-                          <textarea
-                            onChange={(e) => handleComments(e)}
-                            maxLength="140"
-                            className="textarea-class"
-                            placeholder="Any suggestions for restro ?"
-                          ></textarea>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <hr />
-
-                <div
-                  className="coupon-container"
-                  onClick={() => setdraweropen(true)}
-                >
-                  <p className="coupon-text">Apply Coupon</p>
-                </div>
-                <SwipeableDrawer
-                  anchor={"right"}
-                  open={draweropen}
-                  onClose={() => setdraweropen(false)}
-                  onOpen={() => {}}
-                >
-                  <div className={classes.list}>
-                    <div style={{ marginTop: "20%" }}>
-                      <h3
-                        style={{
-                          marginLeft: "40px",
-                          color: "black",
-                          fontSize: "23px",
-                          fontWeight: "700",
-                        }}
-                      >
-                        Available Coupons{" "}
-                        <CloseIcon
-                          onClick={() => setdraweropen(false)}
-                          style={{
-                            float: "right",
-                            marginRight: "20px",
-                            cursor: "pointer",
-                          }}
-                        />
-                      </h3>
-
-                      {menu.coupons.map((coupon) => {
-                        var valid_from = moment(coupon.date_start).format(
-                          "MMMM Do YYYY"
-                        );
-                        var valid_to = moment(coupon.date_end).format(
-                          "MMMM Do YYYY"
-                        );
-                        console.log("valid from date", valid_from);
-                        return (
-                          <>
-                            <div className="coupon-code-container">
-                              <div>
-                                <div>
-                                  <div className="coupon-code-parent">
-                                    <p className="ccode-text">
-                                      {coupon.coupon_name}
-                                    </p>
+                                    {val.productType == "Pizza" ? (
+                                      <>
+                                        <p
+                                          className='text-pizzamodal'
+                                          style={{
+                                            marginTop: "10px",
+                                            cursor: "pointer",
+                                            fontSize: "10px",
+                                            color: "black",
+                                          }}
+                                          onClick={() => showPizzaDetails(val)}
+                                        >
+                                          view details
+                                        </p>
+                                      </>
+                                    ) : null}
                                   </div>
                                   <br />
-                                  <div className="coupon-code-border">
-                                    <div className="coupon-img"></div>
-                                    <div className="coupon-text-1">
-                                      Description For Future use
-                                    </div>
-                                    <div className="coupon-text-2">
-                                      coupon is valid from {valid_from} to{" "}
-                                      {valid_to}
-                                    </div>
-                                    <button
-                                      className="apply-coupon-btn"
-                                      onClick={() =>
-                                        redeemCoupon(
-                                          coupon.code,
-                                          coupon.coupon_id
-                                        )
-                                      }
+                                </td>
+                                <td
+                                  className='qty-table'
+                                  style={{ width: "30%" }}
+                                >
+                                  <div className='main-qty'>
+                                    <div
+                                      className='plus'
+                                      onClick={() => handleAddItem(val)}
                                     >
-                                      APPLY COUPON
-                                    </button>
+                                      +
+                                    </div>
+                                    <div
+                                      className='minus'
+                                      onClick={() => handleRemoveItem(val)}
+                                    >
+                                      -
+                                    </div>
+                                    <div className='qty'>{val.qty}</div>
                                   </div>
-                                </div>
-                              </div>
+                                </td>
+                                <td>
+                                  <div
+                                    style={{
+                                      marginTop: "5px",
+                                      fontSize: "15px",
+                                      color: "#bd1e44",
+                                      fontWeight: "600",
+                                    }}
+                                  >
+                                    <span className='float-right'>
+                                      {" "}
+                                      {`${menu.restaurantInfo.monetary_symbol}`}
+                                      {` ${truncateDecimal(
+                                        getItemPrice(val, isStillActive)
+                                      )}`}
+                                    </span>
+                                  </div>
+                                </td>
+                              </tr>
+                            </>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                    <table className='table table_summary'>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <div
+                              className='parent-textarea'
+                              style={{ height: "51px" }}
+                            >
+                              <textarea
+                                onChange={(e) => handleComments(e)}
+                                maxLength='140'
+                                className='textarea-class'
+                                placeholder='Any suggestions for restro ?'
+                              ></textarea>
                             </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <hr />
 
+                    <div
+                      className='coupon-container'
+                      onClick={() => setdraweropen(true)}
+                    >
+                      <p className='coupon-text'>Apply Coupon</p>
+                    </div>
+                    <SwipeableDrawer
+                      anchor={"right"}
+                      open={draweropen}
+                      onClose={() => setdraweropen(false)}
+                      onOpen={() => {}}
+                    >
+                      <div className={classes.list}>
+                        <div style={{ marginTop: "20%" }}>
+                          <h3
+                            style={{
+                              marginLeft: "40px",
+                              color: "black",
+                              fontSize: "23px",
+                              fontWeight: "700",
+                            }}
+                          >
+                            Available Coupons{" "}
+                            <CloseIcon
+                              onClick={() => setdraweropen(false)}
+                              style={{
+                                float: "right",
+                                marginRight: "20px",
+                                cursor: "pointer",
+                              }}
+                            />
+                          </h3>
+
+                          {menu.coupons
+                            ? menu.coupons.map((coupon) => {
+                                var valid_from = moment(
+                                  coupon.date_start
+                                ).format("MMMM Do YYYY");
+                                var valid_to = moment(coupon.date_end).format(
+                                  "MMMM Do YYYY"
+                                );
+                                console.log("valid from date", valid_from);
+                                return (
+                                  <>
+                                    <div className='coupon-code-container'>
+                                      <div>
+                                        <div>
+                                          <div className='coupon-code-parent'>
+                                            <p className='ccode-text'>
+                                              {coupon.coupon_name}
+                                            </p>
+                                          </div>
+                                          <br />
+                                          <div className='coupon-code-border'>
+                                            <div className='coupon-img'></div>
+                                            <div className='coupon-text-1'>
+                                              Description For Future use
+                                            </div>
+                                            <div className='coupon-text-2'>
+                                              coupon is valid from {valid_from}{" "}
+                                              to {valid_to}
+                                            </div>
+                                            <button
+                                              className='apply-coupon-btn'
+                                              onClick={() =>
+                                                redeemCoupon(
+                                                  coupon.code,
+                                                  coupon.coupon_id
+                                                )
+                                              }
+                                            >
+                                              APPLY COUPON
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <br />
+                                  </>
+                                );
+                              })
+                            : null}
+                        </div>
+                      </div>
+                    </SwipeableDrawer>
+
+                    <table className='table table_summary'>
+                      <tbody>
+                        <tr>
+                          <td style={{ fontWeight: "700", color: "black" }}>
+                            Subtotal{" "}
+                            <span className='float-right'>{`${
+                              menu.restaurantInfo.monetary_symbol
+                            } ${getSubTotal()}`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ fontWeight: "700", color: "black" }}>
+                            Taxes{" "}
+                            <span className='float-right'>{`${
+                              menu.restaurantInfo.monetary_symbol
+                            } ${getSubTaxTotal()}`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ fontWeight: "700", color: "black" }}>
+                            Delivery Charges
+                            <span className='float-right'>{`${menu.restaurantInfo.monetary_symbol} ${user.delivery_cost}  `}</span>
+                          </td>
+                        </tr>
+
+                        {couponisapplied ? (
+                          <>
+                            <tr>
+                              <td
+                                className='total'
+                                style={{
+                                  fontSize: "14px",
+                                  fontWeight: "750",
+                                  color: "#25A09E",
+                                }}
+                              >
+                                {couponappliedname} Offer
+                                <span className='float-right'>
+                                  - {menu.restaurantInfo.monetary_symbol}{" "}
+                                  {couponamount}
+                                </span>
+                              </td>
+                            </tr>
                             <br />
                           </>
-                        );
-                      })}
-                    </div>
+                        ) : null}
+
+                        {couponredeemed ? (
+                          <>
+                            <tr>
+                              <td
+                                className='total'
+                                style={{
+                                  fontSize: "14px",
+                                  fontWeight: "750",
+                                  color: "red",
+                                }}
+                              >
+                                {couponredeemedmessage} !
+                              </td>
+                            </tr>
+                            <br />
+                          </>
+                        ) : null}
+
+                        <tr>
+                          <td
+                            className='total'
+                            style={{ fontWeight: "700", color: "black" }}
+                          >
+                            TOTAL{" "}
+                            <span className='float-right'>{`${
+                              menu.restaurantInfo.monetary_symbol
+                            } ${getBillAmount()}`}</span>
+                          </td>
+                        </tr>
+                        <br />
+                        {savedAmount ? (
+                          <>
+                            <tr>
+                              <div
+                                className='savings'
+                                style={{ width: "100%", marginLeft: "0px" }}
+                              >
+                                <p
+                                  className='para-savings'
+                                  style={{ margin: "auto" }}
+                                >
+                                  YOU SAVED{" "}
+                                  {` ${savedAmount} ${menu.restaurantInfo.monetary_symbol}`}{" "}
+                                  ON THE BILL
+                                </p>
+                              </div>
+                            </tr>
+                          </>
+                        ) : null}
+                      </tbody>
+                    </table>
                   </div>
-                </SwipeableDrawer>
+                </div>
+              </div>
 
-                <table className="table table_summary">
-                  <tbody>
-                    <tr>
-                      <td style={{ fontWeight: "700", color: "black" }}>
-                        Subtotal{" "}
-                        <span className="float-right">{`${
-                          menu.restaurantInfo.monetary_symbol
-                        } ${getSubTotal()}`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ fontWeight: "700", color: "black" }}>
-                        Taxes{" "}
-                        <span className="float-right">{`${
-                          menu.restaurantInfo.monetary_symbol
-                        } ${getSubTaxTotal()}`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ fontWeight: "700", color: "black" }}>
-                        Delivery Charges
-                        <span className="float-right">{`${menu.restaurantInfo.monetary_symbol} ${user.delivery_cost}  `}</span>
-                      </td>
-                    </tr>
+              <div className='col-lg-7'>
+                <PaymentForm
+                  comm={comm}
+                  onHandleCheckout={handleCheckout}
+                  deliveryCharges={getDeliveryCharges}
+                />
+              </div>
+              <div
+                className='col-lg-5 hide-on-mobile'
+                id='sidebar'
+                style={{
+                  position: "relative",
+                  overflow: "visible",
+                  boxSizing: "border-box",
+                  minHeight: "1px",
+                }}
+              >
+                <div
+                  className='theiaStickySidebar'
+                  style={{
+                    paddingTop: "0px",
+                    paddingBottom: "1px",
+                    position: "static",
+                    transform: "none",
+                  }}
+                >
+                  <div
+                    id='cart-box'
+                    style={{
+                      backgroundColor: "#eae8ed",
+                      width: "80%",
+                      borderRadius: "20px",
+                    }}
+                  >
+                    <p
+                      style={{
+                        textAlign: "center",
+                        fontSize: "22px",
+                        fontWeight: "700",
+                        color: "black",
+                      }}
+                    >
+                      Your Orders{" "}
+                      <span style={{ color: "#666171" }}>
+                        ( {menu.cart.length} items )
+                      </span>
+                    </p>
+                    <table
+                      className='table table_summary'
+                      style={{ width: "100%" }}
+                    >
+                      <tbody>
+                        {menu.cart.map((val) => {
+                          if (val.isHappyHourActive) {
+                            const result = isHappyHourStillActive(
+                              val,
+                              menu.restaurantInfo.timezone
+                            );
+                            console.log("items in itemlist", val);
 
-                    {couponisapplied ? (
-                      <>
+                            var isStillActive = result.isActive;
+                            if (isStillActive) {
+                              refIndex++;
+                              setTimer(result.distance, timeOutRef[refIndex]);
+                            }
+                          }
+                          return (
+                            <>
+                              <tr>
+                                <td style={{ width: "37%" }}>
+                                  <div
+                                    style={{
+                                      marginTop: "5px",
+                                      fontSize: "15px",
+                                      color: "black",
+                                    }}
+                                  >
+                                    <b>{val.name}</b>
+                                    <br />
+                                    {val.modifiers ? (
+                                      <>
+                                        <div style={{ fontSize: "12px" }}>
+                                          <RenderModifiers
+                                            modifier={val.modifiers}
+                                          />
+                                        </div>
+                                      </>
+                                    ) : null}
+
+                                    {val.productType == "Pizza" ? (
+                                      <>
+                                        <p
+                                          className='text-pizzamodal'
+                                          style={{
+                                            marginTop: "10px",
+                                            cursor: "pointer",
+                                            fontSize: "10px",
+                                            color: "black",
+                                          }}
+                                          onClick={() => showPizzaDetails(val)}
+                                        >
+                                          view details
+                                        </p>
+                                      </>
+                                    ) : null}
+                                  </div>
+                                  <br />
+                                </td>
+                                <td
+                                  className='qty-table'
+                                  style={{ width: "30%" }}
+                                >
+                                  <div className='main-qty'>
+                                    <div
+                                      className='plus'
+                                      onClick={() => handleAddItem(val)}
+                                    >
+                                      +
+                                    </div>
+                                    <div
+                                      className='minus'
+                                      onClick={() => handleRemoveItem(val)}
+                                    >
+                                      -
+                                    </div>
+                                    <div className='qty'>{val.qty}</div>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div
+                                    style={{
+                                      marginTop: "5px",
+                                      fontSize: "15px",
+                                      color: "#bd1e44",
+                                      fontWeight: "600",
+                                    }}
+                                  >
+                                    <span className='float-right'>
+                                      {" "}
+                                      {`${menu.restaurantInfo.monetary_symbol}`}
+                                      {` ${truncateDecimal(
+                                        getItemPrice(val, isStillActive)
+                                      )}`}
+                                    </span>
+                                  </div>
+                                </td>
+                              </tr>
+                            </>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                    <table className='table table_summary'>
+                      <tbody>
                         <tr>
-                          <td
-                            className="total"
-                            style={{
-                              fontSize: "14px",
-                              fontWeight: "750",
-                              color: "#25A09E",
-                            }}
-                          >
-                            {couponappliedname} Offer
-                            <span className="float-right">
-                              - {menu.restaurantInfo.monetary_symbol}{" "}
-                              {couponamount}
-                            </span>
-                          </td>
-                        </tr>
-                        <br />
-                      </>
-                    ) : null}
-
-                    {couponredeemed ? (
-                      <>
-                        <tr>
-                          <td
-                            className="total"
-                            style={{
-                              fontSize: "14px",
-                              fontWeight: "750",
-                              color: "red",
-                            }}
-                          >
-                            {couponredeemedmessage} !
-                          </td>
-                        </tr>
-                        <br />
-                      </>
-                    ) : null}
-
-                    <tr>
-                      <td
-                        className="total"
-                        style={{ fontWeight: "700", color: "black" }}
-                      >
-                        TOTAL{" "}
-                        <span className="float-right">{`${
-                          menu.restaurantInfo.monetary_symbol
-                        } ${getBillAmount()}`}</span>
-                      </td>
-                    </tr>
-                    <br />
-                    {savedAmount ? (
-                      <>
-                        <tr>
-                          <div
-                            className="savings"
-                            style={{ width: "100%", marginLeft: "0px" }}
-                          >
-                            <p
-                              className="para-savings"
-                              style={{ margin: "auto" }}
+                          <td>
+                            <div
+                              className='parent-textarea'
+                              style={{ height: "51px" }}
                             >
-                              YOU SAVED{" "}
-                              {` ${savedAmount} ${menu.restaurantInfo.monetary_symbol}`}{" "}
-                              ON THE BILL
-                            </p>
-                          </div>
+                              <textarea
+                                onChange={(e) => handleComments(e)}
+                                maxLength='140'
+                                className='textarea-class'
+                                placeholder='Any suggestions for restro ?'
+                              ></textarea>
+                            </div>
+                          </td>
                         </tr>
-                      </>
-                    ) : null}
-                  </tbody>
-                </table>
+                      </tbody>
+                    </table>
+
+                    <div
+                      className='coupon-container'
+                      onClick={() => setdraweropen(true)}
+                    >
+                      <p className='coupon-text'>Apply Coupon</p>
+                    </div>
+                    <SwipeableDrawer
+                      anchor={"right"}
+                      open={draweropen}
+                      onClose={() => setdraweropen(false)}
+                      onOpen={() => {}}
+                    >
+                      <div className={classes.list}>
+                        <div style={{ marginTop: "20%" }}>
+                          <h3
+                            style={{
+                              marginLeft: "40px",
+                              color: "black",
+                              fontSize: "23px",
+                              fontWeight: "700",
+                            }}
+                          >
+                            Available Coupons{" "}
+                            <CloseIcon
+                              onClick={() => setdraweropen(false)}
+                              style={{
+                                float: "right",
+                                marginRight: "20px",
+                                cursor: "pointer",
+                              }}
+                            />
+                          </h3>
+
+                          {menu.coupons
+                            ? menu.coupons.map((coupon) => {
+                                var valid_from = moment(
+                                  coupon.date_start
+                                ).format("MMMM Do YYYY");
+                                var valid_to = moment(coupon.date_end).format(
+                                  "MMMM Do YYYY"
+                                );
+                                console.log("valid from date", valid_from);
+                                return (
+                                  <>
+                                    <div className='coupon-code-container'>
+                                      <div>
+                                        <div>
+                                          <div className='coupon-code-parent'>
+                                            <p className='ccode-text'>
+                                              {coupon.coupon_name}
+                                            </p>
+                                          </div>
+                                          <br />
+                                          <div className='coupon-code-border'>
+                                            <div className='coupon-img'></div>
+                                            <div className='coupon-text-1'>
+                                              Description For Future use
+                                            </div>
+                                            <div className='coupon-text-2'>
+                                              coupon is valid from {valid_from}{" "}
+                                              to {valid_to}
+                                            </div>
+                                            <button
+                                              className='apply-coupon-btn'
+                                              onClick={() =>
+                                                redeemCoupon(
+                                                  coupon.code,
+                                                  coupon.coupon_id
+                                                )
+                                              }
+                                            >
+                                              APPLY COUPON
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <br />
+                                  </>
+                                );
+                              })
+                            : null}
+                        </div>
+                      </div>
+                    </SwipeableDrawer>
+
+                    <hr />
+                    <table className='table table_summary'>
+                      <tbody>
+                        <tr>
+                          <td style={{ fontWeight: "700", color: "black" }}>
+                            Subtotal{" "}
+                            <span className='float-right'>{`${
+                              menu.restaurantInfo.monetary_symbol
+                            } ${getSubTotal()}`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ fontWeight: "700", color: "black" }}>
+                            Taxes{" "}
+                            <span className='float-right'>{`${
+                              menu.restaurantInfo.monetary_symbol
+                            } ${getSubTaxTotal()}`}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ fontWeight: "700", color: "black" }}>
+                            Delivery Charges
+                            <span className='float-right'>{`${menu.restaurantInfo.monetary_symbol} ${user.delivery_cost}  `}</span>
+                          </td>
+                        </tr>
+
+                        {couponisapplied ? (
+                          <>
+                            <tr>
+                              <td
+                                className='total'
+                                style={{
+                                  fontSize: "14px",
+                                  fontWeight: "750",
+                                  color: "#25A09E",
+                                }}
+                              >
+                                {couponappliedname} Offer
+                                <span className='float-right'>
+                                  - {menu.restaurantInfo.monetary_symbol}{" "}
+                                  {couponamount}
+                                </span>
+                              </td>
+                            </tr>
+                            <br />
+                          </>
+                        ) : null}
+
+                        {couponredeemed ? (
+                          <>
+                            <tr>
+                              <td
+                                className='total'
+                                style={{
+                                  fontSize: "14px",
+                                  fontWeight: "750",
+                                  color: "red",
+                                }}
+                              >
+                                {couponredeemedmessage} !
+                              </td>
+                            </tr>
+                            <br />
+                          </>
+                        ) : null}
+
+                        <tr>
+                          <td
+                            className='total'
+                            style={{ fontWeight: "700", color: "black" }}
+                          >
+                            TOTAL{" "}
+                            <span className='float-right'>{`${
+                              menu.restaurantInfo.monetary_symbol
+                            } ${getBillAmount()}`}</span>
+                          </td>
+                        </tr>
+                        <br />
+                        {savedAmount ? (
+                          <>
+                            <tr>
+                              <div
+                                className='savings'
+                                style={{ width: "100%", marginLeft: "0px" }}
+                              >
+                                <p
+                                  className='para-savings'
+                                  style={{ margin: "auto" }}
+                                >
+                                  YOU SAVED{" "}
+                                  {` ${savedAmount} ${menu.restaurantInfo.monetary_symbol}`}{" "}
+                                  ON THE BILL
+                                </p>
+                              </div>
+                            </tr>
+                          </>
+                        ) : null}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-
-          <div className="col-lg-7">
-            <PaymentForm
-              comm={comm}
-              onHandleCheckout={handleCheckout}
-              deliveryCharges={getDeliveryCharges}
-            />
-          </div>
-          <div
-            className="col-lg-5 hide-on-mobile"
-            id="sidebar"
-            style={{
-              position: "relative",
-              overflow: "visible",
-              boxSizing: "border-box",
-              minHeight: "1px",
-            }}
-          >
-            <div
-              className="theiaStickySidebar"
-              style={{
-                paddingTop: "0px",
-                paddingBottom: "1px",
-                position: "static",
-                transform: "none",
-              }}
-            >
-              <div
-                id="cart-box"
-                style={{
-                  backgroundColor: "#eae8ed",
-                  width: "80%",
-                  borderRadius: "20px",
-                }}
-              >
-                <p
-                  style={{
-                    textAlign: "center",
-                    fontSize: "22px",
-                    fontWeight: "700",
-                    color: "black",
-                  }}
-                >
-                  Your Orders{" "}
-                  <span style={{ color: "#666171" }}>
-                    ( {menu.cart.length} items )
-                  </span>
-                </p>
-                <table
-                  className="table table_summary"
-                  style={{ width: "100%" }}
-                >
-                  <tbody>
-                    {menu.cart.map((val) => {
-                      if (val.isHappyHourActive) {
-                        const result = isHappyHourStillActive(
-                          val,
-                          menu.restaurantInfo.timezone
-                        );
-                        console.log("items in itemlist", val);
-
-                        var isStillActive = result.isActive;
-                        if (isStillActive) {
-                          refIndex++;
-                          setTimer(result.distance, timeOutRef[refIndex]);
-                        }
-                      }
-                      return (
-                        <>
-                          <tr>
-                            <td style={{ width: "37%" }}>
-                              <div
-                                style={{
-                                  marginTop: "5px",
-                                  fontSize: "15px",
-                                  color: "black",
-                                }}
-                              >
-                                <b>{val.name}</b>
-                                <br />
-                                {val.modifiers ? (
-                                  <>
-                                    <div style={{ fontSize: "12px" }}>
-                                      <RenderModifiers
-                                        modifier={val.modifiers}
-                                      />
-                                    </div>
-                                  </>
-                                ) : null}
-
-                                {val.productType == "Pizza" ? (
-                                  <>
-                                    <p
-                                      className="text-pizzamodal"
-                                      style={{
-                                        marginTop: "10px",
-                                        cursor: "pointer",
-                                        fontSize: "10px",
-                                        color: "black",
-                                      }}
-                                      onClick={() => showPizzaDetails(val)}
-                                    >
-                                      view details
-                                    </p>
-                                  </>
-                                ) : null}
-                              </div>
-                              <br />
-                            </td>
-                            <td className="qty-table" style={{ width: "30%" }}>
-                              <div className="main-qty">
-                                <div
-                                  className="plus"
-                                  onClick={() => handleAddItem(val)}
-                                >
-                                  +
-                                </div>
-                                <div
-                                  className="minus"
-                                  onClick={() => handleRemoveItem(val)}
-                                >
-                                  -
-                                </div>
-                                <div className="qty">{val.qty}</div>
-                              </div>
-                            </td>
-                            <td>
-                              <div
-                                style={{
-                                  marginTop: "5px",
-                                  fontSize: "15px",
-                                  color: "#bd1e44",
-                                  fontWeight: "600",
-                                }}
-                              >
-                                <span className="float-right">
-                                  {" "}
-                                  {`${menu.restaurantInfo.monetary_symbol}`}
-                                  {` ${truncateDecimal(
-                                    getItemPrice(val, isStillActive)
-                                  )}`}
-                                </span>
-                              </div>
-                            </td>
-                          </tr>
-                        </>
-                      );
-                    })}
-                  </tbody>
-                </table>
-                <table className="table table_summary">
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div
-                          className="parent-textarea"
-                          style={{ height: "51px" }}
-                        >
-                          <textarea
-                            onChange={(e) => handleComments(e)}
-                            maxLength="140"
-                            className="textarea-class"
-                            placeholder="Any suggestions for restro ?"
-                          ></textarea>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                <div
-                  className="coupon-container"
-                  onClick={() => setdraweropen(true)}
-                >
-                  <p className="coupon-text">Apply Coupon</p>
-                </div>
-                <SwipeableDrawer
-                  anchor={"right"}
-                  open={draweropen}
-                  onClose={() => setdraweropen(false)}
-                  onOpen={() => {}}
-                >
-                  <div className={classes.list}>
-                    <div style={{ marginTop: "20%" }}>
-                      <h3
-                        style={{
-                          marginLeft: "40px",
-                          color: "black",
-                          fontSize: "23px",
-                          fontWeight: "700",
-                        }}
-                      >
-                        Available Coupons{" "}
-                        <CloseIcon
-                          onClick={() => setdraweropen(false)}
-                          style={{
-                            float: "right",
-                            marginRight: "20px",
-                            cursor: "pointer",
-                          }}
-                        />
-                      </h3>
-
-                      {menu.coupons.map((coupon) => {
-                        var valid_from = moment(coupon.date_start).format(
-                          "MMMM Do YYYY"
-                        );
-                        var valid_to = moment(coupon.date_end).format(
-                          "MMMM Do YYYY"
-                        );
-                        console.log("valid from date", valid_from);
-                        return (
-                          <>
-                            <div className="coupon-code-container">
-                              <div>
-                                <div>
-                                  <div className="coupon-code-parent">
-                                    <p className="ccode-text">
-                                      {coupon.coupon_name}
-                                    </p>
-                                  </div>
-                                  <br />
-                                  <div className="coupon-code-border">
-                                    <div className="coupon-img"></div>
-                                    <div className="coupon-text-1">
-                                      Description For Future use
-                                    </div>
-                                    <div className="coupon-text-2">
-                                      coupon is valid from {valid_from} to{" "}
-                                      {valid_to}
-                                    </div>
-                                    <button
-                                      className="apply-coupon-btn"
-                                      onClick={() =>
-                                        redeemCoupon(
-                                          coupon.code,
-                                          coupon.coupon_id
-                                        )
-                                      }
-                                    >
-                                      APPLY COUPON
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <br />
-                          </>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </SwipeableDrawer>
-
-                <hr />
-                <table className="table table_summary">
-                  <tbody>
-                    <tr>
-                      <td style={{ fontWeight: "700", color: "black" }}>
-                        Subtotal{" "}
-                        <span className="float-right">{`${
-                          menu.restaurantInfo.monetary_symbol
-                        } ${getSubTotal()}`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ fontWeight: "700", color: "black" }}>
-                        Taxes{" "}
-                        <span className="float-right">{`${
-                          menu.restaurantInfo.monetary_symbol
-                        } ${getSubTaxTotal()}`}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ fontWeight: "700", color: "black" }}>
-                        Delivery Charges
-                        <span className="float-right">{`${menu.restaurantInfo.monetary_symbol} ${user.delivery_cost}  `}</span>
-                      </td>
-                    </tr>
-
-                    {couponisapplied ? (
-                      <>
-                        <tr>
-                          <td
-                            className="total"
-                            style={{
-                              fontSize: "14px",
-                              fontWeight: "750",
-                              color: "#25A09E",
-                            }}
-                          >
-                            {couponappliedname} Offer
-                            <span className="float-right">
-                              - {menu.restaurantInfo.monetary_symbol}{" "}
-                              {couponamount}
-                            </span>
-                          </td>
-                        </tr>
-                        <br />
-                      </>
-                    ) : null}
-
-                    {couponredeemed ? (
-                      <>
-                        <tr>
-                          <td
-                            className="total"
-                            style={{
-                              fontSize: "14px",
-                              fontWeight: "750",
-                              color: "red",
-                            }}
-                          >
-                            {couponredeemedmessage} !
-                          </td>
-                        </tr>
-                        <br />
-                      </>
-                    ) : null}
-
-                    <tr>
-                      <td
-                        className="total"
-                        style={{ fontWeight: "700", color: "black" }}
-                      >
-                        TOTAL{" "}
-                        <span className="float-right">{`${
-                          menu.restaurantInfo.monetary_symbol
-                        } ${getBillAmount()}`}</span>
-                      </td>
-                    </tr>
-                    <br />
-                    {savedAmount ? (
-                      <>
-                        <tr>
-                          <div
-                            className="savings"
-                            style={{ width: "100%", marginLeft: "0px" }}
-                          >
-                            <p
-                              className="para-savings"
-                              style={{ margin: "auto" }}
-                            >
-                              YOU SAVED{" "}
-                              {` ${savedAmount} ${menu.restaurantInfo.monetary_symbol}`}{" "}
-                              ON THE BILL
-                            </p>
-                          </div>
-                        </tr>
-                      </>
-                    ) : null}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <Footer />
+          <Footer />
+        </>
+      )}
     </>
   );
 };
