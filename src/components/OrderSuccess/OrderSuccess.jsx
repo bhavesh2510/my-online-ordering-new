@@ -148,11 +148,7 @@ const OrderSuccess = () => {
                 Order Confirmed ! <br />
                 We are fetching your details Please Wait !
               </p>
-              <div class='lds-default'>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+              <div class='lds-roller-orderSuccess'>
                 <div></div>
                 <div></div>
                 <div></div>

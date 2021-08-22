@@ -765,6 +765,7 @@ const Checkout = () => {
         </>
       ) : (
         <>
+          <AppHeader />
           {data.displayloader ? <LoadingBar /> : null}
           <div
             className='container margin_60_35'

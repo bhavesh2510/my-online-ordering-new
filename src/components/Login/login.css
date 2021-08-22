@@ -128,3 +128,13 @@
   width: 320px !important ;
   outline: none;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.disabled {
+  pointer-events: none;
+  opacity: 0.7;
+}
