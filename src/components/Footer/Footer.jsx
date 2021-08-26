@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Logo from "../Footer/zottoLogo.png";
+import Logo from "./zottoLogo.png";
 import FacebookIcon from "./facebook@3x.png";
 import TwitterIcon from "./twitter@3x.png";
 import InstagramIcon from "./ig@3x.png";
@@ -36,8 +36,8 @@ const Footer = () => {
 
         return (
           <>
-            <div className="main-footer-container">
-              <div className="footer-parent">
+            <div className='main-footer-container'>
+              <div className='footer-parent'>
                 <div
                   style={{
                     display: "flex",
@@ -54,7 +54,7 @@ const Footer = () => {
                 </div>
               </div>
 
-              <div className="footer-parent" style={{ marginRight: "140px" }}>
+              <div className='footer-parent' style={{ marginRight: "140px" }}>
                 <div
                   style={{
                     display: "flex",
@@ -85,9 +85,9 @@ const Footer = () => {
 
   return (
     <footer>
-      <div className="container">
-        <div className="row">
-          <div className="col-md-4">
+      <div className='container'>
+        <div className='row'>
+          <div className='col-md-4'>
             <p
               style={{
                 fontSize: "16px",
@@ -100,13 +100,14 @@ const Footer = () => {
             </p>
 
             <img
-              className="logo-measurements"
-              src="https://www.zotto.io/wp-content/uploads/2020/09/logo.png"
-              alt="zotto-Logo"
+              className='logo-measurements'
+              //src={Logo}
+              src='https://zotto.io/wp-content/uploads/2020/09/logo.png'
+              alt='zotto-Logo'
               style={{ marginTop: "10px" }}
             />
           </div>
-          <div className="col-md-4 margin-for-mobile">
+          <div className='col-md-4 margin-for-mobile margin-left-for-iphoneplus'>
             <p
               style={{
                 letterSpacing: "0.15em",
@@ -155,14 +156,14 @@ const Footer = () => {
                     color: "#666171",
                     whiteSpace: "nowrap",
                   }}
-                  href="#0"
+                  href='#0'
                 >
                   Terms and conditions
                 </a>
               </li>
             </ul>
           </div>
-          <div className="col-md-4 margin-for-mobile">
+          <div className='col-md-4 margin-for-mobile'>
             <p
               style={{
                 letterSpacing: "0.15em",
@@ -177,12 +178,12 @@ const Footer = () => {
           </div>
         </div>
         {/* End row */}
-        <div className="row">
-          <div className="col-md-12">
-            <div id="social_footer">
+        <div className='row'>
+          <div className='col-md-12'>
+            <div id='social_footer'>
               <ul>
                 <li>
-                  <a href="#0">
+                  <a href='#0'>
                     <img
                       src={FacebookIcon}
                       style={{ height: "35px", width: "35px" }}
@@ -191,7 +192,7 @@ const Footer = () => {
                 </li>
 
                 <li>
-                  <a href="#0">
+                  <a href='#0'>
                     <img
                       src={TwitterIcon}
                       style={{ height: "35px", width: "35px" }}
@@ -199,7 +200,7 @@ const Footer = () => {
                   </a>
                 </li>
                 <li>
-                  <a href="#0">
+                  <a href='#0'>
                     <img
                       src={InstagramIcon}
                       style={{ height: "35px", width: "35px" }}

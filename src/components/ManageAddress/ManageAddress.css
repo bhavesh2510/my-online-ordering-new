@@ -105,6 +105,15 @@ h5 {
   color: white;
 }
 
+.css-for-single-address {
+  width: 135px;
+  height: 135px;
+  cursor: pointer;
+  /* margin-top: -4px;
+  margin-left: 70%;
+  margin-right: 10px; */
+}
+
 @media (max-width: 768px) {
   .main-container {
     width: 100% !important;
@@ -125,6 +134,21 @@ h5 {
     border-radius: 5px;
     border: 1px solid black;
     margin-left: 60%;
+  }
+  .css-for-single-address {
+    height: 50px;
+    width: 180px;
+    border-radius: 5px;
+    border: 1px solid black;
+    margin-left: 30%;
+  }
+  .css-for-single-address-mobile-text {
+    font-size: 17px;
+    margin-top: 4px;
+    margin-left: 190px;
+    padding-left: 15px;
+    padding-top: 5px;
+    color: black;
   }
   .add-for-mobile-text {
     font-size: 17px;

@@ -497,6 +497,7 @@ const Checkout = () => {
   };
   const handleCheckout = async (deliveryDetails) => {
     console.log("deliveryDetails is ", deliveryDetails);
+    console.log("saved amount", Math.abs(getSavedAmount()));
     var cpamount = couponamount;
     var cpid = couponId;
     console.log("couponamount is ", cpamount);
@@ -565,7 +566,7 @@ const Checkout = () => {
         getBillAmount(),
         menu.cart,
         user.distance,
-        savedAmount,
+        Math.abs(getSavedAmount()),
         // getSavedAmount(),
         getDeliveryCharges(),
         user.user.phonecode,
@@ -591,7 +592,7 @@ const Checkout = () => {
             getBillAmount(),
             menu.cart,
             user.distance,
-            savedAmount,
+            Math.abs(getSavedAmount()),
             // getSavedAmount(),
             getDeliveryCharges(),
             user.user.phonecode,
@@ -603,6 +604,7 @@ const Checkout = () => {
         )
       );
       console.log("reponse is", response);
+      const error = response;
       const {
         data: { RESULT, message },
       } = response;
@@ -646,6 +648,16 @@ const Checkout = () => {
           );
         }
       }
+
+      // else if (response.error) {
+      //   alert("something went wrong");
+
+      //   return (
+      //     <>
+      //       <p>something went wrong</p>
+      //     </>
+      //   );
+      // }
     }
   };
 

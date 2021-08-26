@@ -116,14 +116,14 @@ export function postSocialRegisterForm(register) {
 
     try {
       let registerData = {
-        firstname: register.firstName,
-        lastname: register.lastName,
+        firstname: register.firstname,
+        lastname: register.lastname,
         email: register.email,
         phonecode: register.phonecode,
         mobile: register.mobile,
         timezone: register.timezone,
-        account_type: register.socialType,
-        social_account_id: register.socialLoginId,
+        account_type: register.account_type,
+        social_account_id: register.social_account_id,
       };
 
       registerData = JSON.stringify(registerData);
@@ -182,7 +182,7 @@ export function updateProfile(updateData) {
       const profileData = { ...updateData };
       const { data } = await axios.post(url, JSON.stringify(profileData));
       console.log("Post Profile Data", data);
-      return dispatch(actions.updateMyProfileFormSuccess(data));
+      return dispatch(actions.updateMyProfileFormSuccess(data.data));
     } catch (error) {
       console.log("UPDATE_PROFILE", error);
       return dispatch(actions.postMyProfileFormFailure(error));

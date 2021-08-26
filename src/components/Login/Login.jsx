@@ -25,6 +25,7 @@ import {
   fetchUserDetails,
 } from "../../state-management/user/asyncActions";
 import GoogleLogin from "react-google-login";
+import PhoneInput from "react-phone-input-2";
 
 const Login = (props) => {
   const menu = useSelector((state) => state.menu);
@@ -36,6 +37,8 @@ const Login = (props) => {
   const [getUpdateCreds, setgetUpdateCreds] = useState();
   const [LoginParametersInPhone, setLoginParametersInPhone] = useState();
   const [showerror, setshowerror] = useState(true);
+  const [phoneInput, setphoneInput] = useState();
+  const [name, setName] = useState();
 
   const [state, setState] = useState({
     email: "",
@@ -200,7 +203,12 @@ const Login = (props) => {
     console.log("state in menu", state);
   }, [state]);
 
+  const getPhoneNumber = () => {};
+
+  var checkphno = "";
+
   const goToPhoneNumber = () => {
+    // return;
     setfinalphn(phn);
 
     if (phn == "") {
@@ -209,10 +217,15 @@ const Login = (props) => {
       const creds = {
         client_id: getUpdateCreds.client_id,
         merchant_id: getUpdateCreds.merchant_id,
-        phone: phn,
+        phone: phoneInput.phnno,
+        mobile: phoneInput.phnno,
       };
 
+      console.log("phn is", creds);
+
       dispatch(updateProfile(creds));
+
+      console.log("login parameters", LoginParametersInPhone);
 
       dispatch(setUserLoggedIn(LoginParametersInPhone));
 
@@ -226,15 +239,11 @@ const Login = (props) => {
         },
       });
 
-      setgotophnmodal(false);
+      //setgotophnmodal(false);
 
       console.log("final creds are", LoginParametersInPhone);
     }
   };
-
-  const getPhoneNumber = () => {};
-
-  var checkphno = "";
 
   const getPhoneNumberFinal = (e) => {
     setphn(e.target.value);
@@ -244,6 +253,15 @@ const Login = (props) => {
       setshowerror(false);
     }
   };
+
+  // const getPhoneNumberFinal = (e) => {
+  //   setphn(e.target.value);
+  //   if (e.target.value.length < 5) {
+  //     setshowerror(true);
+  //   } else if (e.target.value.length >= 5) {
+  //     setshowerror(false);
+  //   }
+  // };
 
   useEffect(() => {
     console.log("final phone is", finalphn);
@@ -272,6 +290,9 @@ const Login = (props) => {
       lastName: res.name.split(" ")[1],
       showLoader: true,
     };
+    setName(res.name.split(" ")[0]);
+
+    console.log("facebook state", newState);
     // First check if this user exist in database
     const { payload } = await dispatch(postSocialLoginForm(newState));
 
@@ -315,17 +336,13 @@ const Login = (props) => {
 
         setLoginParametersInPhone({
           ...LoginParametersInPhone,
-          socialLoginId: res.profileObj.googleId,
-          socialType: "google",
-          profileImage: res.profileObj.imageUrl,
-          email: res.profileObj.email,
-          firstName: res.profileObj.givenName,
-          lastName: res.profileObj.familyName,
+          socialLoginId: res.userID,
+          socialType: "facebook",
+          profileImage: res.picture.data.url,
+          email: res.email,
+          firstName: res.name.split(" ")[0],
+          lastName: res.name.split(" ")[1],
           showLoader: true,
-          clientId: payload.data.client_id,
-          token: payload.token,
-          mobile: phn,
-          showLoader: false,
         });
       } else {
         dispatch(setUserLoggedIn(newStateAgain));
@@ -333,7 +350,21 @@ const Login = (props) => {
       }
     } else {
       // create an account
-      const { payload } = await dispatch(postSocialRegisterForm(newState));
+
+      const reisterState = {
+        firstname: res.name.split(" ")[0],
+        lastname: res.name.split(" ")[1],
+        email: res.email,
+        phonecode: "",
+        mobile: "",
+        timezone: menu.restaurantInfo.timezone,
+        account_type: "facebook",
+        social_account_id: res.userID,
+      };
+
+      const { payload } = await dispatch(postSocialRegisterForm(reisterState));
+
+      console.log("facebook database check", payload);
 
       if (payload.success) {
         // this.setState({
@@ -357,21 +388,19 @@ const Login = (props) => {
 
           setLoginParametersInPhone({
             ...LoginParametersInPhone,
-            socialLoginId: res.profileObj.googleId,
-            socialType: "google",
-            profileImage: res.profileObj.imageUrl,
-            email: res.profileObj.email,
-            firstName: res.profileObj.givenName,
-            lastName: res.profileObj.familyName,
+            socialLoginId: res.userID,
+            socialType: "facebook",
+            profileImage: res.picture.data.url,
+            email: res.email,
+            firstName: res.name.split(" ")[0],
+            lastName: res.name.split(" ")[1],
             showLoader: true,
-            clientId: payload.data.client_id,
-            token: payload.token,
-            mobile: phn,
-            showLoader: false,
           });
+
           //setState({ mobile: phoneNumber });
+        } else {
+          dispatch(setUserLoggedIn(newStateAgain2));
         }
-        dispatch(setUserLoggedIn(newStateAgain2));
       } else {
         // some error has occured
         return;
@@ -395,6 +424,7 @@ const Login = (props) => {
       showLoader: true,
     };
     setState(newState);
+    setName(res.profileObj.givenName);
     console.log("121 state", newState);
     // First check if this user exist in database
     // const { payload } = await postSocialLoginForm(newState);
@@ -457,6 +487,7 @@ const Login = (props) => {
         //   alert("Some Error has occured! please check My Profile");
         // }
         //dispatch(setUserLoggedIn(newStateAgain));
+        //dispatch(hideLoginFormMethod());
       } else {
         dispatch(setUserLoggedIn(newStateAgain));
         notification.open({
@@ -472,18 +503,21 @@ const Login = (props) => {
     } else {
       // create an account
 
-      // const reisterState = {
-      //   firstname:res.profileObj.givenName,
-      //   lastname: res.profileObj.familyName,
-      //   password: register.password,
-      //   email: res.profileObj.email,
-      //
-      //   timezone: register.timezone,
-      //   usertype: "INDIVIDUAL",
-      //   promotional_newsletter: "0",
-      // };
-      alert("in else");
-      const { payload } = await dispatch(postSocialRegisterForm(newState)); //state
+      const reisterState = {
+        firstname: res.profileObj.givenName,
+        lastname: res.profileObj.familyName,
+        email: res.profileObj.email,
+        phonecode: "",
+        mobile: "",
+        timezone: menu.restaurantInfo.timezone,
+        account_type: "google",
+        social_account_id: res.profileObj.googleId,
+      };
+
+      console.log("check register database", reisterState);
+
+      const { payload } = await dispatch(postSocialRegisterForm(reisterState)); //state
+      console.log("check register database", payload);
       if (payload.success) {
         const newStateAgain2 = {
           clientId: payload.data.client_id,
@@ -547,152 +581,173 @@ const Login = (props) => {
   return (
     <>
       {gotophnmodal ? (
-        <Modal
-          isOpen={true}
-          // toggle={toggle}
-          style={{ top: "15%", left: "1%", width: "35%", borderRadius: "20px" }}
-        >
-          <ModalHeader style={{ borderBottom: "none" }}>
-            {" "}
-            <p
-              style={{
-                fontSize: "20px",
-                marginLeft: "30px",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Enter Phone number to proceed
-            </p>
-          </ModalHeader>
-          <ModalBody
+        <>
+          <Modal
+            isOpen={true}
+            // toggle={toggle}
             style={{
-              maxHeight: "400px",
-
-              marginTop: "-15px",
+              top: "25%",
+              left: "1%",
+              width: "35%",
+              borderRadius: "20px",
             }}
           >
-            <div style={{ marginLeft: "30px" }}>
-              <TextField
-                type='number'
-                size='small'
-                name='phonenumber'
-                placeholder='Enter your phone number '
-                value={phn}
-                onChange={getPhoneNumberFinal}
-                style={{ width: "90%" }}
-                // label="Email"
-                variant='outlined'
-              />
-
-              <br />
-              <br />
-              <Button
-                onClick={goToPhoneNumber}
-                className={showerror ? "disabled" : ""}
+            <ModalHeader style={{ borderBottom: "none" }}>
+              {" "}
+              <p
                 style={{
-                  backgroundColor: "#302f31",
-                  padding: "10px",
-                  color: "white",
-                  width: "90%",
+                  fontSize: "20px",
+                  marginLeft: "30px",
+                  whiteSpace: "nowrap",
                 }}
-              >
-                Submit
-              </Button>
-            </div>
-          </ModalBody>
-        </Modal>
+              ></p>
+            </ModalHeader>
+            <ModalBody
+              style={{
+                maxHeight: "400px",
+
+                marginTop: "-15px",
+              }}
+            >
+              <div style={{ marginLeft: "30px" }}>
+                <h3> Hey {name},</h3>
+                <p>Welome to {menu.restaurantInfo.rname}</p>
+                <p>
+                  <b>Please enter your phone number to proceed</b>
+                </p>
+                <PhoneInput
+                  className='resp_tf'
+                  country={"dk"}
+                  enableSearch={true}
+                  name='phonenumber'
+                  onChange={(e, country, value) => {
+                    setphoneInput({
+                      ccid: country,
+                      phnno: e,
+                    });
+                    console.log("value of phn", value);
+                    if (e == "" || e == null) {
+                      setshowerror(true);
+                    } else {
+                      setshowerror(false);
+                    }
+                  }}
+                  // onChange={getPhoneNumberFinal}
+                  name='phn'
+                  placeholder='Phone Number'
+                />
+
+                <br />
+                <br />
+                <Button
+                  onClick={goToPhoneNumber}
+                  className={showerror ? "disabled" : ""}
+                  style={{
+                    backgroundColor: "#302f31",
+                    padding: "10px",
+                    color: "white",
+                    width: "90%",
+                  }}
+                >
+                  Submit
+                </Button>
+              </div>
+            </ModalBody>
+          </Modal>
+        </>
       ) : null}
-      <div id='parent' className='modal-container'>
-        <div className='align-container-center'>
-          {user.waitingOverlay ? (
-            <>
-              {/* <Loader /> */}
-              <WaitingOverlay />
-            </>
-          ) : null}
-          <div className='login-box'>
-            <div className='close'>
-              <IconButton
-                onClick={closeLoginModal}
-                style={
-                  {
-                    //   backgroundColor: "#6244da",
-                    //   marginRight: "-45px",
-                    //   marginTop: "-35px",
+      {!gotophnmodal ? (
+        <div id='parent' className='modal-container'>
+          <div className='align-container-center'>
+            {user.waitingOverlay ? (
+              <>
+                {/* <Loader /> */}
+                <WaitingOverlay />
+              </>
+            ) : null}
+            <div className='login-box'>
+              <div className='close'>
+                <IconButton
+                  onClick={closeLoginModal}
+                  style={
+                    {
+                      //   backgroundColor: "#6244da",
+                      //   marginRight: "-45px",
+                      //   marginTop: "-35px",
+                    }
                   }
-                }
-              >
-                {" "}
-                <CloseIcon style={{ color: "Black" }} />{" "}
-              </IconButton>
-            </div>
-            <div className='header' style={{ marginLeft: "40%" }}>
-              <strong style={{ color: "#5d5e5e", fontSize: "20px" }}>
-                LOGIN
-              </strong>
-            </div>
-            {/* end of header */}
-            <div className='login-form'>
-              <TextField
-                name='email'
-                placeholder='Email'
-                value={state.email}
-                onChange={onEmailChange}
-                style={{ width: "90%", height: "-50px" }}
-                // label="Email"
-                variant='outlined'
-              />
-              <br /> <br />
-              <TextField
-                name='password'
-                placeholder='password'
-                type='password'
-                value={state.password}
-                onChange={onEmailChange}
-                style={{ width: "90%" }}
-                //label="Password"
-                variant='outlined'
-              />
-              <br /> <br />
-              <Button
-                onClick={onFormSubmit}
-                style={{
-                  backgroundColor: "#302f31",
-                  padding: "10px",
-                  color: "white",
-                  width: "90%",
-                }}
-              >
-                Submit
-              </Button>
-            </div>
-            {/* end of form */}
-            <div style={{ marginTop: "20px" }}>
-              <span
-                onClick={showCreateAccount}
-                style={{
-                  marginLeft: "40px",
-                  color: "#5d5e5e",
-                  cursor: "pointer",
-                }}
-              >
-                Create account
-              </span>
-              <span
-                onClick={showForgotPassword}
-                style={{
-                  marginLeft: "31%",
-                  color: "#5d5e5e",
-                  cursor: "pointer",
-                }}
-              >
-                Forgot Password ?
-              </span>
-            </div>
-            {/* end of options */}
+                >
+                  {" "}
+                  <CloseIcon style={{ color: "Black" }} />{" "}
+                </IconButton>
+              </div>
+              <div className='header' style={{ marginLeft: "40%" }}>
+                <strong style={{ color: "#5d5e5e", fontSize: "20px" }}>
+                  LOGIN
+                </strong>
+              </div>
+              {/* end of header */}
+              <div className='login-form'>
+                <TextField
+                  name='email'
+                  placeholder='Email'
+                  value={state.email}
+                  onChange={onEmailChange}
+                  style={{ width: "90%", height: "-50px" }}
+                  // label="Email"
+                  variant='outlined'
+                />
+                <br /> <br />
+                <TextField
+                  name='password'
+                  placeholder='password'
+                  type='password'
+                  value={state.password}
+                  onChange={onEmailChange}
+                  style={{ width: "90%" }}
+                  //label="Password"
+                  variant='outlined'
+                />
+                <br /> <br />
+                <Button
+                  onClick={onFormSubmit}
+                  style={{
+                    backgroundColor: "#302f31",
+                    padding: "10px",
+                    color: "white",
+                    width: "90%",
+                  }}
+                >
+                  Submit
+                </Button>
+              </div>
+              {/* end of form */}
+              <div style={{ marginTop: "20px" }}>
+                <span
+                  onClick={showCreateAccount}
+                  style={{
+                    marginLeft: "40px",
+                    color: "#5d5e5e",
+                    cursor: "pointer",
+                  }}
+                >
+                  Create account
+                </span>
+                <span
+                  onClick={showForgotPassword}
+                  style={{
+                    marginLeft: "31%",
+                    color: "#5d5e5e",
+                    cursor: "pointer",
+                  }}
+                >
+                  Forgot Password ?
+                </span>
+              </div>
+              {/* end of options */}
 
-            <div className='login-buttons'>
-              {/* <Button
+              <div className='login-buttons'>
+                {/* <Button
                 startIcon={<FaFacebookF />}
                 style={{
                   backgroundColor: "#4267B2",
@@ -716,32 +771,33 @@ const Login = (props) => {
               >
                 Login With Google
               </Button> */}
-              <span className='login-with-facebook'>
-                <FacebookLogin
-                  appId={process.env.REACT_APP_FACEBOOK_APP_ID}
-                  fields='name,email,picture'
-                  callback={responseFacebook}
-                  icon='fa-facebook'
-                  textButton='Login with Facebook'
-                  size='medium'
-                  scope='public_profile, email'
-                  disableMobileRedirect={true}
-                />
-              </span>
-              <br />
+                <span className='login-with-facebook'>
+                  <FacebookLogin
+                    appId={process.env.REACT_APP_FACEBOOK_APP_ID}
+                    fields='name,email,picture'
+                    callback={responseFacebook}
+                    icon='fa-facebook'
+                    textButton='Login with Facebook'
+                    size='medium'
+                    scope='public_profile, email'
+                    disableMobileRedirect={true}
+                  />
+                </span>
+                <br />
 
-              <span className='login-with-Google'>
-                <GoogleLogin
-                  clientId={process.env.REACT_APP_GOOGLE_CLIENT}
-                  buttonText='Login with Google'
-                  onSuccess={responseGoogle}
-                  onFailure={responseGoogle}
-                />
-              </span>
+                <span className='login-with-Google'>
+                  <GoogleLogin
+                    clientId={process.env.REACT_APP_GOOGLE_CLIENT}
+                    buttonText='Login with Google'
+                    onSuccess={responseGoogle}
+                    onFailure={responseGoogle}
+                  />
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : null}
     </>
   );
 };

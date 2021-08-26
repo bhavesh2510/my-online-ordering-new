@@ -179,6 +179,7 @@ export function postMyProfileFormSuccess(payload) {
   };
 }
 export function updateMyProfileFormSuccess(payload) {
+  console.log("update payload details success", payload);
   return {
     type: actionTypes.UPDATE_MYPROFILE_FORM_SUCCESS,
     payload,

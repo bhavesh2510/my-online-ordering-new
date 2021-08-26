@@ -116,6 +116,7 @@ export function getFormattedRequestPayload(
   console.log("user in utils", user);
 
   console.log("coupon id is", couponId, couponAmount);
+
   //const user1 = useSelector((state) => state.user);
 
   const formattedItems = getFormmatedItems(cartList, restaurant);
@@ -171,6 +172,7 @@ export function getFormattedRequestPayload(
     savings: couponAmount,
   };
 
+  console.log("formatted request", savedAmount);
   console.log("Formatted Request Payload", payload);
 
   var x;

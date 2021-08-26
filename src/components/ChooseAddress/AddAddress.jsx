@@ -17,6 +17,7 @@ import { openModal, closeModal } from "../../state-management/modal/actions";
 import { ContactsOutlined } from "@material-ui/icons";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import WaitingOverlay from "../WaitingOverlay/WaitingOverlay";
+import { updateProfile } from "../../state-management/user/asyncActions";
 const AddAddress = (props) => {
   const main = useSelector((state) => state.main);
   const menu = useSelector((state) => state.menu);
@@ -68,6 +69,10 @@ const AddAddress = (props) => {
     setState({ ...state, state: value });
   };
 
+  const handlePhoneChange = (value) => {
+    setState({ ...state, phone: value });
+  };
+
   const locationOfDelivery = (value) => {
     setState({ ...state, type: value });
   };
@@ -92,6 +97,16 @@ const AddAddress = (props) => {
 
   const onFormSubmit = async () => {
     console.log("state is", state);
+    const creds = {
+      client_id: user.user.clientId,
+      merchant_id: menu.restaurantInfo.merchant_key,
+      phone: state.phone,
+      mobile: state.phone,
+    };
+
+    console.log("update profile in add address", creds);
+
+    dispatch(updateProfile(creds));
 
     setState({
       ...state,
@@ -160,7 +175,7 @@ const AddAddress = (props) => {
   return (
     <>
       <Modal
-        className="add-address-for-mobile-resp "
+        className='add-address-for-mobile-resp '
         isOpen={true}
         toggle={toggle}
         style={{ top: "5%" }}
@@ -171,148 +186,148 @@ const AddAddress = (props) => {
         </ModalHeader>
         <ModalBody>
           {/* {state.waitingOverlay ? <WaitingOverlay /> : null} */}
-          <div className="input-addd-address">
+          <div className='input-addd-address'>
             <Input
-              size="medium"
-              placeholder="Full Name"
+              size='medium'
+              placeholder='Full Name'
               style={{ borderRadius: "5px" }}
               value={state.name || null}
               onChange={(e) => handleNameChange(e.target.value)}
             />
           </div>
-          <div className="input-addd-address">
+          <div className='input-addd-address'>
             <Input
-              size="medium"
-              placeholder="Address Line 1"
+              size='medium'
+              placeholder='Address Line 1'
               style={{ borderRadius: "5px" }}
               value={state.address1 || null}
               onChange={(e) => handleAddress1Change(e.target.value)}
             />
           </div>
-          <div className="input-addd-address">
+          <div className='input-addd-address'>
             <Input
-              size="medium"
-              placeholder="House Number"
+              size='medium'
+              placeholder='House Number'
               style={{ borderRadius: "5px" }}
               value={state.address2}
               onChange={(e) => handleAddress2Change(e.target.value)}
             />
           </div>
-          <div className="input-addd-address">
+          <div className='input-addd-address'>
             <Input
               disabled
-              size="medium"
-              placeholder="Address Line 2"
+              size='medium'
+              placeholder='Address Line 2'
               style={{ borderRadius: "5px" }}
               value={state.city || null}
               //onChange={(e) => this.handleAddress2Change(e.target.value)}
             />
           </div>
-          <div className="input-addd-address">
+          <div className='input-addd-address'>
             <Input
-              size="medium"
-              placeholder="state"
+              size='medium'
+              placeholder='state'
               style={{ borderRadius: "5px" }}
               value={state.state || null}
               onChange={(e) => handleStateChange(e.target.value)}
             />
           </div>
-          <div className="input-addd-address">
+          <div className='input-addd-address'>
             <Input
               disabled
-              size="medium"
-              placeholder="Address Line 2"
+              size='medium'
+              placeholder='Address Line 2'
               style={{ borderRadius: "5px" }}
               value={state.zipcode || null}
               //onChange={(e) => this.handleAddress2Change(e.target.value)}
             />
           </div>
-          <div className="input-addd-address">
+          <div className='input-addd-address'>
             <Input
               disabled
-              size="medium"
-              placeholder="Address Line 2"
+              size='medium'
+              placeholder='Address Line 2'
               style={{ borderRadius: "5px" }}
               value={state.country || null}
               //onChange={(e) => this.handleAddress2Change(e.target.value)}
             />
           </div>
-          <div className="input-addd-address-contact">
-            <Input
+          <div className='input-addd-address-contact'>
+            {/* <Input
               size="medium"
               placeholder="phonecode"
               style={{ width: "25%", borderRadius: "5px" }}
               value={menu.restaurantInfo.phone_code || null}
               //onChange={(e) => this.handleAddress2Change(e.target.value)}
             />
-            &nbsp;
+            &nbsp; */}
             <Input
-              size="medium"
-              placeholder="phone number"
-              style={{ width: "75%", borderRadius: "5px" }}
+              size='medium'
+              placeholder='phone number'
+              style={{ borderRadius: "5px" }}
               value={state.phone || null}
-              //onChange={(e) => this.handleAddress2Change(e.target.value)}
+              onChange={(e) => handlePhoneChange(e.target.value)}
             />
           </div>
 
           <div
-            className="address-type"
+            className='address-type'
             style={{
               marginLeft: "15px",
               // marginTop: "5px",
             }}
           >
             <input
-              className="check_payment"
-              type="radio"
-              name="delivery_type"
-              id="home"
-              value="home"
+              className='check_payment'
+              type='radio'
+              name='delivery_type'
+              id='home'
+              value='home'
               onChange={(e) => locationOfDelivery(e.target.value)}
             />
             <label
               //onClick={paymentoptioncardClick}
-              for="home"
-              class="btn_radio_type"
+              for='home'
+              class='btn_radio_type'
             >
               Home &nbsp;
-              <HomeIcon className="icon-delivery-address" />
+              <HomeIcon className='icon-delivery-address' />
             </label>
 
             <input
-              className="check_payment"
-              type="radio"
-              name="delivery_type"
-              id="work"
-              value="work"
+              className='check_payment'
+              type='radio'
+              name='delivery_type'
+              id='work'
+              value='work'
               onChange={(e) => locationOfDelivery(e.target.value)}
             />
             <label
               //onClick={paymentoptioncardClick}
-              for="work"
-              class="btn_radio_type"
+              for='work'
+              class='btn_radio_type'
             >
-              Work &nbsp; <WorkIcon className="icon-delivery-address" />
+              Work &nbsp; <WorkIcon className='icon-delivery-address' />
             </label>
 
             <input
-              className="check_payment"
-              type="radio"
-              name="delivery_type"
-              id="others"
-              value="others"
+              className='check_payment'
+              type='radio'
+              name='delivery_type'
+              id='others'
+              value='others'
               onChange={(e) => locationOfDelivery(e.target.value)}
             />
             <label
               //onClick={paymentoptioncardClick}
-              for="others"
-              class="btn_radio_type"
+              for='others'
+              class='btn_radio_type'
             >
-              Others &nbsp; <HomeIcon className="icon-delivery-address" />
+              Others &nbsp; <HomeIcon className='icon-delivery-address' />
             </label>
           </div>
 
-          <div className="set-default">
+          <div className='set-default'>
             <Checkbox
               checked={state["is_default"] === "1"}
               onChange={(e) => onChangeSetDefault(e.target.value)}
@@ -327,7 +342,7 @@ const AddAddress = (props) => {
             }}
           >
             <Button
-              className="add-address-button"
+              className='add-address-button'
               style={{ backgroundColor: "#302f31" }}
               onClick={onFormSubmit}
             >

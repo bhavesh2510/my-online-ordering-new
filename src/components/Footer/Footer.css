@@ -30,3 +30,27 @@
     margin-top: 40px;
   }
 }
+@media (min-width: 410px) and (max-width: 415px) {
+  .footer-parent {
+    display: flex;
+    flex-direction: row;
+    justify-items: center;
+  }
+  .main-footer-container {
+    display: flex;
+    flex-direction: row;
+    width: 200%;
+  }
+  .margin-left-for-iphoneplus {
+    margin-left: -190px;
+    margin-bottom: 0px !important;
+    margin-top: 150px !important;
+  }
+  .logo-measurements {
+    height: 40px;
+    width: 120px;
+  }
+  .margin-for-mobile {
+    margin-top: 50px;
+  }
+}

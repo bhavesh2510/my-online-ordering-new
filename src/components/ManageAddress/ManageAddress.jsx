@@ -149,18 +149,39 @@ const ManageAddress = (props) => {
     }
   };
 
+  const [countOfAddress, setcountOfAddress] = useState(false);
+
+  useEffect(() => {
+    console.log("add in map", state.addresses.length);
+
+    if (state.addresses.length == 0) {
+      setcountOfAddress(true);
+    } else if (state.addresses.length >= 1) {
+      setcountOfAddress(false);
+    }
+  }, [state]);
+
+  useEffect(() => {
+    console.log("count of address", countOfAddress);
+  }, [countOfAddress]);
+
   return (
     <>
-      <div id="address-container">
-        <main class="main-container customised-main-container">
+      <div id='address-container'>
+        <main class='main-container customised-main-container'>
           <div
-            className="add-address-for-mobile hide-on-desktop"
+            // className='add-address-for-mobile hide-on-desktop'
+            className={
+              countOfAddress
+                ? "css-for-single-address css-for-single-address-mobile-text hide-on-desktop"
+                : "add-address-for-mobile hide-on-desktop"
+            }
             onClick={() => callAddressModal(false, {})}
           >
-            <p className="add-for-mobile-text">Add Address</p>
+            <p className='add-for-mobile-text'>Add Address</p>
           </div>
           <section
-            className="add-address hide-on-mobile"
+            className='add-address hide-on-mobile'
             onClick={() => callAddressModal(false, {})}
           >
             <span style={{ cursor: "pointer" }}>
@@ -179,11 +200,10 @@ const ManageAddress = (props) => {
           </section>
 
           {state.addresses.map((address, i) => {
-            console.log("add", address);
             return (
               <>
                 <section
-                  className="address-section"
+                  className='address-section'
                   // key={i}
                 >
                   <div style={{ display: "flex" }}>
@@ -240,7 +260,7 @@ const ManageAddress = (props) => {
                       {" "}
                       {address["is_default"] === "1" ? (
                         <span
-                          className="default-address"
+                          className='default-address'
                           style={{ marginLeft: "30%" }}
                         >
                           Default
@@ -250,7 +270,7 @@ const ManageAddress = (props) => {
                       )}
                     </p>
                   </div>
-                  <ul className="address-actions">
+                  <ul className='address-actions'>
                     {/* <li onClick={() => callAddressModal(true, address)}>
                       <span>
                         <h5

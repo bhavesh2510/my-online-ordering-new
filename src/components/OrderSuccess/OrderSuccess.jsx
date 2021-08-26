@@ -34,6 +34,7 @@ const OrderSuccess = () => {
   const [orderCoompleteDetails, setorderCoompleteDetails] = useState({});
   const [savedcouponamount, setsavedcouponamount] = useState();
   const [waitfordata, setwaitfordata] = useState(true);
+  const [happyHour, sethappyHour] = useState();
 
   const fetchdata = async () => {
     setstate({ ...state, loadingData: true });
@@ -94,6 +95,7 @@ const OrderSuccess = () => {
       //orderCoompleteDetails = response_2.payload.data;
       setorderCoompleteDetails(response_2.payload.data[0]);
       setsavedcouponamount(response_2.payload.data[0].savings);
+      sethappyHour(response.payload.data[0].happy_hours_discount);
       dispatch(clearMenuState());
       setwaitfordata(false);
     } else if (response_2.payload.status == 201) {
@@ -125,6 +127,10 @@ const OrderSuccess = () => {
       fetchdata();
     }
   }, []);
+
+  useEffect(() => {
+    console.log("saved amount", savedcouponamount);
+  }, [savedcouponamount]);
 
   // useEffect(() => {
 
@@ -190,7 +196,7 @@ const OrderSuccess = () => {
                                   <p className='list-of-order-text2'>
                                     {orderCoompleteDetails.currency}{" "}
                                     {truncateDecimal(
-                                      Number(currval.subtotal) +
+                                      Number(currval.price) +
                                         Number(currval.tax)
                                     )}
                                   </p>
@@ -200,7 +206,7 @@ const OrderSuccess = () => {
                             );
                           })}
 
-                        {savedcouponamount ? (
+                        {savedcouponamount > 0 ? (
                           <>
                             <div className='list-of-orders'>
                               <p
@@ -208,6 +214,20 @@ const OrderSuccess = () => {
                                 style={{ color: "#6244da" }}
                               >
                                 You SAVED {savedcouponamount}{" "}
+                                {orderCoompleteDetails.currency} !
+                              </p>
+                            </div>
+                          </>
+                        ) : null}
+
+                        {happyHour > 0 ? (
+                          <>
+                            <div className='list-of-orders'>
+                              <p
+                                className='list-of-order-text'
+                                style={{ color: "#6244da" }}
+                              >
+                                Happy Hour discount {happyHour}{" "}
                                 {orderCoompleteDetails.currency} !
                               </p>
                             </div>

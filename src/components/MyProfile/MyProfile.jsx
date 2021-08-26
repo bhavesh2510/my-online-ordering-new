@@ -121,6 +121,10 @@ const MyProfile = () => {
     postProfileChange();
     setState({ ...state, btn: "update", loader: false });
   };
+
+  useEffect(() => {
+    console.log("profile state is", state);
+  }, []);
   return (
     <>
       {/* {state.loader ? <WaitingOverlay /> : null} */}
@@ -142,87 +146,87 @@ const MyProfile = () => {
           </div>
         </div>
       </section> */}
-      <div className="col-lg-6 profile-container">
-        <div className="box_style_2" id="main_menu">
-          <div className="parent-height-width">
-            <div className="profile-child-conatiner">
+      <div className='col-lg-6 profile-container'>
+        <div className='box_style_2' id='main_menu'>
+          <div className='parent-height-width'>
+            <div className='profile-child-conatiner'>
               <TextField
-                className="profile-textfield"
-                size="small"
+                className='profile-textfield'
+                size='small'
                 // style={{ width: "120%" }}
-                label="First Name"
-                variant="outlined"
+                label='First Name'
+                variant='outlined'
                 value={state.firstName}
                 onChange={(e) => handleFirstName(e.target.value)}
               />
               <br />
               <br />
               <TextField
-                size="small"
-                className="profile-textfield"
-                label="Last Name"
-                variant="outlined"
+                size='small'
+                className='profile-textfield'
+                label='Last Name'
+                variant='outlined'
                 value={state.lastName}
                 onChange={(e) => handleLastName(e.target.value)}
               />
               <br />
               <br />
               <TextField
-                size="small"
-                className="profile-textfield"
+                size='small'
+                className='profile-textfield'
                 style={{ backgroundColor: "#f1f1f1" }}
-                label="Email"
-                variant="outlined"
+                label='Email'
+                variant='outlined'
                 value={state.email}
                 disabled
               />
               <br />
               <br />
               <TextField
-                size="small"
-                className="profile-textfield"
-                label="Address"
-                variant="outlined"
+                size='small'
+                className='profile-textfield'
+                label='Address'
+                variant='outlined'
                 value={state.address}
                 onChange={(e) => handleAddress(e.target.value)}
               />
               <br />
               <br />
               <TextField
-                size="small"
-                className="profile-textfield"
-                label="City"
-                variant="outlined"
+                size='small'
+                className='profile-textfield'
+                label='City'
+                variant='outlined'
                 value={state.city}
                 onChange={(e) => handleCity(e.target.value)}
               />
               <br />
               <br />
               <TextField
-                size="small"
-                className="profile-textfield"
-                label="State"
-                variant="outlined"
+                size='small'
+                className='profile-textfield'
+                label='State'
+                variant='outlined'
                 value={state.state}
                 onChange={(e) => handleState(e.target.value)}
               />
               <br />
               <br />
               <TextField
-                size="small"
-                className="profile-textfield"
-                label="Country"
-                variant="outlined"
+                size='small'
+                className='profile-textfield'
+                label='Country'
+                variant='outlined'
                 value={state.country}
                 onChange={(e) => handleCountry(e.target.value)}
               />
               <br />
               <br />
               <TextField
-                size="small"
-                className="profile-textfield"
-                label="Zipcode"
-                variant="outlined"
+                size='small'
+                className='profile-textfield'
+                label='Zipcode'
+                variant='outlined'
                 value={state.zipcode}
                 onChange={(e) => handleZipcode(e.target.value)}
               />
@@ -230,10 +234,10 @@ const MyProfile = () => {
               <br />
 
               <TextField
-                size="small"
-                className="profile-textfield"
-                label="Phone Number"
-                variant="outlined"
+                size='small'
+                className='profile-textfield'
+                label='Phone Number'
+                variant='outlined'
                 value={state.mobile}
                 onChange={(e) => handlePhoneNumber(e.target.value)}
               />
@@ -242,7 +246,7 @@ const MyProfile = () => {
               <br />
               <Button
                 onClick={formSubmit}
-                className="profile-submit-button"
+                className='profile-submit-button'
                 style={{
                   height: "45px",
                   backgroundColor: "#000000",

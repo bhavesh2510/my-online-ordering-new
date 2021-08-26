@@ -52,6 +52,7 @@ let newState;
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.SET_USER_LOGGED_IN:
+      console.log("actions of profile", action.payload);
       newState = {
         ...state,
         waitingOverlay: false,
@@ -284,6 +285,24 @@ const userReducer = (state = initialState, action) => {
           city: action.payload.data.city,
           country: action.payload.data.country,
           state: action.payload.data.state,
+        },
+      };
+
+      return newState;
+    }
+    case actionTypes.UPDATE_MYPROFILE_FORM_SUCCESS: {
+      console.log("payload of update", action.payload);
+      newState = {
+        ...state,
+        waitingOverlay: false,
+        showLoginForm: false,
+        user: {
+          ...state.user,
+          clientId: action.payload.client_id,
+          mobile: action.payload.mobile,
+          firstName: action.payload.firstname,
+          lastName: action.payload.lastname,
+          email: action.payload.email,
         },
       };
 
