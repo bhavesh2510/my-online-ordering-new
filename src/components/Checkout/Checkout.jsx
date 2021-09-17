@@ -77,6 +77,7 @@ const Checkout = () => {
   const [couponredeemed, setcouponredeemed] = useState(false);
   const [couponredeemedmessage, setcouponredeemedmessage] = useState();
   const [coupontypeisdiscount, setcoupontypeisdiscount] = useState(false);
+  const [paymentfailed, setpaymentfailed] = useState(false);
 
   useEffect(() => {
     console.log("coupon id is", couponId);
@@ -84,6 +85,10 @@ const Checkout = () => {
   useEffect(() => {
     console.log("coupon id is amount", couponamount);
   }, [couponamount]);
+
+  useEffect(() => {
+    console.log("payment failed is", paymentfailed);
+  }, [paymentfailed]);
 
   const dispatch = useDispatch();
   let refIndex = -1;
@@ -154,15 +159,17 @@ const Checkout = () => {
       main.selectedRestaurant.order_option === undefined
     );
 
-    data.hasDeliveryOption = main.selectedRestaurant.order_option
-      .split(",")
-      .includes("delivery");
-    data.hasEatInOption = main.selectedRestaurant.order_option
-      .split(",")
-      .includes("eatin");
-    data.hasPickupOption = main.selectedRestaurant.order_option
-      .split(",")
-      .includes("pickup");
+    if (main.selectedRestaurant.order_option) {
+      data.hasDeliveryOption = main.selectedRestaurant.order_option
+        .split(",")
+        .includes("delivery");
+      data.hasEatInOption = main.selectedRestaurant.order_option
+        .split(",")
+        .includes("eatin");
+      data.hasPickupOption = main.selectedRestaurant.order_option
+        .split(",")
+        .includes("pickup");
+    }
 
     data.paymentOptions = main.selectedRestaurant.payment_option_ids.split(",");
 
@@ -450,46 +457,67 @@ const Checkout = () => {
 
   const savedAmount = Math.abs(getSavedAmount());
 
-  const sendpaymentreq = (type, orderId) => {
-    var errorurl = `https://ciboapp.me/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`;
-    var failedurl = `https://ciboapp.me/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`;
-    //var failedurl = `http://localhost:3000/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`;
-    var accepturl = `https://ciboapp.me/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${orderId}`;
-    //var accepturl = `http://localhost:3000/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${orderId}`;
-    var callbackurl = "https://ciboapp.com/api/mobileApi/v2/app/callback";
-    var mkey = menu.restaurantInfo.merchant_key;
-    var sec = menu.restaurantInfo.secret;
-    var userid = "123";
+  const sendpaymentreq = async (type, orderId) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        var errorurl = `https://ciboapp.com/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`;
+        var failedurl = `https://ciboapp.com/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`;
+        //var failedurl = `http://localhost:3000/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`;
+        var accepturl = `https://ciboapp.com/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${orderId}`;
+        //var accepturl = `http://localhost:3000/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${orderId}`;
+        var callbackurl = "https://ciboapp.com/api/mobileApi/v2/app/callback";
+        var mkey = menu.restaurantInfo.merchant_key;
+        var sec = menu.restaurantInfo.secret;
+        var userid = "123";
 
-    let str = `${getBillAmount()}${callbackurl}${
-      menu.restaurantInfo.currency
-    }${errorurl}${failedurl}${mkey}${orderId}${accepturl}${sec}`;
+        let str = `${getBillAmount()}${callbackurl}${
+          menu.restaurantInfo.currency
+        }${errorurl}${failedurl}${mkey}${orderId}${accepturl}${sec}`;
 
-    let mac = sha256(str);
+        let mac = sha256(str);
 
-    const paymentdata = {
-      name: user.user.firstName,
-      email: user.user.email,
-      phone: user.user.mobile,
-      user_id: userid,
-      order_id: `${orderId}`,
-      merchant_key: mkey,
-      amount: getBillAmount(),
-      currency: menu.restaurantInfo.currency,
-      mac: mac,
-      redirect_type: type,
-      accept_url: accepturl,
-      failed_url: failedurl,
-      error_url: errorurl,
-      callback_url: callbackurl,
-    };
+        const paymentdata = {
+          name: user.user.firstName,
+          email: user.user.email,
+          phone: user.user.mobile,
+          user_id: userid,
+          order_id: `${orderId}`,
+          merchant_key: mkey,
+          amount: getBillAmount(),
+          currency: menu.restaurantInfo.currency,
+          mac: mac,
+          redirect_type: type,
+          accept_url: accepturl,
+          failed_url: failedurl,
+          error_url: errorurl,
+          callback_url: callbackurl,
+        };
 
-    axios
-      .post("https://paymentz.z-pay.co.uk/api/payment-link", paymentdata)
-      .then((response) => {
-        console.log(response.data);
-        window.location.href = response.data.data.paymentLink;
-      });
+        //live https://api.zotto.z-payments.com/api/payment-link
+        //live merchant : 2533554646411
+        //live secret : eAfg21swu0y211
+
+        //test https://paymentz.z-pay.co.uk/api/payment-link
+        //test merchant : 45455514421
+        //test secret : eAfg21swu0y2
+
+        axios
+          .post(
+            "https://api.zotto.z-payments.com/api/payment-link",
+            paymentdata
+          )
+          .then((response) => {
+            console.log(response.data);
+            resolve("complete");
+
+            window.location.href = response.data.data.paymentLink;
+          })
+          .catch((error) => {
+            resolve("error");
+            console.log("we have payment error");
+          });
+      }, 2000);
+    });
   };
 
   const getOrderId = () => {
@@ -613,35 +641,66 @@ const Checkout = () => {
       if (RESULT == "SUCCESS") {
         console.log("if statement", deliveryDetails.paymentMethod);
         if (deliveryDetails.paymentMethod == "1") {
-          sendpaymentreq("1", orderId);
-          dispatch(
-            couponRedeem(
-              user.user.clientId,
-              menu.restaurantInfo.restaurant_id,
-              couponId
-            )
-          );
+          const x = await sendpaymentreq("1", orderId);
+          if (x == "error") {
+            setdata({ ...state, displayloader: false });
+            return notification["warning"]({
+              style: {
+                marginTop: "50px",
+                color: "rgba(0, 0, 0, 0.65)",
+                border: "1px solid #b7eb8f",
+                backgroundColor: "#f6ffed",
+              },
+              message: "Something wrong with payments",
+            });
+          }
+
+          if (couponId) {
+            dispatch(
+              couponRedeem(
+                user.user.clientId,
+                menu.restaurantInfo.restaurant_id,
+                couponId
+              )
+            );
+          }
 
           //dispatch(clearMenuState());
         } else if (deliveryDetails.paymentMethod == "4") {
-          sendpaymentreq("2", orderId);
-          dispatch(
-            couponRedeem(
-              user.user.clientId,
-              menu.restaurantInfo.restaurant_id,
-              couponId
-            )
-          );
+          const x = await sendpaymentreq("2", orderId);
+          if (x == "error") {
+            setdata({ ...state, displayloader: false });
+            return notification["warning"]({
+              style: {
+                marginTop: "50px",
+                color: "rgba(0, 0, 0, 0.65)",
+                border: "1px solid #b7eb8f",
+                backgroundColor: "#f6ffed",
+              },
+              message: "Something wrong with payments",
+            });
+          }
+          if (couponId) {
+            dispatch(
+              couponRedeem(
+                user.user.clientId,
+                menu.restaurantInfo.restaurant_id,
+                couponId
+              )
+            );
+          }
 
           // dispatch(clearMenuState());
         } else {
-          dispatch(
-            couponRedeem(
-              user.user.clientId,
-              menu.restaurantInfo.restaurant_id,
-              couponId
-            )
-          );
+          if (couponId) {
+            dispatch(
+              couponRedeem(
+                user.user.clientId,
+                menu.restaurantInfo.restaurant_id,
+                couponId
+              )
+            );
+          }
           dispatch(clearMenuState());
           History.push(
             `/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${response_format.order_id}`
@@ -954,12 +1013,14 @@ const Checkout = () => {
                     </table>
                     <hr />
 
-                    <div
-                      className='coupon-container'
-                      onClick={() => setdraweropen(true)}
-                    >
-                      <p className='coupon-text'>Apply Coupon</p>
-                    </div>
+                    {menu.coupons ? (
+                      <div
+                        className='coupon-container'
+                        onClick={() => setdraweropen(true)}
+                      >
+                        <p className='coupon-text'>Apply Coupon</p>
+                      </div>
+                    ) : null}
                     <SwipeableDrawer
                       anchor={"right"}
                       open={draweropen}
@@ -1315,12 +1376,14 @@ const Checkout = () => {
                       </tbody>
                     </table>
 
-                    <div
-                      className='coupon-container'
-                      onClick={() => setdraweropen(true)}
-                    >
-                      <p className='coupon-text'>Apply Coupon</p>
-                    </div>
+                    {menu.coupons.length >= 1 ? (
+                      <div
+                        className='coupon-container'
+                        onClick={() => setdraweropen(true)}
+                      >
+                        <p className='coupon-text'>Apply Coupon</p>
+                      </div>
+                    ) : null}
                     <SwipeableDrawer
                       anchor={"right"}
                       open={draweropen}

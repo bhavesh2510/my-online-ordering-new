@@ -49,19 +49,25 @@ const MenuItems = React.memo(
       var drink_subcat_id = [];
       var drink_cname = [];
 
-      for (let i = 0; i < menu.categoriesList[0].sub_category.length; i++) {
-        dish_subcat_id.push(menu.categoriesList[0].sub_category[i].category_id);
-        dish_cname.push(menu.categoriesList[0].sub_category[i].cname);
+      if (menu.categoriesList[0]) {
+        for (let i = 0; i < menu.categoriesList[0].sub_category.length; i++) {
+          dish_subcat_id.push(
+            menu.categoriesList[0].sub_category[i].category_id
+          );
+          dish_cname.push(menu.categoriesList[0].sub_category[i].cname);
+        }
+        array_of_ids.push(dish_subcat_id);
+        tem_arr_cname.push(dish_cname);
       }
-      array_of_ids.push(dish_subcat_id);
-      tem_arr_cname.push(dish_cname);
 
-      for (let i = 0; i < menu.categoriesList[1].sub_category.length; i++) {
-        drink_subcat_id.push(
-          menu.categoriesList[1].sub_category[i].category_id
-        );
+      if (menu.categoriesList[1]) {
+        for (let i = 0; i < menu.categoriesList[1].sub_category.length; i++) {
+          drink_subcat_id.push(
+            menu.categoriesList[1].sub_category[i].category_id
+          );
 
-        dish_cname.push(menu.categoriesList[1].sub_category[i].cname);
+          dish_cname.push(menu.categoriesList[1].sub_category[i].cname);
+        }
       }
       array_of_ids.push(drink_subcat_id);
       tem_arr_cname.push(drink_cname);
@@ -295,19 +301,19 @@ const MenuItems = React.memo(
               <Skeleton height={28} width={400} style={{ marginLeft: "10%" }} />
             </div> */}
 
-            <div className="skelton-container">
-              <div className="parent-menutable">
-                <div className="parent-flex">
-                  <div className="left-menutable-img">
-                    <div className="img-cover-menutable">
-                      <Skeleton height={100} className="img-skelton" />
+            <div className='skelton-container'>
+              <div className='parent-menutable'>
+                <div className='parent-flex'>
+                  <div className='left-menutable-img'>
+                    <div className='img-cover-menutable'>
+                      <Skeleton height={100} className='img-skelton' />
                     </div>
                   </div>
 
-                  <div className="food-details">
-                    <div className="inner-food-details-div">
-                      <div className="specific-food-details">
-                        <h4 className="food-item-name">
+                  <div className='food-details'>
+                    <div className='inner-food-details-div'>
+                      <div className='specific-food-details'>
+                        <h4 className='food-item-name'>
                           <Skeleton height={20} width={200} count={4} />
                         </h4>
                       </div>
@@ -365,7 +371,7 @@ const MenuItems = React.memo(
                 {menu.selectedCategoryId === -2 ? (
                   <PizzaMenuTable
                     symbol={restaurantInfo.monetary_symbol}
-                    category_name="Pizza"
+                    category_name='Pizza'
                     list={pizzas}
                     loading={loading}
                     removeforpizza={removefromcart}
@@ -383,7 +389,7 @@ const MenuItems = React.memo(
                 {selectedCategoryId === -1 ? (
                   <MenuTable
                     symbol={restaurantInfo.monetary_symbol}
-                    category_name="Happy Hours"
+                    category_name='Happy Hours'
                     list={(menuItems = getFilterredList(state))}
                     onAddItem={onAddItem}
                     loading={loading}

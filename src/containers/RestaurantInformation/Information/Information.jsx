@@ -30,6 +30,7 @@ import { ListItemText } from "@material-ui/core";
 import { notification } from "antd";
 import { showLoginFormMethod } from "../../../state-management/user/actions";
 import InfoSlider from "./InfoSlider";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
 const useStyle = makeStyles({
   list: {
     width: 360,
@@ -60,6 +61,7 @@ const Information = (props) => {
   const dispatch = useDispatch();
   const [showdish, setshowdish] = useState(true);
   const [visible, setVisible] = useState(false);
+  const [freeEligible, setfreeEligible] = useState();
   console.log("menu in selector is", menu);
   console.log("loading in menuItems", props.loading);
   const [timings, settimings] = useState();
@@ -89,12 +91,17 @@ const Information = (props) => {
   };
   window.addEventListener("scroll", toggleVisible);
   useEffect(() => {
+    //setfreeEligible(menu.restaurantInfo.cost.free_delivery_eligible_amount);
     if (main.isClosed) {
       settimings("closed");
     } else {
       settimings(main.businessHour);
     }
   }, []);
+
+  useEffect(() => {
+    console.log("set eligible is", freeEligible);
+  }, [freeEligible]);
 
   const handleAddItem = (item, isHappyHoursActive) => {
     console.log("items in cart is", item);
@@ -244,14 +251,19 @@ const Information = (props) => {
 
       {/* End section */}
       {/* content */}
-      <div className="container margin_60_35">
-        <div className="row customised_row ">
-          <div className="col-lg-3" style={{ marginTop: "250px" }}>
-            <MenuCategories
-              categories={menu.categoriesList}
-              loading={props.loading}
-              drinkstatus={setshowdish}
-            />
+      <div className='container margin_60_35'>
+        <div className='row customised_row '>
+          <div className='col-lg-3' style={{ marginTop: "250px" }}>
+            <div
+              className='customised_theiaStickySidebar  hide-on-mobile '
+              style={{ position: "sticky", top: "85px", width: "95%" }}
+            >
+              <MenuCategories
+                categories={menu.categoriesList}
+                loading={props.loading}
+                drinkstatus={setshowdish}
+              />
+            </div>
 
             {/* End box_style_1 */}
             {/* <div className="box_style_2 d-none d-sm-block" id="help">
@@ -273,7 +285,7 @@ const Information = (props) => {
           </div>
           {/* End col */}
 
-          <div className="col-lg-6">
+          <div className='col-lg-6'>
             {/* <div style={{ marginTop: "-25px", marginLeft: "20%" }}>
               Delivery Options : &nbsp;
               {menu.restaurantInfo.order_option?.split(",").map((option, i) => {
@@ -287,7 +299,7 @@ const Information = (props) => {
             </div> */}
 
             <div
-              className="img-logo-container"
+              className='img-logo-container'
               style={{ border: "2px solid #e6e6e6" }}
             >
               <img
@@ -301,12 +313,12 @@ const Information = (props) => {
               />
             </div>
             <div style={{ marginTop: "20px" }}>
-              <h3 className="restro-name-text">{props.restaurantInfo.rname}</h3>
-              <p className="restro-info-txt1">
+              <h3 className='restro-name-text'>{props.restaurantInfo.rname}</h3>
+              <p className='restro-info-txt1'>
                 <LocationOnIcon />{" "}
                 {`${props.restaurantInfo.address} - ${props.restaurantInfo.city} - ${props.restaurantInfo.country}- ${props.restaurantInfo.zipcode}`}{" "}
               </p>
-              <p className="restro-info-txt2">
+              <p className='restro-info-txt2'>
                 +{menu.restaurantInfo.phone_code} {menu.restaurantInfo.phone}
               </p>
             </div>
@@ -346,22 +358,24 @@ const Information = (props) => {
               </div>
             </div> */}
 
-            <div className="info-container">
+            <div className='info-container'>
               {menu.restaurantInfo?.order_option?.split(",").map((val, i) => {
                 if (val == "eatin") {
                   return (
                     <>
-                      <div className="info-box-eatin-container">
-                        <p className="info-box-eatin-text">Eat-in available</p>
+                      <div className='info-box-eatin-container'>
+                        <p className='info-box-eatin-text'>
+                          Eat-in <CheckBoxIcon />
+                        </p>
                       </div>
                     </>
                   );
                 } else if (val == "delivery") {
                   return (
                     <>
-                      <div className="info-box-delivery-container">
-                        <p className="info-box-delivery-text">
-                          Delivery available
+                      <div className='info-box-delivery-container'>
+                        <p className='info-box-delivery-text'>
+                          Delivery <CheckBoxIcon />
                         </p>
                       </div>
                     </>
@@ -369,16 +383,18 @@ const Information = (props) => {
                 } else if (val == "pickup") {
                   return (
                     <>
-                      <div className="info-box-pickup-container">
-                        <p className="info-box-pickup-text">Pickup available</p>
+                      <div className='info-box-pickup-container'>
+                        <p className='info-box-pickup-text'>
+                          Pickup <CheckBoxIcon />
+                        </p>
                       </div>
                     </>
                   );
                 }
               })}
 
-              <div className="info-box-opens-container">
-                <p className="info-box-opens-text">
+              <div className='info-box-opens-container'>
+                <p className='info-box-opens-text'>
                   Opens at{" "}
                   {opening_time > 12
                     ? `${opening_time - 12} PM`
@@ -386,24 +402,20 @@ const Information = (props) => {
                 </p>
               </div>
 
-              {menu.restaurantInfo.cost.free_delivery_eligible_amount > 0 ? (
+              {menu.restaurantInfo.cost &&
+              menu.restaurantInfo.cost.free_delivery_eligible_amount > 0 ? (
                 <div
-                  // className="info-box-freedelivery-container"
                   className={
-                    arr[0].length == 3
+                    arr[0] && arr[0].length == 3
                       ? `marginleft-class info-box-freedelivery-container`
                       : `info-box-freedelivery-container`
                   }
-                  // style={{ marginLeft: "-90px" }}
                 >
-                  <p
-                    className="info-box-freedelivery-text margin-for-text"
-                    // style={{ marginTop: "4px" }}
-                  >
+                  <p className='info-box-freedelivery-text margin-for-text'>
                     Free Delivery{" "}
                   </p>
                   <p
-                    className="info-box-freedelivery-text"
+                    className='info-box-freedelivery-text'
                     style={{ marginTop: "-17px" }}
                   >
                     Over{" "}
@@ -415,8 +427,8 @@ const Information = (props) => {
             </div>
 
             <div
-              className="box_style_2 full-width-mobile"
-              id="main_menu"
+              className='box_style_2 full-width-mobile'
+              id='main_menu'
               style={{ marginTop: "20px" }}
             >
               {/* <h2
@@ -442,9 +454,9 @@ const Information = (props) => {
             {/* End box_style_1 */}
           </div>
           {/* End col */}
-          <div className="col-lg-3" id="sidebar" style={{ marginTop: "250px" }}>
+          <div className='col-lg-3' id='sidebar' style={{ marginTop: "250px" }}>
             <div
-              className="customised_theiaStickySidebar  hide-on-mobile "
+              className='customised_theiaStickySidebar  hide-on-mobile '
               style={{ position: "sticky", top: "85px" }}
             >
               <Cart
@@ -458,8 +470,8 @@ const Information = (props) => {
             </div>
 
             <button
-              className="scroll_to_top_button"
-              id="stotop"
+              className='scroll_to_top_button'
+              id='stotop'
               onClick={scrollToTop}
               //style={buttonStyle}
               style={{ display: visible ? "inline" : "none" }}
@@ -488,12 +500,12 @@ const Information = (props) => {
       {menu.cart.length >= 1 ? (
         <>
           <div
-            class="fixed-bottom hide-on-desktop"
+            class='fixed-bottom hide-on-desktop'
             style={{ height: "60px", backgroundColor: "black" }}
           >
-            <div className="parent-mob-footer">
+            <div className='parent-mob-footer'>
               <div
-                className="parent-mob-child"
+                className='parent-mob-child'
                 onClick={() => setdraweropen(true)}
               >
                 <div>
@@ -517,17 +529,17 @@ const Information = (props) => {
 
               {user.user.isUserLoggedIn ? (
                 <div
-                  className="mob-checkout-container"
+                  className='mob-checkout-container'
                   onClick={checkoutformobile}
                 >
-                  <div className="mob-checkout-button">CHECKOUT</div>
+                  <div className='mob-checkout-button'>CHECKOUT</div>
                 </div>
               ) : (
                 <div
-                  className="mob-checkout-container"
+                  className='mob-checkout-container'
                   onClick={loginformobile}
                 >
-                  <div className="mob-checkout-button-login">LOGIN</div>
+                  <div className='mob-checkout-button-login'>LOGIN</div>
                 </div>
               )}
             </div>
@@ -542,8 +554,8 @@ const Information = (props) => {
         onOpen={() => {}}
       >
         <div className={classes.list}>
-          <div className="orders-container">
-            <h2 className="mob-header-text">
+          <div className='orders-container'>
+            <h2 className='mob-header-text'>
               Your Orders{" "}
               <CloseIcon
                 style={{ float: "right", marginRight: "25px" }}
@@ -551,7 +563,7 @@ const Information = (props) => {
               />
             </h2>
           </div>
-          <div className="mob-cart-container">
+          <div className='mob-cart-container'>
             <Cart
               //addItem={handleAddItem}
               addItem={props.onAddItem}

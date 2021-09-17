@@ -192,15 +192,21 @@ const PaymentForm = (props) => {
       main.selectedRestaurant.order_option === undefined
     );
 
-    data.hasDeliveryOption = main.selectedRestaurant.order_option
-      .split(",")
-      .includes("delivery");
-    data.hasEatInOption = main.selectedRestaurant.order_option
-      .split(",")
-      .includes("eatin");
-    data.hasPickupOption = main.selectedRestaurant.order_option
-      .split(",")
-      .includes("pickup");
+    if (main.selectedRestaurant.order_option) {
+      data.hasDeliveryOption = main.selectedRestaurant.order_option
+        .split(",")
+        .includes("delivery");
+    }
+    if (main.selectedRestaurant.order_option) {
+      data.hasEatInOption = main.selectedRestaurant.order_option
+        .split(",")
+        .includes("eatin");
+    }
+    if (main.selectedRestaurant.order_option) {
+      data.hasPickupOption = main.selectedRestaurant.order_option
+        .split(",")
+        .includes("pickup");
+    }
 
     data.paymentOptions = main.selectedRestaurant.payment_option_ids.split(",");
 
@@ -393,12 +399,15 @@ const PaymentForm = (props) => {
   }, [data]);
 
   const onClick = () => {
-    setrange_arr(main.deliveryRange.range);
-    console.log("distance at the time of range is", main.deliveryRange.range);
-    var range;
-    main.deliveryRange.range.map((val) => {
-      range = val.range_to;
-    });
+    if (main.deliveryRange.range) {
+      setrange_arr(main.deliveryRange.range);
+      console.log("distance at the time of range is", main.deliveryRange.range);
+      var range;
+
+      main.deliveryRange.range.map((val) => {
+        range = val.range_to;
+      });
+    }
 
     if (!data.checkingChangeAddress && data.deliveryType == "Delivery") {
       notification["warning"]({
@@ -802,22 +811,22 @@ const PaymentForm = (props) => {
 
   return (
     <>
-      <div className="box_style_2 delivery-container">
-        <h2 className="delivery-head-type">Delivery type</h2>
-        <div className="container-for-mobile  margin-for-desktop">
+      <div className='box_style_2 delivery-container'>
+        <h2 className='delivery-head-type'>Delivery type</h2>
+        <div className='container-for-mobile  margin-for-desktop'>
           {data.hasDeliveryOption ? (
             <>
               <input
-                className="check_payment"
-                type="radio"
-                name="typeofdelivery"
-                id="delivery"
+                className='check_payment'
+                type='radio'
+                name='typeofdelivery'
+                id='delivery'
               />
 
               <label
                 onClick={() => deliveryTypeClick(DELIVERY_TYPE.DEFAULT)}
-                for="delivery"
-                class="btn_radio"
+                for='delivery'
+                class='btn_radio'
               >
                 Delivery
               </label>
@@ -827,15 +836,15 @@ const PaymentForm = (props) => {
           {data.hasEatInOption && timeinbusinesshour ? (
             <>
               <input
-                className="check_payment"
-                type="radio"
-                name="typeofdelivery"
-                id="eatin"
+                className='check_payment'
+                type='radio'
+                name='typeofdelivery'
+                id='eatin'
               />
               <label
                 onClick={() => deliveryTypeEatinClick(DELIVERY_TYPE.EAT_IN)}
-                for="eatin"
-                class="btn_radio"
+                for='eatin'
+                class='btn_radio'
               >
                 Eat In
               </label>{" "}
@@ -845,15 +854,15 @@ const PaymentForm = (props) => {
           {data.hasPickupOption ? (
             <>
               <input
-                className="check_payment"
-                type="radio"
-                name="typeofdelivery"
-                id="pickup"
+                className='check_payment'
+                type='radio'
+                name='typeofdelivery'
+                id='pickup'
               />
               <label
                 onClick={() => deliveryTypePickupClick(DELIVERY_TYPE.TAKE_AWAY)}
-                for="pickup"
-                class="btn_radio"
+                for='pickup'
+                class='btn_radio'
               >
                 Pickup
               </label>
@@ -864,14 +873,14 @@ const PaymentForm = (props) => {
 
       {state.showAddress ? (
         <div
-          className="box_style_2"
+          className='box_style_2'
           style={{ cursor: "pointer" }}
           onClick={showAddressModal}
         >
           <div>
             {headingfornoaddress ? (
               <>
-                <h2 className="delivery-head">
+                <h2 className='delivery-head'>
                   Delivery Address{" "}
                   {/* <img
                     className="delivery-tick-img"
@@ -886,11 +895,11 @@ const PaymentForm = (props) => {
 
                     border: "1px solid black",
                   }}
-                  className="button-container address-add-change hide-on-mobile"
+                  className='button-container address-add-change hide-on-mobile'
                   onClick={onChangeAddressCall}
                 >
                   <span
-                    className="add-to-cart-button"
+                    className='add-to-cart-button'
                     style={{ color: "black", fontSize: "13px" }}
                   >
                     Change
@@ -898,7 +907,7 @@ const PaymentForm = (props) => {
                 </div>
 
                 <span
-                  class="address-change hide-on-desktop"
+                  class='address-change hide-on-desktop'
                   onClick={onChangeAddressCall}
                 >
                   Change
@@ -906,7 +915,7 @@ const PaymentForm = (props) => {
               </>
             ) : (
               <>
-                <h2 className="delivery-head">
+                <h2 className='delivery-head'>
                   Add Delivery Address{" "}
                   {/* <img
                     src="https://i.ibb.co/TmCnRTh/Tick-Mark-Dark-512.png"
@@ -922,11 +931,11 @@ const PaymentForm = (props) => {
 
                     border: "1px solid black",
                   }}
-                  className="button-container address-add-change hide-on-mobile"
+                  className='button-container address-add-change hide-on-mobile'
                   onClick={onChangeAddressCall}
                 >
                   <span
-                    className="add-to-cart-button"
+                    className='add-to-cart-button'
                     style={{ color: "black" }}
                   >
                     Add
@@ -934,7 +943,7 @@ const PaymentForm = (props) => {
                 </div>
 
                 <span
-                  class="address-add-change hide-on-desktop"
+                  class='address-add-change hide-on-desktop'
                   style={{ marginTop: "-65px" }}
                   onClick={onChangeAddressCall}
                 >
@@ -1076,12 +1085,12 @@ const PaymentForm = (props) => {
       {data.showChangeAddress ? (
         <>
           <div
-            className="box_style_2"
+            className='box_style_2'
             // style={{ cursor: "pointer" }}
             // onClick={showAddressModal}
           >
             <div>
-              <h2 className="delivery-head">Your Addresses </h2>
+              <h2 className='delivery-head'>Your Addresses </h2>
             </div>
 
             {add.addresses.map((address, i) => {
@@ -1089,12 +1098,12 @@ const PaymentForm = (props) => {
               return (
                 <>
                   <section
-                    className="address-section-paymentform"
+                    className='address-section-paymentform'
                     style={{ backgroundColor: "#eae8ed" }}
                     // key={i}
                   >
                     <Address address={address} key={i} />
-                    <ul className="address-actions">
+                    <ul className='address-actions'>
                       <li //onClick={() => callAddressModal(true, address)}
                       >
                         <button
@@ -1138,16 +1147,16 @@ const PaymentForm = (props) => {
 
                 border: "1px solid black",
               }}
-              className="button-container-add-address-mobile"
+              className='button-container-add-address-mobile'
               onClick={handleAddAddressOnPaymentForm}
             >
               <p
-                className="hide-on-desktop"
+                className='hide-on-desktop'
                 style={{ marginTop: "15px", fontSize: "20px" }}
               >
                 ADD
               </p>
-              <span className="add-to-cart-button" style={{ color: "black" }}>
+              <span className='add-to-cart-button' style={{ color: "black" }}>
                 Add
               </span>
               {/* <span className="add-to-cart-button-plus">
@@ -1160,32 +1169,32 @@ const PaymentForm = (props) => {
 
       {user.isTakeAway ? (
         <div
-          className="box_style_2"
+          className='box_style_2'
           style={{ cursor: "pointer", marginTop: "-20px" }}
           onClick={showAddressModal}
         >
-          <h2 className="delivery-head">Pickup Details</h2>
-          <div className="pickup-details">
+          <h2 className='delivery-head'>Pickup Details</h2>
+          <div className='pickup-details'>
             <h3>
-              <strong className="delivery-head-business">
+              <strong className='delivery-head-business'>
                 Business hours : {main.businessHour}
               </strong>
             </h3>
             <br />
             <div
-              className="address-details"
+              className='address-details'
               style={{
                 color: "black",
                 fontWeight: "600",
               }}
             >
               Selected Pickup Time : &nbsp;
-              <div className="timepicker-container">
+              <div className='timepicker-container'>
                 <TimePicker
                   defaultValue={data.pickupTime}
                   disabledHours={getDisabledHours}
                   onChange={onPickupTimeChange}
-                  format="HH:mm"
+                  format='HH:mm'
                 />
               </div>
             </div>
@@ -1195,25 +1204,25 @@ const PaymentForm = (props) => {
 
       {state.showAddress ? (
         <div
-          className="box_style_2"
+          className='box_style_2'
           style={{ cursor: "pointer" }}
           onClick={showAddressModal}
         >
-          <div className="pickup-details" style={{ height: "45px" }}>
+          <div className='pickup-details' style={{ height: "45px" }}>
             <div
-              className="address-details"
+              className='address-details'
               style={{
                 color: "black",
                 fontWeight: "600",
               }}
             >
               Selected Delivery Time : &nbsp;
-              <div className="timepicker-container">
+              <div className='timepicker-container'>
                 <TimePicker
                   defaultValue={data.pickupTime}
                   disabledHours={getDisabledHours}
                   onChange={onDeliveryTimeChange}
-                  format="HH:mm"
+                  format='HH:mm'
                 />
               </div>
             </div>
@@ -1230,10 +1239,10 @@ const PaymentForm = (props) => {
         />
       </div>
 
-      <div className="box_style_2" style={{ marginTop: "-30px" }}>
-        <h2 className="delivery-head">Payment method</h2>
+      <div className='box_style_2' style={{ marginTop: "-30px" }}>
+        <h2 className='delivery-head'>Payment method</h2>
 
-        <div className="payment-container">
+        <div className='payment-container'>
           {data.paymentOptions.map((val) => {
             if (val == "1") {
               return (
@@ -1253,18 +1262,18 @@ const PaymentForm = (props) => {
                   </label> */}
 
                   <input
-                    className="check_payment"
-                    type="radio"
-                    name="payment"
-                    id="card"
-                    value="1"
+                    className='check_payment'
+                    type='radio'
+                    name='payment'
+                    id='card'
+                    value='1'
                     onChange={(e) => paymentOptionChange("1")}
                   />
 
                   <label
-                    className="payment-class"
-                    for="card"
-                    class="btn_radio_for_payment"
+                    className='payment-class'
+                    for='card'
+                    class='btn_radio_for_payment'
                     style={{ whiteSpace: "nowrap" }}
                   >
                     Pay With Card
@@ -1290,18 +1299,18 @@ const PaymentForm = (props) => {
                   </label> */}
 
                   <input
-                    className="check_payment"
-                    type="radio"
-                    name="payment"
-                    id="cashondelivery"
-                    value="2"
+                    className='check_payment'
+                    type='radio'
+                    name='payment'
+                    id='cashondelivery'
+                    value='2'
                     onChange={(e) => paymentOptionChange("2")}
                   />
 
                   <label
-                    className="payment-class"
-                    for="cashondelivery"
-                    class="btn_radio_for_payment"
+                    className='payment-class'
+                    for='cashondelivery'
+                    class='btn_radio_for_payment'
                     style={{ whiteSpace: "nowrap" }}
                   >
                     cash on delivery
@@ -1326,18 +1335,18 @@ const PaymentForm = (props) => {
                   </label> */}
 
                   <input
-                    className="check_payment"
-                    type="radio"
-                    name="payment"
-                    id="paywithpoints"
-                    value="4"
+                    className='check_payment'
+                    type='radio'
+                    name='payment'
+                    id='paywithpoints'
+                    value='4'
                     onChange={(e) => paymentOptionChange("4")}
                   />
 
                   <label
-                    className="payment-class"
-                    for="paywithpoints"
-                    class="btn_radio_for_payment"
+                    className='payment-class'
+                    for='paywithpoints'
+                    class='btn_radio_for_payment'
                     style={{ whiteSpace: "nowrap" }}
                   >
                     Open Banking
@@ -1353,7 +1362,7 @@ const PaymentForm = (props) => {
             }
           })}
         </div>
-        <div className="paymentform-btn-container">
+        <div className='paymentform-btn-container'>
           <Button
             onClick={onClick}
             style={{

@@ -25,6 +25,8 @@ const AddAddress = (props) => {
   const modal = useSelector((state) => state.modal);
   const dispatch = useDispatch();
 
+  console.log("props of add", props);
+
   const [state, setState] = useState({
     name: `${user.user.firstName} ${user.user.lastName}`,
     //address1: user.deliveryOption.userAddress.address1.address_1,

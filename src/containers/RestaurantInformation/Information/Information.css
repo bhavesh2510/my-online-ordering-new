@@ -152,6 +152,7 @@
   text-align: center;
   color: #0098ff;
   margin-top: 13px;
+  font-weight: 600;
 }
 .info-box-delivery-container {
   flex: 0 28%;
@@ -163,7 +164,7 @@
 .info-box-delivery-text {
   text-align: center;
   color: #ef6f34;
-
+  font-weight: 600;
   margin-top: 13px;
 }
 .info-box-pickup-container {
@@ -177,6 +178,7 @@
   text-align: center;
   color: #5c48d2;
   margin-top: 13px;
+  font-weight: 600;
 }
 .info-box-opens-container {
   flex: 0 28%;
@@ -189,6 +191,7 @@
   text-align: center;
   color: #25a09e;
   margin-top: 13px;
+  font-weight: 600;
 }
 .info-box-freedelivery-container {
   flex: 0 28%;
@@ -203,6 +206,7 @@
   text-align: center;
   color: #bd1e44;
   margin-top: 10px;
+  font-weight: 600;
 }
 .restro-name-text {
   text-align: center;

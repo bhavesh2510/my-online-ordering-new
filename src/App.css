@@ -36,3 +36,6 @@
     transform: rotate(360deg);
   }
 }
+.nav-item > .active {
+  border-bottom: 1px solid #333;
+}

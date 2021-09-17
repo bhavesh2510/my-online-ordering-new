@@ -278,7 +278,17 @@ const Cart = (props) => {
   const [warning, setwarning] = useState(false);
   const grandTotal = Number(getGrandTotal());
   const goToCheckout = () => {
-    if (main.isClosed) {
+    if (menu.cart.length == 0) {
+      return notification["warning"]({
+        style: {
+          marginTop: "50px",
+          color: "rgba(0, 0, 0, 0.65)",
+          border: "1px solid #b7eb8f",
+          backgroundColor: "#f6ffed",
+        },
+        message: "Please add something in cart to proceed.",
+      });
+    } else if (main.isClosed) {
       return notification["warning"]({
         style: {
           marginTop: "50px",
@@ -324,8 +334,8 @@ const Cart = (props) => {
   };
 
   return (
-    <div id="cart_box" style={{ backgroundColor: "#f8f8f8" }}>
-      <h3 id="Your Order" className="hide-on-mobile">
+    <div id='cart_box' style={{ backgroundColor: "#f8f8f8" }}>
+      <h3 id='Your Order' className='hide-on-mobile'>
         Your order <ShoppingCartIcon style={{ float: "right" }} />
       </h3>
 
@@ -387,23 +397,41 @@ const Cart = (props) => {
       </div> */}
       {/* Edn options 2 */}
       <hr />
-      <table className="table table_summary">
+      <table className='table table_summary'>
         <tbody>
           <tr>
-            <td>
-              Subtotal{" "}
-              <span className="float-right">{`${
-                props.restinfo.monetary_symbol
-              } ${getSubTotal()}`}</span>
-            </td>
+            {menu.cart.length == 0 ? (
+              <td>
+                Subtotal{" "}
+                <span className='float-right'>
+                  {`${props.restinfo.monetary_symbol}`} 0.00
+                </span>
+              </td>
+            ) : (
+              <td>
+                Subtotal{" "}
+                <span className='float-right'>{`${
+                  props.restinfo.monetary_symbol
+                } ${getSubTotal()}`}</span>
+              </td>
+            )}
           </tr>
           <tr>
-            <td>
-              Taxes{" "}
-              <span className="float-right">{`${
-                props.restinfo.monetary_symbol
-              } ${getSubTaxTotal()}`}</span>
-            </td>
+            {menu.cart.length == 0 ? (
+              <td>
+                Taxes{" "}
+                <span className='float-right'>
+                  {`${props.restinfo.monetary_symbol} `}0.00
+                </span>
+              </td>
+            ) : (
+              <td>
+                Taxes{" "}
+                <span className='float-right'>{`${
+                  props.restinfo.monetary_symbol
+                } ${getSubTaxTotal()}`}</span>
+              </td>
+            )}
           </tr>
           {/* {radioval == "takeaway" || radioval == "eatin" ? (
             <tr>
@@ -424,9 +452,9 @@ const Cart = (props) => {
             </td>
           </tr> */}
           <tr>
-            <td className="total">
+            <td className='total'>
               TOTAL{" "}
-              <span className="float-right">{`${
+              <span className='float-right'>{`${
                 props.restinfo.monetary_symbol
               } ${getBillAmount()}`}</span>
             </td>
@@ -445,7 +473,7 @@ const Cart = (props) => {
       {user.user.isUserLoggedIn ? (
         <button
           onClick={goToCheckout}
-          className="btn_full hide-on-mobile "
+          className='btn_full hide-on-mobile '
           // href="cart.html"
           style={{ backgroundColor: "#5C48D2" }}
         >
@@ -454,7 +482,7 @@ const Cart = (props) => {
       ) : (
         <button
           onClick={callLoginForm}
-          className="btn_full hide-on-mobile"
+          className='btn_full hide-on-mobile'
           // href="cart.html"
           style={{ backgroundColor: "#5C48D2" }}
         >

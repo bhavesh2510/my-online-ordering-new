@@ -12,11 +12,14 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
+import DemoSlider1 from "./demo-slider-2.jpg";
+import DemoSlider2 from "./demo-slider-2.jpg";
 
 const InfoSlider = (props) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [animating, setAnimating] = useState(false);
   const [imgurl, setimgurl] = useState([]);
+  const [tempslider, settempslider] = useState([DemoSlider1, DemoSlider2]);
   const menu = useSelector((state) => state.menu);
 
   useEffect(() => {
@@ -36,14 +39,30 @@ const InfoSlider = (props) => {
 
   const next = () => {
     if (animating) return;
-    const nextIndex = activeIndex === imgurl.length - 1 ? 0 : activeIndex + 1;
-    setActiveIndex(nextIndex);
+    if (imgurl) {
+      const nextIndex = activeIndex === imgurl.length - 1 ? 0 : activeIndex + 1;
+
+      setActiveIndex(nextIndex);
+    }
+    if (!imgurl) {
+      const nextIndex =
+        activeIndex === tempslider.length - 1 ? 0 : activeIndex + 1;
+      setActiveIndex(nextIndex);
+    }
   };
 
   const previous = () => {
     if (animating) return;
-    const nextIndex = activeIndex === 0 ? imgurl.length - 1 : activeIndex - 1;
-    setActiveIndex(nextIndex);
+    if (imgurl) {
+      const nextIndex = activeIndex === 0 ? imgurl.length - 1 : activeIndex - 1;
+      setActiveIndex(nextIndex);
+    }
+
+    if (!imgurl) {
+      const nextIndex =
+        activeIndex === 0 ? tempslider.length - 1 : activeIndex - 1;
+      setActiveIndex(nextIndex);
+    }
   };
 
   const goToIndex = (newIndex) => {
@@ -51,30 +70,32 @@ const InfoSlider = (props) => {
     setActiveIndex(newIndex);
   };
 
-  const slides = imgurl.map((item) => {
-    console.log("item image is", item.image);
-    return (
-      <CarouselItem
-        onExiting={() => setAnimating(true)}
-        onExited={() => setAnimating(false)}
-        key={item.image}
-      >
-        <section
-          className="parallax-window"
-          data-parallax="scroll"
-          style={{
-            background: `url(${item.image}) no-repeat center`,
-            backgroundSize: "cover",
-          }}
-          data-natural-width={1400}
-          data-natural-height={170}
+  var slides;
+  if (imgurl) {
+    var slides = imgurl.map((item) => {
+      console.log("item image is", item.image);
+      return (
+        <CarouselItem
+          onExiting={() => setAnimating(true)}
+          onExited={() => setAnimating(false)}
+          key={item.image}
         >
-          <div id="subheader">
-            <div id="sub_content">
-              {/* <h1>{menu.restaurantInfo.rname}</h1> */}
-              <div>{/* <em>{menu.restaurantInfo.description}</em> */}</div>
-              <div>
-                {/* <LocationOnIcon />{" "}
+          <section
+            className='parallax-window'
+            data-parallax='scroll'
+            style={{
+              background: `url(${item.image}) no-repeat center`,
+              backgroundSize: "cover",
+            }}
+            data-natural-width={1400}
+            data-natural-height={170}
+          >
+            <div id='subheader'>
+              <div id='sub_content'>
+                {/* <h1>{menu.restaurantInfo.rname}</h1> */}
+                <div>{/* <em>{menu.restaurantInfo.description}</em> */}</div>
+                <div>
+                  {/* <LocationOnIcon />{" "}
                 {`${menu.restaurantInfo.address} - ${menu.restaurantInfo.city} - ${menu.restaurantInfo.country}- ${menu.restaurantInfo.zipcode}`}{" "}
                 <br />
                 {menu.restaurantInfo.cost.free_delivery_eligible_amount > 0 ? (
@@ -97,13 +118,69 @@ const InfoSlider = (props) => {
                       </b>
                     );
                   })} */}
+                </div>
               </div>
             </div>
-          </div>
-        </section>
-      </CarouselItem>
-    );
-  });
+          </section>
+        </CarouselItem>
+      );
+    });
+  }
+  if (!imgurl) {
+    var slides = tempslider.map((item) => {
+      //console.log("item image is", item.image);
+      return (
+        <CarouselItem
+          onExiting={() => setAnimating(true)}
+          onExited={() => setAnimating(false)}
+          key={item}
+        >
+          <section
+            className='parallax-window'
+            data-parallax='scroll'
+            style={{
+              background: `url(${item}) no-repeat center`,
+              backgroundSize: "cover",
+            }}
+            data-natural-width={1400}
+            data-natural-height={170}
+          >
+            <div id='subheader'>
+              <div id='sub_content'>
+                {/* <h1>{menu.restaurantInfo.rname}</h1> */}
+                <div>{/* <em>{menu.restaurantInfo.description}</em> */}</div>
+                <div>
+                  {/* <LocationOnIcon />{" "}
+                {`${menu.restaurantInfo.address} - ${menu.restaurantInfo.city} - ${menu.restaurantInfo.country}- ${menu.restaurantInfo.zipcode}`}{" "}
+                <br />
+                {menu.restaurantInfo.cost.free_delivery_eligible_amount > 0 ? (
+                  <>
+                    <strong>Delivery charge:</strong> free over&nbsp;
+                    {menu.restaurantInfo.cost.free_delivery_eligible_amount}
+                    &nbsp;
+                    {menu.restaurantInfo?.monetary_symbol}
+                    <br />
+                  </>
+                ) : null}
+                Delivery Options : &nbsp;
+                {menu.restaurantInfo.order_option
+                  ?.split(",")
+                  .map((option, i) => {
+                    return (
+                      <b style={{ textTransform: "capitalize" }}>
+                        {option}
+                        <CheckCircleOutlineIcon /> &nbsp;
+                      </b>
+                    );
+                  })} */}
+                </div>
+              </div>
+            </div>
+          </section>
+        </CarouselItem>
+      );
+    });
+  }
 
   return (
     <Carousel
@@ -119,13 +196,13 @@ const InfoSlider = (props) => {
       /> */}
       {slides}
       <CarouselControl
-        direction="prev"
-        directionText="Previous"
+        direction='prev'
+        directionText='Previous'
         onClickHandler={previous}
       />
       <CarouselControl
-        direction="next"
-        directionText="Next"
+        direction='next'
+        directionText='Next'
         onClickHandler={next}
       />
     </Carousel>
