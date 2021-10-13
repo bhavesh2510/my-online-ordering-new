@@ -18,6 +18,7 @@ import { ContactsOutlined } from "@material-ui/icons";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import WaitingOverlay from "../WaitingOverlay/WaitingOverlay";
 import { updateProfile } from "../../state-management/user/asyncActions";
+
 const AddAddress = (props) => {
   const main = useSelector((state) => state.main);
   const menu = useSelector((state) => state.menu);
@@ -98,6 +99,12 @@ const AddAddress = (props) => {
   };
 
   const onFormSubmit = async () => {
+    props.getAddress(state);
+    // if (props.bool == "yes") {
+    //   props.isItFromCheckout(true);
+    // } else if (props.bool == "no") {
+    //   props.isItFromCheckout(false);
+    // }
     console.log("state is", state);
     const creds = {
       client_id: user.user.clientId,
@@ -219,12 +226,13 @@ const AddAddress = (props) => {
             <Input
               disabled
               size='medium'
-              placeholder='Address Line 2'
+              placeholder='City'
               style={{ borderRadius: "5px" }}
               value={state.city || null}
               //onChange={(e) => this.handleAddress2Change(e.target.value)}
             />
           </div>
+
           <div className='input-addd-address'>
             <Input
               size='medium'
@@ -234,6 +242,7 @@ const AddAddress = (props) => {
               onChange={(e) => handleStateChange(e.target.value)}
             />
           </div>
+
           <div className='input-addd-address'>
             <Input
               disabled

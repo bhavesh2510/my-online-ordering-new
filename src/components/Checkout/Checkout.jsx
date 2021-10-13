@@ -530,194 +530,146 @@ const Checkout = () => {
     var cpid = couponId;
     console.log("couponamount is ", cpamount);
 
-    if (!deliveryDetails.delivery_option) {
-      return notification["warning"]({
-        style: {
-          marginTop: "50px",
-          color: "rgba(0, 0, 0, 0.65)",
-          border: "1px solid #b7eb8f",
-          backgroundColor: "#f6ffed",
-        },
-        message: "Please select Order Option",
-      });
-    } else if (deliveryDetails.booleanforpaymentmethod == 0) {
-      return notification["warning"]({
-        style: {
-          marginTop: "50px",
-          color: "rgba(0, 0, 0, 0.65)",
-          border: "1px solid #b7eb8f",
-          backgroundColor: "#f6ffed",
-        },
-        message: "Please select payment method",
-      });
-    } else if (main.isClosed) {
-      return notification["warning"]({
-        description: "Restaurant is closed",
-        style: {
-          marginTop: "50px",
-          color: "rgba(0, 0, 0, 0.65)",
-          border: "1px solid #b7eb8f",
-          backgroundColor: "#f6ffed",
-        },
-        message:
-          "This restaurant is not taking any orders right now, please visit later",
-      });
-    } else if (
-      deliveryDetails.deliveryType == "Delivery" &&
-      grandTotal < Number(main.selectedRestaurant.cost["min_order_amount"])
-    ) {
-      return notification["warning"]({
-        description: `Minimum amount required for delivery is ${menu.restaurantInfo.monetary_symbol} ${main.selectedRestaurant.cost["min_order_amount"]}`,
-        message: "Minimum amount for delivery did not meet",
-        style: {
-          marginTop: "90px",
-          color: "rgba(0, 0, 0, 0.65)",
-          border: "1px solid #b7eb8f",
-          backgroundColor: "#f6ffed",
-        },
-      });
-    } else {
-      setdata({ ...state, displayloader: true });
-      // return;
+    setdata({ ...state, displayloader: true });
+    // return;
 
-      const orderId = getOrderId();
-      var savedAmount = "1";
-      const response_format = getFormattedRequestPayload(
-        // props.phone_code,
-        user,
-        user.selectedPickUpTime,
-        menu.restaurantInfo,
-        deliveryDetails,
-        orderId,
-        getSubTotal(),
-        getSubTaxTotal(),
-        getBillAmount(),
-        menu.cart,
-        user.distance,
-        Math.abs(getSavedAmount()),
-        // getSavedAmount(),
-        getDeliveryCharges(),
-        user.user.phonecode,
-        user.selectedDeliveryTime,
-        cpid,
-        cpamount
-      );
+    const orderId = getOrderId();
+    var savedAmount = "1";
+    const response_format = getFormattedRequestPayload(
+      // props.phone_code,
+      user,
+      user.selectedPickUpTime,
+      menu.restaurantInfo,
+      deliveryDetails,
+      orderId,
+      getSubTotal(),
+      getSubTaxTotal(),
+      getBillAmount(),
+      menu.cart,
+      user.distance,
+      Math.abs(getSavedAmount()),
+      // getSavedAmount(),
+      getDeliveryCharges(),
+      user.user.phonecode,
+      user.selectedDeliveryTime,
+      cpid,
+      cpamount
+    );
 
-      console.log("payload is", response_format);
+    console.log("payload is", response_format);
 
-      const response = await dispatch(
-        placeOrder(
-          getFormattedRequestPayload(
-            // props.phone_code,
-            user,
-            user.user.selectedPickUpTime,
+    const response = await dispatch(
+      placeOrder(
+        getFormattedRequestPayload(
+          // props.phone_code,
+          user,
+          user.user.selectedPickUpTime,
 
-            menu.restaurantInfo,
-            deliveryDetails,
-            orderId,
-            getSubTotal(),
-            getSubTaxTotal(),
-            getBillAmount(),
-            menu.cart,
-            user.distance,
-            Math.abs(getSavedAmount()),
-            // getSavedAmount(),
-            getDeliveryCharges(),
-            user.user.phonecode,
-            user.user.selectedDeliveryTime,
-            cpid,
-            cpamount
-          ),
-          user.user.token
-        )
-      );
-      console.log("reponse is", response);
-      const error = response;
-      const {
-        data: { RESULT, message },
-      } = response;
-      console.log("response is", response);
-      console.log("results", RESULT);
-      if (RESULT == "SUCCESS") {
-        console.log("if statement", deliveryDetails.paymentMethod);
-        if (deliveryDetails.paymentMethod == "1") {
-          const x = await sendpaymentreq("1", orderId);
-          if (x == "error") {
-            setdata({ ...state, displayloader: false });
-            return notification["warning"]({
-              style: {
-                marginTop: "50px",
-                color: "rgba(0, 0, 0, 0.65)",
-                border: "1px solid #b7eb8f",
-                backgroundColor: "#f6ffed",
-              },
-              message: "Something wrong with payments",
-            });
-          }
+          menu.restaurantInfo,
+          deliveryDetails,
+          orderId,
+          getSubTotal(),
+          getSubTaxTotal(),
+          getBillAmount(),
+          menu.cart,
+          user.distance,
+          Math.abs(getSavedAmount()),
+          // getSavedAmount(),
+          getDeliveryCharges(),
+          user.user.phonecode,
+          user.user.selectedDeliveryTime,
+          cpid,
+          cpamount
+        ),
+        user.user.token
+      )
+    );
+    console.log("reponse is", response);
+    const error = response;
+    const {
+      data: { RESULT, message },
+    } = response;
+    console.log("response is", response);
+    console.log("results", RESULT);
+    if (RESULT == "SUCCESS") {
+      console.log("if statement", deliveryDetails.paymentMethod);
+      if (deliveryDetails.paymentMethod == "1") {
+        const x = await sendpaymentreq("1", orderId);
+        if (x == "error") {
+          setdata({ ...state, displayloader: false });
+          return notification["warning"]({
+            style: {
+              marginTop: "50px",
+              color: "rgba(0, 0, 0, 0.65)",
+              border: "1px solid #b7eb8f",
+              backgroundColor: "#f6ffed",
+            },
+            message: "Something wrong with payments",
+          });
+        }
 
-          if (couponId) {
-            dispatch(
-              couponRedeem(
-                user.user.clientId,
-                menu.restaurantInfo.restaurant_id,
-                couponId
-              )
-            );
-          }
-
-          //dispatch(clearMenuState());
-        } else if (deliveryDetails.paymentMethod == "4") {
-          const x = await sendpaymentreq("2", orderId);
-          if (x == "error") {
-            setdata({ ...state, displayloader: false });
-            return notification["warning"]({
-              style: {
-                marginTop: "50px",
-                color: "rgba(0, 0, 0, 0.65)",
-                border: "1px solid #b7eb8f",
-                backgroundColor: "#f6ffed",
-              },
-              message: "Something wrong with payments",
-            });
-          }
-          if (couponId) {
-            dispatch(
-              couponRedeem(
-                user.user.clientId,
-                menu.restaurantInfo.restaurant_id,
-                couponId
-              )
-            );
-          }
-
-          // dispatch(clearMenuState());
-        } else {
-          if (couponId) {
-            dispatch(
-              couponRedeem(
-                user.user.clientId,
-                menu.restaurantInfo.restaurant_id,
-                couponId
-              )
-            );
-          }
-          dispatch(clearMenuState());
-          History.push(
-            `/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${response_format.order_id}`
+        if (couponId) {
+          dispatch(
+            couponRedeem(
+              user.user.clientId,
+              menu.restaurantInfo.restaurant_id,
+              couponId
+            )
           );
         }
+
+        //dispatch(clearMenuState());
+      } else if (deliveryDetails.paymentMethod == "4") {
+        const x = await sendpaymentreq("2", orderId);
+        if (x == "error") {
+          setdata({ ...state, displayloader: false });
+          return notification["warning"]({
+            style: {
+              marginTop: "50px",
+              color: "rgba(0, 0, 0, 0.65)",
+              border: "1px solid #b7eb8f",
+              backgroundColor: "#f6ffed",
+            },
+            message: "Something wrong with payments",
+          });
+        }
+        if (couponId) {
+          dispatch(
+            couponRedeem(
+              user.user.clientId,
+              menu.restaurantInfo.restaurant_id,
+              couponId
+            )
+          );
+        }
+
+        // dispatch(clearMenuState());
+      } else {
+        if (couponId) {
+          dispatch(
+            couponRedeem(
+              user.user.clientId,
+              menu.restaurantInfo.restaurant_id,
+              couponId
+            )
+          );
+        }
+        dispatch(clearMenuState());
+        History.push(
+          `/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${response_format.order_id}`
+        );
       }
-
-      // else if (response.error) {
-      //   alert("something went wrong");
-
-      //   return (
-      //     <>
-      //       <p>something went wrong</p>
-      //     </>
-      //   );
-      // }
     }
+
+    // else if (response.error) {
+    //   alert("something went wrong");
+
+    //   return (
+    //     <>
+    //       <p>something went wrong</p>
+    //     </>
+    //   );
+    // }
   };
 
   function showPizzaDetails(pizza) {
@@ -735,6 +687,10 @@ const Checkout = () => {
     dispatch(setComment(e.target.value));
     setcomm(e.target.value);
   }
+
+  useEffect(() => {
+    console.log("comments is", comm);
+  }, [comm]);
 
   const [discountnumber, setdiscountnumber] = useState();
   const [maxdiscountnumber, setmaxdiscountnumber] = useState();

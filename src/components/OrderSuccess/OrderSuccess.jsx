@@ -126,6 +126,11 @@ const OrderSuccess = () => {
     } else {
       fetchdata();
     }
+    localStorage.removeItem("paymentType");
+    localStorage.removeItem("deliveryType");
+    localStorage.removeItem("checkoutState");
+    localStorage.removeItem("dtime");
+    localStorage.removeItem("ptime");
   }, []);
 
   useEffect(() => {

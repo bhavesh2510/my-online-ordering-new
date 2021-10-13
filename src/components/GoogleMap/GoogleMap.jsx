@@ -2,14 +2,18 @@ import React from "react";
 import { Map, GoogleApiWrapper, Marker, InfoWindow } from "google-maps-react";
 import "../../components/GoogleMap/GoogleMap.css";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-places-autocomplete";
+import Geocode from "react-geocode";
+
 const GoogleMap = (props) => {
   const main = useSelector((state) => state.main);
   const menu = useSelector((state) => state.menu);
+  const dispatch = useDispatch();
+  const [placeaddress, setPlaceaddress] = useState();
   const [state, setState] = useState({
     showingInfoWindow: false,
     activeMarker: {},
@@ -59,20 +63,32 @@ const GoogleMap = (props) => {
       ...state,
       mapCentre: { lat: cordinates.lat, lng: cordinates.lng },
     });
+
     console.log("setmarker stata", state);
 
     props.onMarkerPositionChange && props.onMarkerPositionChange(cordinates);
   };
 
-  const calculateDistance = (origin, destination, callback) => {
+  const calculateDistance = (
+    origin,
+    destination,
+    add1,
+    city,
+    zipcode,
+    country,
+    callback
+  ) => {
     //const service = new props.google.maps.DistanceMatrixService();
-    console.log("destination is", destination);
 
     const service = new props.google.maps.DistanceMatrixService();
 
-    const originCord = `${origin.lat},${origin.lng}`;
+    // const originCord = `${origin.lat},${origin.lng}`;
+    // const destinationCord = `${destination.lat},${destination.lng}`;
 
-    const destinationCord = `${destination.lat},${destination.lng}`;
+    const originCord = `${main.selectedRestaurant.address},${main.selectedRestaurant.city}, ${main.selectedRestaurant.zipcode}, ${main.selectedRestaurant.country}`;
+    const destinationCord = `${add1},${city},${zipcode},${country}`;
+
+    console.log("destination is", destinationCord, originCord);
 
     service.getDistanceMatrix(
       {
@@ -120,13 +136,86 @@ const GoogleMap = (props) => {
     );
   };
 
-  const handleDragEnd = ({ latLng }) => {
+  const handleDragEnd = async ({ latLng }) => {
     console.log("drag", latLng);
     const cordinates = {
       lat: latLng.lat(),
       lng: latLng.lng(),
     };
-    console.log("drag", cordinates);
+
+    const response = await Geocode.fromLatLng(cordinates.lat, cordinates.lng);
+    const address = response.results[0].formatted_address;
+
+    console.log("address ", address);
+
+    // get the distance b/w user and restaurant
+    // and check if it's in the range of delivery
+
+    // setState({ ...state, address });
+    //setaddressdetail({ ...addressdetail, address });
+    // get address, city, state, country, zipcode.
+    const addressComponents = response.results[0].address_components;
+
+    console.log("addressComponents", addressComponents);
+
+    const details = {
+      add1: "",
+      add2: "",
+      city: "",
+      town: "",
+      state: "",
+      zipcode: "",
+      country: "",
+    };
+
+    for (let i = 0; i < addressComponents.length; i++) {
+      switch (addressComponents[i].types[0]) {
+        case "street_number": {
+          details.add1 = addressComponents[i].long_name;
+
+          break;
+        }
+        case "route": {
+          details.add1 = addressComponents[i].long_name;
+
+          break;
+        }
+        case "locality": {
+          details.city = addressComponents[i].long_name;
+
+          break;
+        }
+        case "postal_town": {
+          details.town = addressComponents[i].long_name;
+
+          break;
+        }
+
+        case "state": {
+          details.state = addressComponents[i].long_name;
+
+          break;
+        }
+        case "country": {
+          details.country = addressComponents[i].long_name;
+
+          break;
+        }
+        case "postal_code": {
+          details.zipcode = addressComponents[i].long_name;
+          break;
+        }
+      }
+    }
+
+    let str;
+    if (details.country == "United Kingdom") {
+      str = `${details.add1} ${details.town} ,${details.zipcode} ${details.country}`;
+    } else {
+      str = `${details.add1} ${details.city} ,${details.zipcode} ${details.country}`;
+    }
+    console.log("drag", str);
+    setPlaceaddress(str);
     //setState({ lat: cordinates.lat, lng: cordinates.lng });
 
     setMarkerPosition(cordinates);
@@ -149,10 +238,18 @@ const GoogleMap = (props) => {
   };
 
   const handleChange = (address) => {
+    console.log("address is", address);
+    setPlaceaddress(address);
     setState({ ...state, address });
   };
 
+  useEffect(() => {
+    console.log("state in google map", state);
+  }, [state]);
+
   const handleSelect = (address) => {
+    setPlaceaddress(address);
+    console.log("address in select", address);
     geocodeByAddress(address)
       .then((results) => getLatLng(results[0]))
       .then((latLng) => {
@@ -176,22 +273,22 @@ const GoogleMap = (props) => {
   }, []);
 
   return (
-    <div className="google-map-container">
+    <div className='google-map-container'>
       <PlacesAutocomplete
-        value={state.address}
+        value={placeaddress}
         onChange={handleChange}
         onSelect={handleSelect}
       >
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
           <div>
             <input
-              style={{ width: "100%", height: "40px" }}
+              style={{ width: "102%", height: "40px" }}
               {...getInputProps({
                 placeholder: "Search Places ...",
                 className: "location-search-input",
               })}
             />
-            <div className="autocomplete-dropdown-container">
+            <div className='autocomplete-dropdown-container'>
               {loading && <div>Loading...</div>}
               {suggestions.map((suggestion) => {
                 const className = suggestion.active
@@ -199,8 +296,17 @@ const GoogleMap = (props) => {
                   : "suggestion-item";
                 // inline style for demonstration purpose
                 const style = suggestion.active
-                  ? { backgroundColor: "#fafafa", cursor: "pointer" }
-                  : { backgroundColor: "#ffffff", cursor: "pointer" };
+                  ? {
+                      backgroundColor: "#393939",
+                      cursor: "pointer",
+                      color: "#fff",
+                      height: "40px",
+                    }
+                  : {
+                      backgroundColor: "#ffffff",
+                      cursor: "pointer",
+                      height: "40px",
+                    };
                 return (
                   <div
                     {...getSuggestionItemProps(suggestion, {
@@ -245,7 +351,7 @@ const GoogleMap = (props) => {
           visible={state.showingInfoWindow}
           onClose={handleClose}
         >
-          <div className="address-info">
+          <div className='address-info'>
             <h3>{name || ""}</h3>
             <h4>{address || ""}</h4>
           </div>

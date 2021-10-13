@@ -92,17 +92,17 @@ const ItemList = ({
 
     return (
       <>
-        <section className="size-and-base-section">
+        <section className='size-and-base-section'>
           <label>Size & Base: {item.selectedBase.name}</label>
         </section>
-        <section className="toppings-list">
+        <section className='toppings-list'>
           {defaultToppings !== "" ? <label>Default Toppings: </label> : null}
           <span>{defaultToppings}</span>
           <br />
           {optionalToppings !== "" ? <label>Optional Toppings: </label> : null}
           <span>{optionalToppings}</span>
         </section>
-        <section className="toppings-list">
+        <section className='toppings-list'>
           {halfAndHalf !== "" ? <label>Half And Half Choice: </label> : null}
           <span>{halfAndHalf}</span>
         </section>
@@ -250,7 +250,7 @@ const ItemList = ({
     return (
       <>
         <section
-          className="size-and-base-section"
+          className='size-and-base-section'
           style={{ marginTop: "10px", marginLeft: "25px", lineHeight: "1.4" }}
         >
           <label style={{ fontSize: "12px" }}>Size & Base:&nbsp; </label>
@@ -263,7 +263,7 @@ const ItemList = ({
           </span>
         </section>
         <section
-          className="toppings-list"
+          className='toppings-list'
           style={{ marginLeft: "25px", lineHeight: "1.4" }}
         >
           {defaultToppings !== "" ? (
@@ -297,7 +297,7 @@ const ItemList = ({
           </span>
         </section>
         <section
-          className="toppings-list"
+          className='toppings-list'
           style={{ marginLeft: "25px", lineHeight: "1.4" }}
         >
           {halfAndHalf !== "" ? (
@@ -321,7 +321,7 @@ const ItemList = ({
 
   return (
     <>
-      <table className="table table_summary">
+      <table className='table table_summary'>
         <tbody>
           {items.map((item, i) => {
             if (item.isHappyHourActive) {
@@ -337,14 +337,18 @@ const ItemList = ({
 
             return (
               <>
-                <tr style={{ lineHeight: "1" }}>
+                <tr
+                  style={{
+                    lineHeight: "1",
+                  }}
+                >
                   <td>
                     <button
                       onClick={() => onRemove(item)}
-                      className="cart-button"
+                      className='cart-button'
                     >
                       <RemoveCircleIcon
-                        fontSize="small"
+                        fontSize='small'
                         style={{ color: "black" }}
                       />
                     </button>

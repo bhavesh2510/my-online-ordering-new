@@ -418,9 +418,10 @@ const Information = (props) => {
                     className='info-box-freedelivery-text'
                     style={{ marginTop: "-17px" }}
                   >
-                    Over{" "}
-                    {menu.restaurantInfo.cost.free_delivery_eligible_amount}{" "}
-                    {props.restaurantInfo?.monetary_symbol}
+                    Over {props.restaurantInfo?.monetary_symbol}
+                    {
+                      menu.restaurantInfo.cost.free_delivery_eligible_amount
+                    }{" "}
                   </p>
                 </div>
               ) : null}

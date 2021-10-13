@@ -46,6 +46,7 @@ const ManageAddress = (props) => {
     fetchAddressList();
   }, []);
   const dispatch = useDispatch();
+  const [frompayment, setfrompayment] = useState(false);
 
   const fetchAddressList = async () => {
     const { payload } = await dispatch(fetchAddressesList(user.user.clientId));
@@ -314,7 +315,11 @@ const ManageAddress = (props) => {
         </main>
       </div>
       {modal.modal.modalToShow == "findAddress" ? (
-        <ChooseAddress refetchAddresses={sethandleadd} />
+        <ChooseAddress
+          refetchAddresses={sethandleadd}
+          bool='no'
+          isItFromCheckout={setfrompayment}
+        />
       ) : null}
       {modal.modal.modalToShow == "AddAddress" ? <AddAddress /> : null}
     </>

@@ -3,13 +3,13 @@ const Address = ({ address }) => {
   return (
     <>
       <ul
-        className="address-lines"
+        className='address-lines'
         //onClick={() => onClick && onClick(address)}
       >
         <li style={{ marginTop: "0px" }}>
           <span>
             <p
-              className="address_name"
+              className='address_name'
               style={{
                 textTransform: "capitalize",
                 marginLeft: "-10px",
@@ -30,10 +30,10 @@ const Address = ({ address }) => {
 
         <li>
           <span>
-            <h5 className="address_name">{address.name}</h5>
+            <h5 className='address_name'>{address.name}</h5>
           </span>
         </li>
-        <div className="for-mobile">
+        <div className='for-mobile'>
           <li>
             <span>{address.address1}</span> &nbsp;{" "}
             <span>{address.address2}</span>
@@ -41,7 +41,8 @@ const Address = ({ address }) => {
 
           <li>
             <span>
-              {address.city} - {address.zipcode}
+              {address.city == "undefined" ? "" : address.city}
+              {address.zipcode}
             </span>
           </li>
         </div>

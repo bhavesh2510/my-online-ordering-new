@@ -120,6 +120,7 @@ export function getFormattedRequestPayload(
   //const user1 = useSelector((state) => state.user);
 
   const formattedItems = getFormmatedItems(cartList, restaurant);
+  console.log("delivery in utils", delivery);
 
   const localTaxItem = formattedItems.find((item) => item["local_tax"] !== 0);
   const serviceTaxItem = formattedItems.find(
@@ -133,7 +134,7 @@ export function getFormattedRequestPayload(
     .tz(moment(), `${restaurant.timezone}`)
 
     .format("HH:mm");
-  console.log("timezon in util", local_time);
+  console.log("rest in util", restaurant);
   const payload = {
     ...user,
     ...restaurant,
@@ -176,11 +177,13 @@ export function getFormattedRequestPayload(
   console.log("Formatted Request Payload", payload);
 
   var x;
+  var u = Array.isArray(user.selectedAddress);
+  console.log("uyuuu is", u);
 
   if (delivery.deliveryType == DELIVERY_TYPE.DEFAULT) {
     if (user.selectedAddress.state) {
       x = user.selectedAddress.state;
-    } else if (user.selectedAddress[0].state) {
+    } else if (Array.isArray(user.selectedAddress)) {
       x = user.selectedAddress[0].state;
     } else {
       x = "";
@@ -213,8 +216,8 @@ export function getFormattedRequestPayload(
         //   user.selectedAddress.phone || user.selectedAddress[0].phone,
         delivery_option: delivery.deliveryType.toLowerCase(),
         order_location: null,
-        time_for_delivery: user.selectedDeliveryTime,
-        delivery_time: user.selectedDeliveryTime,
+        time_for_delivery: delivery.DeliveryTime,
+        delivery_time: delivery.DeliveryTime,
         delivery_cost: deliveryCharges,
         phone: "",
         coupon_id: couponId,
@@ -229,8 +232,8 @@ export function getFormattedRequestPayload(
         delivery_zipcode: "",
         delivery_option: delivery.deliveryType.toLowerCase(),
         order_location: null,
-        time_for_delivery: "",
-        delivery_time: user.selectedPickUpTime,
+        time_for_delivery: delivery.DeliveryTime,
+        delivery_time: delivery.DeliveryTime,
         distance: "",
         phone: user.user.mobile,
         delivery_phone: user.user.mobile,

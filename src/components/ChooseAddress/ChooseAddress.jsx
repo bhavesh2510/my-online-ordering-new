@@ -22,12 +22,17 @@ import TextField from "@material-ui/core/TextField";
 import { openModal, closeModal } from "../../state-management/modal/actions";
 import AddAddress from "./AddAddress";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { setDestinationCoordinates } from "../../state-management/main/actions";
+import { declareTypeAlias } from "@babel/types";
+import { notification } from "antd";
+
 Geocode.setApiKey("AIzaSyCMTj6FEwu3Kh0tSdgp6hh4QOKgIJF74rs");
 
 const ChooseAddress = (props) => {
   const main = useSelector((state) => state.main);
   const user = useSelector((state) => state.user);
   const menu = useSelector((state) => state.menu);
+
   const [latlng, setlatlng] = useState();
   const [addressdetail, setaddressdetail] = useState({
     address: "",
@@ -50,6 +55,7 @@ const ChooseAddress = (props) => {
   const [customercity, setcustomercity] = useState();
   const [customercountry, setcustomercountry] = useState();
   const [customerzipcode, setcustomerzipcode] = useState();
+  const [customerpostaltown, setcustomerpostaltown] = useState();
   const [shownextaddresspage, setshownextaddresspage] = useState(false);
 
   const [state, setState] = useState({
@@ -75,6 +81,7 @@ const ChooseAddress = (props) => {
     country: "",
     zipcode: "",
     errorMessage: false,
+    errorMessageForNullDestination: false,
     distance: 0,
     googleApi: "",
   });
@@ -354,6 +361,7 @@ const ChooseAddress = (props) => {
   };
 
   const handleMarkerPostionChange = async (position) => {
+    dispatch(setDestinationCoordinates(position));
     if (position) {
       const { lat, lng } = position;
       console.log("position is", position);
@@ -386,6 +394,7 @@ const ChooseAddress = (props) => {
       const addressComponents = response.results[0].address_components;
 
       console.log("addressComponents", addressComponents);
+      dispatch(setDestinationCoordinates(addressComponents));
 
       for (let i = 0; i < addressComponents.length; i++) {
         switch (addressComponents[i].types[0]) {
@@ -405,10 +414,18 @@ const ChooseAddress = (props) => {
             //     addressComponents[i].long_name + " " + prevState.addressLine1,
             // }));
 
-            setcustomersnumber((prevState) => ({
-              address_1:
-                addressComponents[i].long_name + " " + prevState.address_1,
-            }));
+            if (main.selectedRestaurant.country == "United Kingdom") {
+              setcustomersnumber((prevState) => ({
+                address_1:
+                  prevState.address_1 + " " + addressComponents[i].long_name,
+              }));
+            } else {
+              setcustomersnumber((prevState) => ({
+                address_1:
+                  addressComponents[i].long_name + " " + prevState.address_1,
+              }));
+            }
+
             break;
           }
           case "locality": {
@@ -421,6 +438,17 @@ const ChooseAddress = (props) => {
 
             break;
           }
+          case "postal_town": {
+            // setaddressdetail({
+            //   ...addressdetail,
+            //   city: addressComponents[i].long_name,
+            // });
+
+            setcustomerpostaltown(addressComponents[i].long_name);
+
+            break;
+          }
+
           case "state": {
             // setaddressdetail({
             //   ...addressdetail,
@@ -509,7 +537,7 @@ const ChooseAddress = (props) => {
     if (result.status === "SUCCESS") {
       // check if distance is inside restaurant deilvery range
       const distance = parseFloat(result.distance / 1000);
-      console.log(distance);
+      console.log("distance in decimal", distance);
       if (!isDistanceInDeliveryRange(distance, main.deliveryRange)) {
         setState({
           ...state,
@@ -524,7 +552,7 @@ const ChooseAddress = (props) => {
             userAddress: {
               address1: customersnumber.address_1,
               state: customerstate,
-              city: customercity,
+              city: customercity ? customercity : customerpostaltown,
               country: customercountry,
               zipcode: customerzipcode,
             },
@@ -549,6 +577,7 @@ const ChooseAddress = (props) => {
   };
 
   const isDistanceInDeliveryRange = (distance, { range }) => {
+    console.log("new distance is distnce", distance);
     let maxDistance = 0;
 
     for (const dist in range) {
@@ -568,20 +597,134 @@ const ChooseAddress = (props) => {
   };
 
   const handleDelivery = () => {
+    console.log("not from checkout", props.bool, props.isItFromCheckout);
+
     console.log("check api", state.googleApi);
     setState({
-      state,
+      ...state,
       addressLine1: customersnumber.address_1,
-      city: customercity,
+      city: customercity ? customercity : customerpostaltown,
       zipcode: customerzipcode,
       country: customercountry,
     });
 
-    state.googleApi.calculateDistance(
-      state.restaurantCordinate,
-      latlng,
-      handleDistanceCalucationCallback
-    );
+    const details = {
+      add1: "",
+      add2: "",
+      city: "",
+      zipcode: "",
+      country: "",
+    };
+
+    for (let i = 0; i < main.destination_coordinates.length; i++) {
+      switch (main.destination_coordinates[i].types[0]) {
+        case "street_number": {
+          details.add1 = main.destination_coordinates[i].long_name;
+
+          break;
+        }
+        case "route": {
+          details.add2 = main.destination_coordinates[i].long_name;
+        }
+        case "postal_town": {
+          details.city = main.destination_coordinates[i].long_name;
+
+          break;
+        }
+        case "state": {
+          break;
+        }
+        case "country": {
+          details.country = main.destination_coordinates[i].long_name;
+
+          break;
+        }
+        case "postal_code": {
+          // setaddressdetail({
+          //   ...addressdetail,
+          //   zipcode: main.destination_coordinates[i].long_name,
+          // });
+          details.zipcode = main.destination_coordinates[i].long_name;
+
+          break;
+        }
+      }
+    }
+
+    console.log("details is", details);
+
+    const service = new window.google.maps.DistanceMatrixService();
+
+    // const originCord = `${origin.lat},${origin.lng}`;
+    // const destinationCord = `${destination.lat},${destination.lng}`;
+
+    const originCord = `${main.selectedRestaurant.address},${main.selectedRestaurant.city}, ${main.selectedRestaurant.zipcode}, ${main.selectedRestaurant.country}`;
+    const destinationCord = `${details.add1}+${details.add2},${details.city},${details.zipcode},${details.country}`;
+
+    console.log("destination is", destinationCord, originCord);
+    if (destinationCord) {
+      service.getDistanceMatrix(
+        {
+          origins: [originCord],
+          destinations: [destinationCord],
+          travelMode: "DRIVING",
+          durationInTraffic: true,
+          avoidHighways: false,
+          // unitSystem: props.google.maps.UnitSystem.METRIC,
+          avoidTolls: false,
+        },
+        (response) => {
+          let reason;
+
+          let distance;
+
+          let status;
+
+          console.log("response in google payemnt", response);
+
+          if (
+            response.rows[0].elements[0].distance === undefined &&
+            response.destinationAddresses[0] === "0,0"
+          ) {
+            // user has to choose some correct address
+            reason = "Please choose an address";
+            status = "FAILED";
+          } else if (
+            response.rows[0].elements[0].status !== undefined &&
+            response.rows[0].elements[0].status === "ZERO_RESULTS"
+          ) {
+            reason = "Sorry, Chosen address is out of delivery range!";
+            status = "FAILED";
+          } else {
+            status = "SUCCESS";
+            distance = response.rows[0].elements[0].distance.value;
+          }
+
+          handleDistanceCalucationCallback({ distance, status, reason });
+
+          // callback({
+          //   distance,
+          //   status,
+          //   reason,
+          // });
+        }
+      );
+    } else {
+      setState({
+        ...state,
+        errorMessageForNullDestination: "Please select address again.",
+      });
+    }
+
+    // state.googleApi.calculateDistance(
+    //   // state.restaurantCordinate,
+    //   // latlng,
+    //   customersnumber.address_1,
+    //   customercity,
+    //   customerzipcode,
+    //   customercountry,
+    //   handleDistanceCalucationCallback
+    // );
   };
 
   useEffect(() => {
@@ -612,16 +755,14 @@ const ChooseAddress = (props) => {
   return (
     <>
       <Modal
-        className="xyz"
+        className='xyz'
         isOpen={true}
         toggle={toggle}
         style={{ top: "5%" }}
       >
         <ModalHeader style={{ height: "60px" }} toggle={toggle}>
           {" "}
-          <p style={{ textAlign: "center", fontSize: "20px" }}>
-            SELECT DELIVERY AREA
-          </p>
+          <p className='heading-for-modalchooseaddress'>SELECT DELIVERY AREA</p>
         </ModalHeader>
         <ModalBody>
           <h4>Please enter correct address with house number</h4>
@@ -663,12 +804,33 @@ const ChooseAddress = (props) => {
               </div>
             </>
           ) : null}
+          {state.errorMessageForNullDestination ? (
+            <>
+              <div style={{ marginTop: "10px" }}>
+                <p
+                  style={{
+                    // textAlign: "center",
+                    color: "red",
+                    fontSize: "20px",
+                    paddingRight: "110px",
+                  }}
+                >
+                  {state.errorMessageForNullDestination}
+                </p>
+              </div>
+            </>
+          ) : null}
         </ModalFooter>
       </Modal>
 
       {shownextaddresspage ? (
         <>
-          <AddAddress refetchAddresses={props.refetchAddresses} />
+          <AddAddress
+            refetchAddresses={props.refetchAddresses}
+            bool={props.bool}
+            isItFromCheckout={props.isItFromCheckout}
+            getAddress={props.getAddress}
+          />
         </>
       ) : null}
     </>

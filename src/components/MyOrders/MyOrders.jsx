@@ -277,8 +277,8 @@ const MyOrders = React.memo(({ restaurantId }) => {
     //   "HH:mm"
     // ).format("HH:mm A");
     setextradetails(response.payload.data[0].order_time);
-    // setpickuptime(response.payload.data[0].delivery_time);
-    // setdeliverytime(formatted);
+    setpickuptime(response.payload.data[0].delivery_time);
+    setdeliverytime(response.payload.data[0].delivery_time);
 
     setcurrentorderData(response.payload.data);
     setsubtotal(response.payload.data[0].subtotal);
@@ -838,7 +838,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
                                     <div className='pay-opt'>Pickup Time</div>
                                     <div className='pay-name'>
                                       <div className='pay-method'>
-                                        {user.selectedPickUpTime}
+                                        {pickuptime}
                                       </div>
                                     </div>
                                     <br />
@@ -850,7 +850,7 @@ const MyOrders = React.memo(({ restaurantId }) => {
                                     <div className='pay-opt'>Delivery Time</div>
                                     <div className='pay-name'>
                                       <div className='pay-method'>
-                                        {user.selectedDeliveryTime}
+                                        {deliverytime}
                                       </div>
                                     </div>
                                     <br />

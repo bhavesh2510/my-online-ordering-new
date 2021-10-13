@@ -30,6 +30,7 @@ const initialState = {
   messageForMonth: "",
   isClosedForOnceAMonth: false,
   messageForOnceAMonth: "",
+  destination_coordinates: null,
 };
 
 const itemsToPersist = ["selectedRestaurant", "chainId", "restId"];
@@ -117,6 +118,14 @@ const mainReducer = (state = initialState, action) => {
       );
       persistState(newState, itemsToPersist, REDUCER_KEY);
 
+      return newState;
+    }
+    case actionTypes.SET_DESTINATION_COORDINATES: {
+      console.log("in reucer coordiantes", action.payload);
+      newState = {
+        ...state,
+        destination_coordinates: action.payload,
+      };
       return newState;
     }
 

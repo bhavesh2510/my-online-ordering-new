@@ -100,3 +100,11 @@ export function fetchClosedInformationFailure(error) {
     error,
   };
 }
+
+export function setDestinationCoordinates(payload) {
+  console.log("coordinates are", payload);
+  return {
+    type: actionTypes.SET_DESTINATION_COORDINATES,
+    payload,
+  };
+}

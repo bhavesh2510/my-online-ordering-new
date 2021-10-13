@@ -9,10 +9,10 @@
 }
 #cart_box {
   max-height: 500px;
-  overflow-y: scroll;
+  overflow-y: hidden;
 }
 #cart_box:hover {
-  overflow-y: scroll;
+  overflow-y: scroll !important;
 }
 #cart_box::-webkit-scrollbar-track {
   border-radius: 10px;
