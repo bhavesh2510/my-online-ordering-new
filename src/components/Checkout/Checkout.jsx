@@ -1,104 +1,104 @@
-import Appheader from "../AppHeader/AppHeader";
-import "../Checkout/Checkout.css";
+import Appheader from "../AppHeader/AppHeader"
+import "../Checkout/Checkout.css"
 // import Button from "@material-ui/core/Button";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
-import MoneyIcon from "@material-ui/icons/Money";
-import moment from "moment";
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet"
+import MoneyIcon from "@material-ui/icons/Money"
+import moment from "moment"
 import {
   setDeliveryCost,
   setIsTakeAway,
-  setPickupTime,
-} from "../../state-management/user/actions";
+  setPickupTime
+} from "../../state-management/user/actions"
 import {
   isHappyHourStillActive,
-  setTimer,
-} from "../../state-management/menu/utils";
+  setTimer
+} from "../../state-management/menu/utils"
 import {
   addItem,
   removeItem,
-  clearMenuState,
-} from "../../state-management/menu/actions";
-import { TimePicker } from "antd";
-import { notification } from "antd";
-import "antd/dist/antd.css";
-import { getFormattedRequestPayload } from "../Checkout/utils";
-import PaymentForm from "../Checkout/PaymentForm";
+  clearMenuState
+} from "../../state-management/menu/actions"
+import { TimePicker } from "antd"
+import { notification } from "antd"
+import "antd/dist/antd.css"
+import { getFormattedRequestPayload } from "../Checkout/utils"
+import PaymentForm from "../Checkout/PaymentForm"
 import {
   checkCoupons,
   placeOrder,
-  couponRedeem,
-} from "../../state-management/menu/asyncActions";
-import axios from "axios";
-import sha256 from "js-sha256";
-import { CompassCalibrationOutlined } from "@material-ui/icons";
-import { useHistory } from "react-router";
-import { getTaxes } from "../../state-management/menu/operations";
-import WaitingOverlay from "../WaitingOverlay/WaitingOverlay";
-import AppHeader from "../AppHeader/AppHeader";
-import Footer from "../Footer/Footer";
-import RenderModifiers from "../../containers/Modifiers/RenderModifiers";
-import { modalNames } from "../AppModal/constants";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-import { closeModal, openModal } from "../../state-management/modal/actions";
-import { setComment } from "../../state-management/menu/actions";
-import { makeStyles } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
+  couponRedeem
+} from "../../state-management/menu/asyncActions"
+import axios from "axios"
+import sha256 from "js-sha256"
+import { CompassCalibrationOutlined } from "@material-ui/icons"
+import { useHistory } from "react-router"
+import { getTaxes } from "../../state-management/menu/operations"
+import WaitingOverlay from "../WaitingOverlay/WaitingOverlay"
+import AppHeader from "../AppHeader/AppHeader"
+import Footer from "../Footer/Footer"
+import RenderModifiers from "../../containers/Modifiers/RenderModifiers"
+import { modalNames } from "../AppModal/constants"
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart"
+import { closeModal, openModal } from "../../state-management/modal/actions"
+import { setComment } from "../../state-management/menu/actions"
+import { makeStyles } from "@material-ui/core"
+import CloseIcon from "@material-ui/icons/Close"
 //import { checkCoupons } from "../../state-management/menu/asyncActions";
-import { Box, Drawer, ListItem, SwipeableDrawer } from "@material-ui/core";
-import LoadingBar from "../../components/LoadingBar/LoadingBar";
+import { Box, Drawer, ListItem, SwipeableDrawer } from "@material-ui/core"
+import LoadingBar from "../../components/LoadingBar/LoadingBar"
 
-import RestrictUser from "../RestrictUser/RestrictUser";
+import RestrictUser from "../RestrictUser/RestrictUser"
 const useStyle = makeStyles({
   list: {
-    width: 450,
+    width: 450
   },
   "@media (max-width:768px)": {
     list: {
-      width: 250,
-    },
-  },
-});
+      width: 250
+    }
+  }
+})
 
 const Checkout = () => {
   //const format = "HH:mm";
-  const History = useHistory();
+  const History = useHistory()
 
-  const main = useSelector((state) => state.main);
-  const menu = useSelector((state) => state.menu);
-  const user = useSelector((state) => state.user);
+  const main = useSelector((state) => state.main)
+  const menu = useSelector((state) => state.menu)
+  const user = useSelector((state) => state.user)
 
-  const [couponisapplied, setcouponisapplied] = useState(false);
-  const [amountaftercouponapplied, setamountaftercouponapplied] = useState();
-  const [couponappliedname, setcouponappliedname] = useState();
-  const [couponamount, setcouponamount] = useState();
-  const [couponId, setcouponId] = useState();
-  const [couponredeemed, setcouponredeemed] = useState(false);
-  const [couponredeemedmessage, setcouponredeemedmessage] = useState();
-  const [coupontypeisdiscount, setcoupontypeisdiscount] = useState(false);
-  const [paymentfailed, setpaymentfailed] = useState(false);
-
-  useEffect(() => {
-    console.log("coupon id is", couponId);
-  }, [couponId]);
-  useEffect(() => {
-    console.log("coupon id is amount", couponamount);
-  }, [couponamount]);
+  const [couponisapplied, setcouponisapplied] = useState(false)
+  const [amountaftercouponapplied, setamountaftercouponapplied] = useState()
+  const [couponappliedname, setcouponappliedname] = useState()
+  const [couponamount, setcouponamount] = useState()
+  const [couponId, setcouponId] = useState()
+  const [couponredeemed, setcouponredeemed] = useState(false)
+  const [couponredeemedmessage, setcouponredeemedmessage] = useState()
+  const [coupontypeisdiscount, setcoupontypeisdiscount] = useState(false)
+  const [paymentfailed, setpaymentfailed] = useState(false)
 
   useEffect(() => {
-    console.log("payment failed is", paymentfailed);
-  }, [paymentfailed]);
+    console.log("coupon id is", couponId)
+  }, [couponId])
+  useEffect(() => {
+    console.log("coupon id is amount", couponamount)
+  }, [couponamount])
 
-  const dispatch = useDispatch();
-  let refIndex = -1;
-  const timeOutRef = Array.from({ length: 100 }, () => React.createRef());
+  useEffect(() => {
+    console.log("payment failed is", paymentfailed)
+  }, [paymentfailed])
+
+  const dispatch = useDispatch()
+  let refIndex = -1
+  const timeOutRef = Array.from({ length: 100 }, () => React.createRef())
   const DELIVERY_TYPE = {
     DEFAULT: "Delivery",
     TAKE_AWAY: "PickUp",
     HOME_DELIVERY: "Delivery",
-    EAT_IN: "EatIn",
-  };
+    EAT_IN: "EatIn"
+  }
   const [data, setdata] = useState({
     // displayloader: false,
     deliveryType: user.isTakeAway
@@ -124,78 +124,78 @@ const Checkout = () => {
       moment().add(30, "minutes").format("HH:mm") >= main.opening &&
       moment().add(30, "minutes").format("HH:mm") <= main.closing
         ? moment().add(30, "minutes")
-        : moment(main.opening, "HH:mm"),
-  });
-  const [show, setshow] = useState(false);
-  let isDecimalAmount = false;
+        : moment(main.opening, "HH:mm")
+  })
+  const [show, setshow] = useState(false)
+  let isDecimalAmount = false
   const [state, setState] = useState({
     showAddress: false,
-    deliveryType: "",
-  });
+    deliveryType: ""
+  })
 
   const truncateDecimal = (number) => {
     return Number.isInteger(Number(number))
       ? Number(number)
-      : Number(number).toFixed(2);
-  };
-  const grandTotal = Number(getGrandTotal());
-  const [billPercentAmount, setbillPercentAmount] = useState();
-  const [restrict, setRestrict] = useState(false);
+      : Number(number).toFixed(2)
+  }
+  const grandTotal = Number(getGrandTotal())
+  const [billPercentAmount, setbillPercentAmount] = useState()
+  const [restrict, setRestrict] = useState(false)
 
   useEffect(() => {
     if (!user.user.isUserLoggedIn) {
-      setRestrict(true);
+      setRestrict(true)
     }
     if (main.deliveryRange)
       //getDeliveryCharges();
       //dispatch(setPickupTime(data.pickupTime));
       //getDeliveryCharges();
 
-      console.log("xyz", data.pickupTime);
+      console.log("xyz", data.pickupTime)
 
     const deliveryOptions = !(
       main.selectedRestaurant.order_option === "" ||
       main.selectedRestaurant.order_option === null ||
       main.selectedRestaurant.order_option === undefined
-    );
+    )
 
     if (main.selectedRestaurant.order_option) {
       data.hasDeliveryOption = main.selectedRestaurant.order_option
         .split(",")
-        .includes("delivery");
+        .includes("delivery")
       data.hasEatInOption = main.selectedRestaurant.order_option
         .split(",")
-        .includes("eatin");
+        .includes("eatin")
       data.hasPickupOption = main.selectedRestaurant.order_option
         .split(",")
-        .includes("pickup");
+        .includes("pickup")
     }
 
-    data.paymentOptions = main.selectedRestaurant.payment_option_ids.split(",");
+    data.paymentOptions = main.selectedRestaurant.payment_option_ids.split(",")
 
     setdata({
-      ...data,
-    });
-    console.log("dtaa is", data);
-    setbillPercentAmount(getBillAmount() / 100);
-  }, []);
+      ...data
+    })
+    console.log("dtaa is", data)
+    setbillPercentAmount(getBillAmount() / 100)
+  }, [])
 
   const isPriceWithoutTax = () => {
     console.log(
       "price without tax",
       menu.restaurantInfo["price_without_tax_flag"]
-    );
-    return Number(menu.restaurantInfo["price_without_tax_flag"]);
-  };
+    )
+    return Number(menu.restaurantInfo["price_without_tax_flag"])
+  }
 
   function getItemPrice(item, isStillActive) {
-    console.log("getItem item is", item);
+    console.log("getItem item is", item)
     if (item.happyHourItem && isStillActive) {
       return isPriceWithoutTax
         ? truncateDecimal(item.happyHourItem.grandTotal)
-        : truncateDecimal(item.happyHourItem.grandTotal);
+        : truncateDecimal(item.happyHourItem.grandTotal)
     } else {
-      return isPriceWithoutTax ? item.grandTotal : item.grandTotal;
+      return isPriceWithoutTax ? item.grandTotal : item.grandTotal
     }
 
     // if (item.happyHourItem && isStillActive) {
@@ -250,11 +250,11 @@ const Checkout = () => {
         : (
             Number(item.price) +
             Number(getTaxes(item, item.price, menu.restaurantInfo).tax)
-          ).toFixed(2);
+          ).toFixed(2)
     }
 
-    return 0;
-  };
+    return 0
+  }
 
   function getSubTotal() {
     return menu.cart.length
@@ -270,16 +270,16 @@ const Checkout = () => {
                 (item.happyHourItem.subTotal
                   ? Number(item.happyHourItem.subTotal)
                   : Number(item.qty) * Number(item.price))
-              );
+              )
             }
 
             return (
               acc +
               (item.subTotal ? item.subTotal : item.qty * Number(item.price))
-            );
+            )
           }, 0)
         )
-      : "";
+      : ""
   }
 
   function getSubTaxTotal() {
@@ -296,13 +296,13 @@ const Checkout = () => {
                 (item.happyHourItem.tax
                   ? item.happyHourItem.tax
                   : item.tax || 0)
-              );
+              )
             }
 
-            return acc + Number(item.tax || 0);
+            return acc + Number(item.tax || 0)
           }, 0)
         )
-      : "";
+      : ""
   }
 
   function getGrandTotal() {
@@ -321,84 +321,84 @@ const Checkout = () => {
                     ? item.happyHourItem.grandTotal
                     : item.happyHourItem.subTotal
                 )
-              );
+              )
             }
 
-            return acc + (item.grandTotal ? item.grandTotal : item.subTotal);
+            return acc + (item.grandTotal ? item.grandTotal : item.subTotal)
           }, 0)
         )
-      : "";
+      : ""
   }
 
   // const deliveryCharges = 0;
   const getBillAmount = () => {
-    var finalAmount;
+    var finalAmount
     if (couponisapplied) {
       var finalAmount =
         (Number(user.delivery_cost) + Number(getGrandTotal())).toFixed(2) -
-        couponamount;
+        couponamount
     } else {
       var finalAmount = (
         Number(user.delivery_cost) + Number(getGrandTotal())
-      ).toFixed(2);
+      ).toFixed(2)
     }
     const showAmountInDecimal =
-      Number(menu.restaurantInfo["show_prices_in_decimal_flag"]) === 1;
+      Number(menu.restaurantInfo["show_prices_in_decimal_flag"]) === 1
 
     if (showAmountInDecimal) {
-      isDecimalAmount = true;
+      isDecimalAmount = true
     } else {
-      isDecimalAmount = finalAmount % 1 === 0;
+      isDecimalAmount = finalAmount % 1 === 0
     }
 
     return !showAmountInDecimal && finalAmount % 1 !== 0
       ? finalAmount
-      : finalAmount;
-  };
+      : finalAmount
+  }
 
   const getDeliveryCharges = () => {
-    console.log("we are in getd");
-    if (!main.deliveryRange) return;
-    const cost = main.deliveryRange.cost;
-    const range = main.deliveryRange.range;
-    const isTakeAway = user.isTakeAway;
-    const distance = user.distance;
+    console.log("we are in getd")
+    if (!main.deliveryRange) return
+    const cost = main.deliveryRange.cost
+    const range = main.deliveryRange.range
+    const isTakeAway = user.isTakeAway
+    const distance = user.distance
 
-    const freeDeliveryRangeAmount = cost["free_delivery_eligible_amount"];
-    const stdDeliveryCost = cost["std_delivery_cost"] || 0;
+    const freeDeliveryRangeAmount = cost["free_delivery_eligible_amount"]
+    const stdDeliveryCost = cost["std_delivery_cost"] || 0
     console.log(
       "check delivery",
       parseInt(cost["free_delivery_eligible_amount"]) === 0,
       parseInt(cost["std_delivery_cost"]) === 0,
       grandTotal
-    );
+    )
 
     const isFreeDelivery =
       grandTotal >= Number(cost["free_delivery_eligible_amount"]) &&
-      parseInt(freeDeliveryRangeAmount) !== 0;
+      parseInt(freeDeliveryRangeAmount) !== 0
 
     if (isFreeDelivery || isTakeAway) {
-      dispatch(setDeliveryCost(0));
-      return 0;
+      dispatch(setDeliveryCost(0))
+      return 0
     }
     //
 
     if (distance === -1 || !range) {
-      console.log("std delivery cost", stdDeliveryCost);
-      console.log("std delivery cost", Number(stdDeliveryCost));
+      console.log("std delivery cost", stdDeliveryCost)
+      console.log("std delivery cost", Number(stdDeliveryCost))
       if (stdDeliveryCost) {
-        dispatch(setDeliveryCost(Number(stdDeliveryCost)));
+        dispatch(setDeliveryCost(Number(stdDeliveryCost)))
       }
-      return Number(stdDeliveryCost);
+      return Number(stdDeliveryCost)
     }
 
     if (range) {
       const selectedRange = range.find((rng) => {
-        const from = Number(rng["range_from"]);
-        const to = Number(rng["range_to"]);
+        const from = Number(rng["range_from"])
+        const to = Number(rng["range_to"])
 
-        return distance >= from && distance <= to;
-      });
+        return distance >= from && distance <= to
+      })
 
       // selectedRange
       //   ?( Number(selectedRange["delivery_cost"]) || 0)
@@ -406,32 +406,32 @@ const Checkout = () => {
 
       if (selectedRange) {
         if (selectedRange["delivery_cost"]) {
-          dispatch(setDeliveryCost(selectedRange["delivery_cost"]));
-          console.log("range", selectedRange["delivery_cost"]);
+          dispatch(setDeliveryCost(selectedRange["delivery_cost"]))
+          console.log("range", selectedRange["delivery_cost"])
         } else {
-          dispatch(setDeliveryCost(0));
+          dispatch(setDeliveryCost(0))
         }
       } else {
-        dispatch(setDeliveryCost(Number(stdDeliveryCost)));
+        dispatch(setDeliveryCost(Number(stdDeliveryCost)))
       }
       return selectedRange
         ? Number(selectedRange["delivery_cost"] || 0)
-        : Number(stdDeliveryCost);
+        : Number(stdDeliveryCost)
     }
 
-    return 0;
-  };
+    return 0
+  }
 
-  const [updatedcouponamount, setupdatedcouponamount] = useState();
+  const [updatedcouponamount, setupdatedcouponamount] = useState()
   const handleAddItem = (item) => {
     dispatch(
       addItem(item, item.modifiers || 0, item.subTotal, menu.restaurantInfo)
-    );
-  };
+    )
+  }
 
   const handleRemoveItem = (item) => {
-    dispatch(removeItem(item, item.modifiers || null, 0, menu.restaurantInfo));
-  };
+    dispatch(removeItem(item, item.modifiers || null, 0, menu.restaurantInfo))
+  }
 
   const getSavedAmount = () => {
     return menu.cart.length
@@ -446,35 +446,35 @@ const Checkout = () => {
                 acc +
                 (item.grandTotal -
                   ((item.happyHourItem && item.happyHourItem.grandTotal) || 0))
-              );
+              )
             }
 
-            return acc;
+            return acc
           }, 0)
         )
-      : "";
-  };
+      : ""
+  }
 
-  const savedAmount = Math.abs(getSavedAmount());
+  const savedAmount = Math.abs(getSavedAmount())
 
   const sendpaymentreq = async (type, orderId) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        var errorurl = `https://ciboapp.com/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`;
-        var failedurl = `https://ciboapp.com/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`;
+        var errorurl = `https://ciboapp.com/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`
+        var failedurl = `https://ciboapp.com/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`
         //var failedurl = `http://localhost:3000/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`;
-        var accepturl = `https://ciboapp.com/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${orderId}`;
+        var accepturl = `https://ciboapp.com/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${orderId}`
         //var accepturl = `http://localhost:3000/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${orderId}`;
-        var callbackurl = "https://ciboapp.com/api/mobileApi/v2/app/callback";
-        var mkey = menu.restaurantInfo.merchant_key;
-        var sec = menu.restaurantInfo.secret;
-        var userid = "123";
+        var callbackurl = "https://ciboapp.com/api/mobileApi/v2/app/callback"
+        var mkey = menu.restaurantInfo.merchant_key
+        var sec = menu.restaurantInfo.secret
+        var userid = "123"
 
         let str = `${getBillAmount()}${callbackurl}${
           menu.restaurantInfo.currency
-        }${errorurl}${failedurl}${mkey}${orderId}${accepturl}${sec}`;
+        }${errorurl}${failedurl}${mkey}${orderId}${accepturl}${sec}`
 
-        let mac = sha256(str);
+        let mac = sha256(str)
 
         const paymentdata = {
           name: user.user.firstName,
@@ -490,8 +490,8 @@ const Checkout = () => {
           accept_url: accepturl,
           failed_url: failedurl,
           error_url: errorurl,
-          callback_url: callbackurl,
-        };
+          callback_url: callbackurl
+        }
 
         //live https://api.zotto.z-payments.com/api/payment-link
         //live merchant : 2533554646411
@@ -507,34 +507,34 @@ const Checkout = () => {
             paymentdata
           )
           .then((response) => {
-            console.log(response.data);
-            resolve("complete");
+            console.log(response.data)
+            resolve("complete")
 
-            window.location.href = response.data.data.paymentLink;
+            window.location.href = response.data.data.paymentLink
           })
           .catch((error) => {
-            resolve("error");
-            console.log("we have payment error");
-          });
-      }, 2000);
-    });
-  };
+            resolve("error")
+            console.log("we have payment error")
+          })
+      }, 2000)
+    })
+  }
 
   const getOrderId = () => {
-    return new Date().getTime().toString();
-  };
+    return new Date().getTime().toString()
+  }
   const handleCheckout = async (deliveryDetails) => {
-    console.log("deliveryDetails is ", deliveryDetails);
-    console.log("saved amount", Math.abs(getSavedAmount()));
-    var cpamount = couponamount;
-    var cpid = couponId;
-    console.log("couponamount is ", cpamount);
+    console.log("deliveryDetails is ", deliveryDetails)
+    console.log("saved amount", Math.abs(getSavedAmount()))
+    var cpamount = couponamount
+    var cpid = couponId
+    console.log("couponamount is ", cpamount)
 
-    setdata({ ...state, displayloader: true });
+    setdata({ ...state, displayloader: true })
     // return;
 
-    const orderId = getOrderId();
-    var savedAmount = "1";
+    const orderId = getOrderId()
+    var savedAmount = "1"
     const response_format = getFormattedRequestPayload(
       // props.phone_code,
       user,
@@ -554,9 +554,9 @@ const Checkout = () => {
       user.selectedDeliveryTime,
       cpid,
       cpamount
-    );
+    )
 
-    console.log("payload is", response_format);
+    console.log("payload is", response_format)
 
     const response = await dispatch(
       placeOrder(
@@ -583,29 +583,29 @@ const Checkout = () => {
         ),
         user.user.token
       )
-    );
-    console.log("reponse is", response);
-    const error = response;
+    )
+    console.log("reponse is", response)
+    const error = response
     const {
-      data: { RESULT, message },
-    } = response;
-    console.log("response is", response);
-    console.log("results", RESULT);
+      data: { RESULT, message }
+    } = response
+    console.log("response is", response)
+    console.log("results", RESULT)
     if (RESULT == "SUCCESS") {
-      console.log("if statement", deliveryDetails.paymentMethod);
+      console.log("if statement", deliveryDetails.paymentMethod)
       if (deliveryDetails.paymentMethod == "1") {
-        const x = await sendpaymentreq("1", orderId);
+        const x = await sendpaymentreq("1", orderId)
         if (x == "error") {
-          setdata({ ...state, displayloader: false });
+          setdata({ ...state, displayloader: false })
           return notification["warning"]({
             style: {
               marginTop: "50px",
               color: "rgba(0, 0, 0, 0.65)",
               border: "1px solid #b7eb8f",
-              backgroundColor: "#f6ffed",
+              backgroundColor: "#f6ffed"
             },
-            message: "Something wrong with payments",
-          });
+            message: "Something wrong with payments"
+          })
         }
 
         if (couponId) {
@@ -615,23 +615,23 @@ const Checkout = () => {
               menu.restaurantInfo.restaurant_id,
               couponId
             )
-          );
+          )
         }
 
         //dispatch(clearMenuState());
       } else if (deliveryDetails.paymentMethod == "4") {
-        const x = await sendpaymentreq("2", orderId);
+        const x = await sendpaymentreq("2", orderId)
         if (x == "error") {
-          setdata({ ...state, displayloader: false });
+          setdata({ ...state, displayloader: false })
           return notification["warning"]({
             style: {
               marginTop: "50px",
               color: "rgba(0, 0, 0, 0.65)",
               border: "1px solid #b7eb8f",
-              backgroundColor: "#f6ffed",
+              backgroundColor: "#f6ffed"
             },
-            message: "Something wrong with payments",
-          });
+            message: "Something wrong with payments"
+          })
         }
         if (couponId) {
           dispatch(
@@ -640,7 +640,7 @@ const Checkout = () => {
               menu.restaurantInfo.restaurant_id,
               couponId
             )
-          );
+          )
         }
 
         // dispatch(clearMenuState());
@@ -652,12 +652,12 @@ const Checkout = () => {
               menu.restaurantInfo.restaurant_id,
               couponId
             )
-          );
+          )
         }
-        dispatch(clearMenuState());
+        dispatch(clearMenuState())
         History.push(
           `/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${response_format.order_id}`
-        );
+        )
       }
     }
 
@@ -670,56 +670,56 @@ const Checkout = () => {
     //     </>
     //   );
     // }
-  };
+  }
 
   function showPizzaDetails(pizza) {
     dispatch(
       openModal(modalNames.RENDER_PIZZADETAILS_CHECKOUT, {
         item: {
-          ...pizza,
-        },
+          ...pizza
+        }
       })
-    );
+    )
   }
 
-  const [comm, setcomm] = useState();
+  const [comm, setcomm] = useState()
   function handleComments(e) {
-    dispatch(setComment(e.target.value));
-    setcomm(e.target.value);
+    dispatch(setComment(e.target.value))
+    setcomm(e.target.value)
   }
 
   useEffect(() => {
-    console.log("comments is", comm);
-  }, [comm]);
+    console.log("comments is", comm)
+  }, [comm])
 
-  const [discountnumber, setdiscountnumber] = useState();
-  const [maxdiscountnumber, setmaxdiscountnumber] = useState();
+  const [discountnumber, setdiscountnumber] = useState()
+  const [maxdiscountnumber, setmaxdiscountnumber] = useState()
   useEffect(() => {
     if (coupontypeisdiscount) {
       var amt = (Number(user.delivery_cost) + Number(getGrandTotal())).toFixed(
         2
-      );
-      var fp = amt / 100;
-      var cp = truncateDecimal(fp * discountnumber);
+      )
+      var fp = amt / 100
+      var cp = truncateDecimal(fp * discountnumber)
       // setupdatedcouponamount(cp);
-      console.log("cp & max", cp, maxdiscountnumber);
+      console.log("cp & max", cp, maxdiscountnumber)
       if (maxdiscountnumber > cp || maxdiscountnumber == 0) {
-        setcouponamount(cp);
+        setcouponamount(cp)
       } else if (maxdiscountnumber < cp) {
-        setcouponamount(maxdiscountnumber);
+        setcouponamount(maxdiscountnumber)
       }
     }
-  }, [getBillAmount()]);
+  }, [getBillAmount()])
 
   useEffect(() => {
-    console.log("updated coupon amount is", discountnumber);
-  }, [maxdiscountnumber]);
+    console.log("updated coupon amount is", discountnumber)
+  }, [maxdiscountnumber])
 
-  const [draweropen, setdraweropen] = useState(false);
-  const classes = useStyle();
+  const [draweropen, setdraweropen] = useState(false)
+  const classes = useStyle()
 
   const redeemCoupon = async (code, couponId) => {
-    setdata({ ...state, displayloader: true });
+    setdata({ ...state, displayloader: true })
     const response = await dispatch(
       checkCoupons(
         user.user.clientId,
@@ -727,62 +727,60 @@ const Checkout = () => {
         menu.restaurantInfo.restaurant_id,
         code
       )
-    );
+    )
 
     if (response.data.status == "200") {
       if (response.data.data.type == "amount") {
-        setcoupontypeisdiscount(false);
-        setamountaftercouponapplied(
-          getBillAmount() - response.data.data.amount
-        );
-        setcouponisapplied(true);
-        setcouponappliedname(response.data.data.coupon_name);
-        setcouponamount(response.data.data.amount);
-        setcouponId(response.data.data.coupon_id);
-        setcouponredeemed(false);
+        setcoupontypeisdiscount(false)
+        setamountaftercouponapplied(getBillAmount() - response.data.data.amount)
+        setcouponisapplied(true)
+        setcouponappliedname(response.data.data.coupon_name)
+        setcouponamount(response.data.data.amount)
+        setcouponId(response.data.data.coupon_id)
+        setcouponredeemed(false)
       } else if (response.data.data.type == "discount") {
-        setcoupontypeisdiscount(true);
-        console.log("updated coupon amount is", response.data.data.discount);
-        setdiscountnumber(response.data.data.discount);
+        setcoupontypeisdiscount(true)
+        console.log("updated coupon amount is", response.data.data.discount)
+        setdiscountnumber(response.data.data.discount)
 
-        var billPercentAmount = getBillAmount() / 100;
+        var billPercentAmount = getBillAmount() / 100
         var percent_amount = truncateDecimal(
           response.data.data.discount * billPercentAmount
-        );
+        )
 
-        var max_amount = truncateDecimal(response.data.data.max_discount);
-        setmaxdiscountnumber(truncateDecimal(response.data.data.max_discount));
+        var max_amount = truncateDecimal(response.data.data.max_discount)
+        setmaxdiscountnumber(truncateDecimal(response.data.data.max_discount))
         //  var max_amount = 30;
 
         // setmaxdiscountnumber(truncateDecimal(30.0));
 
         if (max_amount > percent_amount || max_amount == 0) {
-          setcouponisapplied(true);
-          setcouponappliedname(response.data.data.coupon_name);
-          setcouponamount(percent_amount);
-          setcouponId(response.data.data.coupon_id);
-          setcouponredeemed(false);
+          setcouponisapplied(true)
+          setcouponappliedname(response.data.data.coupon_name)
+          setcouponamount(percent_amount)
+          setcouponId(response.data.data.coupon_id)
+          setcouponredeemed(false)
         } else if (max_amount < percent_amount) {
-          setcouponisapplied(true);
-          setcouponappliedname(response.data.data.coupon_name);
-          setcouponamount(max_amount);
-          setcouponId(response.data.data.coupon_id);
-          setcouponredeemed(false);
+          setcouponisapplied(true)
+          setcouponappliedname(response.data.data.coupon_name)
+          setcouponamount(max_amount)
+          setcouponId(response.data.data.coupon_id)
+          setcouponredeemed(false)
         }
       }
     } else if (response.data.status == "201") {
-      var amount = 0;
-      setcouponisapplied(false);
-      setcouponredeemed(true);
-      setcouponamount(amount);
+      var amount = 0
+      setcouponisapplied(false)
+      setcouponredeemed(true)
+      setcouponamount(amount)
 
-      setcouponredeemedmessage(response.data.message);
+      setcouponredeemedmessage(response.data.message)
     }
-    console.log("response of redeem", setamountaftercouponapplied);
+    console.log("response of redeem", setamountaftercouponapplied)
 
-    setdraweropen(false);
-    setdata({ ...state, displayloader: false });
-  };
+    setdraweropen(false)
+    setdata({ ...state, displayloader: false })
+  }
 
   return (
     <>
@@ -799,7 +797,7 @@ const Checkout = () => {
             style={{
               transform: "none",
 
-              marginTop: "50px",
+              marginTop: "50px"
             }}
           >
             <div className='row' style={{ transform: "none" }}>
@@ -810,7 +808,7 @@ const Checkout = () => {
                   position: "relative",
                   overflow: "visible",
                   boxSizing: "border-box",
-                  minHeight: "1px",
+                  minHeight: "1px"
                 }}
               >
                 <div
@@ -819,7 +817,7 @@ const Checkout = () => {
                     paddingTop: "0px",
                     paddingBottom: "1px",
                     position: "static",
-                    transform: "none",
+                    transform: "none"
                   }}
                 >
                   <div
@@ -827,7 +825,7 @@ const Checkout = () => {
                     style={{
                       backgroundColor: "#eae8ed",
                       width: "100%",
-                      borderRadius: "20px",
+                      borderRadius: "20px"
                     }}
                   >
                     <p
@@ -835,7 +833,7 @@ const Checkout = () => {
                         textAlign: "center",
                         fontSize: "22px",
                         fontWeight: "700",
-                        color: "black",
+                        color: "black"
                       }}
                     >
                       Your Orders{" "}
@@ -853,13 +851,13 @@ const Checkout = () => {
                             const result = isHappyHourStillActive(
                               val,
                               menu.restaurantInfo.timezone
-                            );
-                            console.log("items in itemlist", val);
+                            )
+                            console.log("items in itemlist", val)
 
-                            var isStillActive = result.isActive;
+                            var isStillActive = result.isActive
                             if (isStillActive) {
-                              refIndex++;
-                              setTimer(result.distance, timeOutRef[refIndex]);
+                              refIndex++
+                              setTimer(result.distance, timeOutRef[refIndex])
                             }
                           }
                           return (
@@ -870,7 +868,7 @@ const Checkout = () => {
                                     style={{
                                       marginTop: "5px",
                                       fontSize: "15px",
-                                      color: "black",
+                                      color: "black"
                                     }}
                                   >
                                     <b>{val.name}</b>
@@ -893,7 +891,7 @@ const Checkout = () => {
                                             marginTop: "10px",
                                             cursor: "pointer",
                                             fontSize: "10px",
-                                            color: "black",
+                                            color: "black"
                                           }}
                                           onClick={() => showPizzaDetails(val)}
                                         >
@@ -930,7 +928,7 @@ const Checkout = () => {
                                       marginTop: "5px",
                                       fontSize: "15px",
                                       color: "#bd1e44",
-                                      fontWeight: "600",
+                                      fontWeight: "600"
                                     }}
                                   >
                                     <span className='float-right'>
@@ -944,7 +942,7 @@ const Checkout = () => {
                                 </td>
                               </tr>
                             </>
-                          );
+                          )
                         })}
                       </tbody>
                     </table>
@@ -990,7 +988,7 @@ const Checkout = () => {
                               marginLeft: "40px",
                               color: "black",
                               fontSize: "23px",
-                              fontWeight: "700",
+                              fontWeight: "700"
                             }}
                           >
                             Available Coupons{" "}
@@ -999,7 +997,7 @@ const Checkout = () => {
                               style={{
                                 float: "right",
                                 marginRight: "20px",
-                                cursor: "pointer",
+                                cursor: "pointer"
                               }}
                             />
                           </h3>
@@ -1008,11 +1006,11 @@ const Checkout = () => {
                             ? menu.coupons.map((coupon) => {
                                 var valid_from = moment(
                                   coupon.date_start
-                                ).format("MMMM Do YYYY");
+                                ).format("MMMM Do YYYY")
                                 var valid_to = moment(coupon.date_end).format(
                                   "MMMM Do YYYY"
-                                );
-                                console.log("valid from date", valid_from);
+                                )
+                                console.log("valid from date", valid_from)
                                 return (
                                   <>
                                     <div className='coupon-code-container'>
@@ -1051,7 +1049,7 @@ const Checkout = () => {
 
                                     <br />
                                   </>
-                                );
+                                )
                               })
                             : null}
                         </div>
@@ -1091,7 +1089,7 @@ const Checkout = () => {
                                 style={{
                                   fontSize: "14px",
                                   fontWeight: "750",
-                                  color: "#25A09E",
+                                  color: "#25A09E"
                                 }}
                               >
                                 {couponappliedname} Offer
@@ -1113,7 +1111,7 @@ const Checkout = () => {
                                 style={{
                                   fontSize: "14px",
                                   fontWeight: "750",
-                                  color: "red",
+                                  color: "red"
                                 }}
                               >
                                 {couponredeemedmessage} !
@@ -1174,7 +1172,7 @@ const Checkout = () => {
                   position: "relative",
                   overflow: "visible",
                   boxSizing: "border-box",
-                  minHeight: "1px",
+                  minHeight: "1px"
                 }}
               >
                 <div
@@ -1183,7 +1181,7 @@ const Checkout = () => {
                     paddingTop: "0px",
                     paddingBottom: "1px",
                     position: "static",
-                    transform: "none",
+                    transform: "none"
                   }}
                 >
                   <div
@@ -1191,7 +1189,7 @@ const Checkout = () => {
                     style={{
                       backgroundColor: "#eae8ed",
                       width: "80%",
-                      borderRadius: "20px",
+                      borderRadius: "20px"
                     }}
                   >
                     <p
@@ -1199,7 +1197,7 @@ const Checkout = () => {
                         textAlign: "center",
                         fontSize: "22px",
                         fontWeight: "700",
-                        color: "black",
+                        color: "black"
                       }}
                     >
                       Your Orders{" "}
@@ -1217,13 +1215,13 @@ const Checkout = () => {
                             const result = isHappyHourStillActive(
                               val,
                               menu.restaurantInfo.timezone
-                            );
-                            console.log("items in itemlist", val);
+                            )
+                            console.log("items in itemlist", val)
 
-                            var isStillActive = result.isActive;
+                            var isStillActive = result.isActive
                             if (isStillActive) {
-                              refIndex++;
-                              setTimer(result.distance, timeOutRef[refIndex]);
+                              refIndex++
+                              setTimer(result.distance, timeOutRef[refIndex])
                             }
                           }
                           return (
@@ -1234,7 +1232,7 @@ const Checkout = () => {
                                     style={{
                                       marginTop: "5px",
                                       fontSize: "15px",
-                                      color: "black",
+                                      color: "black"
                                     }}
                                   >
                                     <b>{val.name}</b>
@@ -1257,7 +1255,7 @@ const Checkout = () => {
                                             marginTop: "10px",
                                             cursor: "pointer",
                                             fontSize: "10px",
-                                            color: "black",
+                                            color: "black"
                                           }}
                                           onClick={() => showPizzaDetails(val)}
                                         >
@@ -1294,7 +1292,7 @@ const Checkout = () => {
                                       marginTop: "5px",
                                       fontSize: "15px",
                                       color: "#bd1e44",
-                                      fontWeight: "600",
+                                      fontWeight: "600"
                                     }}
                                   >
                                     <span className='float-right'>
@@ -1308,7 +1306,7 @@ const Checkout = () => {
                                 </td>
                               </tr>
                             </>
-                          );
+                          )
                         })}
                       </tbody>
                     </table>
@@ -1353,7 +1351,7 @@ const Checkout = () => {
                               marginLeft: "40px",
                               color: "black",
                               fontSize: "23px",
-                              fontWeight: "700",
+                              fontWeight: "700"
                             }}
                           >
                             Available Coupons{" "}
@@ -1362,7 +1360,7 @@ const Checkout = () => {
                               style={{
                                 float: "right",
                                 marginRight: "20px",
-                                cursor: "pointer",
+                                cursor: "pointer"
                               }}
                             />
                           </h3>
@@ -1371,11 +1369,11 @@ const Checkout = () => {
                             ? menu.coupons.map((coupon) => {
                                 var valid_from = moment(
                                   coupon.date_start
-                                ).format("MMMM Do YYYY");
+                                ).format("MMMM Do YYYY")
                                 var valid_to = moment(coupon.date_end).format(
                                   "MMMM Do YYYY"
-                                );
-                                console.log("valid from date", valid_from);
+                                )
+                                console.log("valid from date", valid_from)
                                 return (
                                   <>
                                     <div className='coupon-code-container'>
@@ -1414,7 +1412,7 @@ const Checkout = () => {
 
                                     <br />
                                   </>
-                                );
+                                )
                               })
                             : null}
                         </div>
@@ -1455,7 +1453,7 @@ const Checkout = () => {
                                 style={{
                                   fontSize: "14px",
                                   fontWeight: "750",
-                                  color: "#25A09E",
+                                  color: "#25A09E"
                                 }}
                               >
                                 {couponappliedname} Offer
@@ -1477,7 +1475,7 @@ const Checkout = () => {
                                 style={{
                                   fontSize: "14px",
                                   fontWeight: "750",
-                                  color: "red",
+                                  color: "red"
                                 }}
                               >
                                 {couponredeemedmessage} !
@@ -1529,6 +1527,6 @@ const Checkout = () => {
         </>
       )}
     </>
-  );
-};
-export default Checkout;
+  )
+}
+export default Checkout

@@ -1,46 +1,47 @@
-import React, { useEffect, useState } from "react";
-import "./MenuCategories.css";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react"
+import "./MenuCategories.css"
+import { useDispatch, useSelector } from "react-redux"
 import {
   setSelectedCategoryId,
   displayHappyHours,
   displayPizzas,
-  changechoosencategory,
-} from "../../state-management/menu/actions";
-import { Link as ScrollLink, animateScroll as scroll } from "react-scroll";
-import { Link } from "react-scroll";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import { PinDropSharp } from "@material-ui/icons";
+  changechoosencategory
+} from "../../state-management/menu/actions"
+import { Link as ScrollLink, animateScroll as scroll } from "react-scroll"
+import { Link } from "react-scroll"
+import ChevronRightIcon from "@material-ui/icons/ChevronRight"
+import { PinDropSharp } from "@material-ui/icons"
 // import { CloseOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import MenuIcon from "@material-ui/icons/Menu";
-import CloseIcon from "@material-ui/icons/Close";
-import SimpleBarReact from "simplebar-react";
-import "simplebar/src/simplebar.css";
-import RestaurantIcon from "@material-ui/icons/Restaurant";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import MenuIcon from "@material-ui/icons/Menu"
+import CloseIcon from "@material-ui/icons/Close"
+import SimpleBarReact from "simplebar-react"
+import "simplebar/src/simplebar.css"
+import RestaurantIcon from "@material-ui/icons/Restaurant"
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown"
 //import CloseIcon from "@material-ui/icons/Close";
-import { Box, Drawer, ListItem, SwipeableDrawer } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core";
-import Sticky from "react-sticky-el";
-import Scrollspy from "react-scrollspy";
+import { Box, Drawer, ListItem, SwipeableDrawer } from "@material-ui/core"
+import { makeStyles } from "@material-ui/core"
+import Sticky from "react-sticky-el"
+import Scrollspy from "react-scrollspy"
+import { setActiveLink } from "react-scroll/modules/mixins/scroller"
 
 const useStyle = makeStyles({
   list: {
-    width: 200,
-  },
-});
+    width: 200
+  }
+})
 
 const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
-  const menu = useSelector((state) => state.menu);
-  const dispatch = useDispatch();
-  const [dishes, showDishes] = useState(false);
-  const [drinks, showDrinks] = useState(false);
+  const menu = useSelector((state) => state.menu)
+  const dispatch = useDispatch()
+  const [dishes, showDishes] = useState(false)
+  const [drinks, showDrinks] = useState(false)
 
   useEffect(() => {
     if (menu.cart.length >= 1) {
-      var x = document.getElementById("id-of-menu");
+      var x = document.getElementById("id-of-menu")
       // var y = document.getElementById("menu-2");
-      x.classList.add("bottom-add");
+      x.classList.add("bottom-add")
       //y.classList.add("bottom-add");
     }
     //else {
@@ -49,104 +50,104 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
     //   x.style.bottom = "5%";
     //   // y.style.bottom = "5%";
     // }
-  }, [menu.cart.length]);
+  }, [menu.cart.length])
 
-  const [displayCategoryInMobile, setDisplayCategoryInMobile] = useState("");
-  const [displayHideCategory, setdisplayHideCategory] = useState(false);
+  const [displayCategoryInMobile, setDisplayCategoryInMobile] = useState("")
+  const [displayHideCategory, setdisplayHideCategory] = useState(false)
 
   const showCategory = () => {
     // props.showHideOverlay(true);
-    setDisplayCategoryInMobile("show-mobile-category-list");
-    setdisplayHideCategory(true);
-    setdraweropen(true);
-  };
+    setDisplayCategoryInMobile("show-mobile-category-list")
+    setdisplayHideCategory(true)
+    setdraweropen(true)
+  }
 
   const hideCategory = () => {
-    setDisplayCategoryInMobile("");
-    setdisplayHideCategory(false);
-    setdraweropen(false);
+    setDisplayCategoryInMobile("")
+    setdisplayHideCategory(false)
+    setdraweropen(false)
 
     // props.showHideOverlay(false);
-  };
+  }
 
-  const isPizzaAvailable = menu.pizzas.length;
-  const isHappyHoursActive = isHappyHoursActiveInMenu();
-  console.log("loading in menucategories", loading);
+  const isPizzaAvailable = menu.pizzas.length
+  const isHappyHoursActive = isHappyHoursActiveInMenu()
+  console.log("loading in menucategories", loading)
 
   useEffect(() => {
-    onDishClick();
-    onDrinksClick();
-  }, []);
+    onDishClick()
+    onDrinksClick()
+  }, [])
 
   const onDishClick = () => {
-    var x = document.getElementById("hhour");
-    var y = document.getElementById("hhour-text");
+    var x = document.getElementById("hhour")
+    var y = document.getElementById("hhour-text")
     if (x) {
-      x.style.backgroundColor = "#f1f1f1";
+      x.style.backgroundColor = "#f1f1f1"
     }
     if (y) {
-      y.style.color = "black";
+      y.style.color = "black"
     }
 
-    var a = document.getElementById("pizza-cat");
-    var b = document.getElementById("pizza-cat-text");
+    var a = document.getElementById("pizza-cat")
+    var b = document.getElementById("pizza-cat-text")
     if (a) {
-      a.style.backgroundColor = "#f1f1f1";
+      a.style.backgroundColor = "#f1f1f1"
     }
     if (b) {
-      b.style.color = "black";
+      b.style.color = "black"
     }
-    showDishes(!dishes);
-    drinkstatus(true);
-    dispatch(displayPizzas());
-  };
+    showDishes(!dishes)
+    drinkstatus(true)
+    dispatch(displayPizzas())
+  }
   const onDrinksClick = () => {
-    var x = document.getElementById("hhour");
-    var y = document.getElementById("hhour-text");
+    var x = document.getElementById("hhour")
+    var y = document.getElementById("hhour-text")
     if (x) {
-      x.style.backgroundColor = "#f1f1f1";
+      x.style.backgroundColor = "#f1f1f1"
     }
     if (y) {
-      y.style.color = "black";
+      y.style.color = "black"
     }
 
-    var a = document.getElementById("pizza-cat");
-    var b = document.getElementById("pizza-cat-text");
+    var a = document.getElementById("pizza-cat")
+    var b = document.getElementById("pizza-cat-text")
     if (a) {
-      a.style.backgroundColor = "#f1f1f1";
+      a.style.backgroundColor = "#f1f1f1"
     }
     if (b) {
-      b.style.color = "black";
+      b.style.color = "black"
     }
-    showDrinks(!drinks);
-    drinkstatus(true);
+    showDrinks(!drinks)
+    drinkstatus(true)
 
     // dispatch(displayPizzas());
-  };
+  }
   function isHappyHoursActiveInMenu() {
-    return menu.menuItems.some(({ isHappyHourActive }) => isHappyHourActive);
+    return menu.menuItems.some(({ isHappyHourActive }) => isHappyHourActive)
   }
 
   function showCategoryMobile() {
     if (menu.cart.length >= 1) {
-      var x = document.getElementById("id-of-menu");
+      var x = document.getElementById("id-of-menu")
 
-      x.style.bottom = "12%";
+      x.style.bottom = "12%"
     }
-    showCategory();
+    showCategory()
   }
 
   function hideCategoryMobile() {
     if (menu.cart.length >= 1) {
-      var x = document.getElementById("id-of-menu");
+      var x = document.getElementById("id-of-menu")
 
-      x.style.bottom = "12%";
+      x.style.bottom = "12%"
     }
-    hideCategory();
+    hideCategory()
   }
 
-  const [draweropen, setdraweropen] = useState(false);
-  const classes = useStyle();
+  const [draweropen, setdraweropen] = useState(false)
+  const classes = useStyle()
 
   return (
     <>
@@ -217,7 +218,7 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                 drinkstatus={drinkstatus}
                 hide={() => hideCategory()}
               />
-            ) : null;
+            ) : null
           })}
 
           {/* {categories[1] ? (
@@ -277,7 +278,7 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                 drinkstatus={drinkstatus}
                 hide={() => hideCategory()}
               />
-            ) : null;
+            ) : null
           })}
 
           {isPizzaAvailable ? (
@@ -299,7 +300,7 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                 height: "45px",
                 // height: "auto",
                 width: "85%",
-                marginLeft: "15px",
+                marginLeft: "15px"
               }}
             >
               <Link
@@ -307,19 +308,19 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                 smooth={true}
                 spy={true}
                 to='Pizza'
-                duration={4000}
+                duration={0}
                 offset={-70}
                 onClick={() => {
-                  var x = document.getElementById("hhour");
-                  var y = document.getElementById("hhour-text");
-                  x.style.backgroundColor = "#f1f1f1";
-                  y.style.color = "black";
-                  var a = document.getElementById("pizza-cat");
-                  var b = document.getElementById("pizza-cat-text");
-                  a.style.backgroundColor = "#6244da";
-                  b.style.color = "white";
-                  drinkstatus(true);
-                  dispatch(displayPizzas());
+                  var x = document.getElementById("hhour")
+                  var y = document.getElementById("hhour-text")
+                  x.style.backgroundColor = "#f1f1f1"
+                  y.style.color = "black"
+                  var a = document.getElementById("pizza-cat")
+                  var b = document.getElementById("pizza-cat-text")
+                  a.style.backgroundColor = "#6244da"
+                  b.style.color = "white"
+                  drinkstatus(true)
+                  dispatch(displayPizzas())
                 }}
               >
                 <p
@@ -329,7 +330,7 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                     marginTop: "-4px",
                     color: "black",
                     fontSize: "16px",
-                    fontWeight: "600",
+                    fontWeight: "600"
                   }}
                 >
                   {categories[2].cname} <span> ({isPizzaAvailable}) </span>{" "}
@@ -361,7 +362,7 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                 height: "45px",
                 // height: "auto",
                 width: "85%",
-                marginLeft: "15px",
+                marginLeft: "15px"
               }}
             >
               <Link
@@ -372,16 +373,16 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                 offset={-50}
                 duration={4000}
                 onClick={() => {
-                  var a = document.getElementById("pizza-cat");
-                  var b = document.getElementById("pizza-cat-text");
-                  a.style.backgroundColor = "#f1f1f1";
-                  b.style.color = "black";
-                  var x = document.getElementById("hhour");
-                  var y = document.getElementById("hhour-text");
-                  x.style.backgroundColor = "#6244da";
-                  y.style.color = "white";
-                  drinkstatus(false);
-                  dispatch(displayHappyHours());
+                  var a = document.getElementById("pizza-cat")
+                  var b = document.getElementById("pizza-cat-text")
+                  a.style.backgroundColor = "#f1f1f1"
+                  b.style.color = "black"
+                  var x = document.getElementById("hhour")
+                  var y = document.getElementById("hhour-text")
+                  x.style.backgroundColor = "#6244da"
+                  y.style.color = "white"
+                  drinkstatus(false)
+                  dispatch(displayHappyHours())
                 }}
               >
                 <p
@@ -391,7 +392,7 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                     marginTop: "-4px",
                     color: "black",
                     fontSize: "16px",
-                    fontWeight: "600",
+                    fontWeight: "600"
                   }}
                 >
                   Happy hours <span> ({menu?.happyHours?.length}) </span>
@@ -607,7 +608,7 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                   drinkstatus={drinkstatus}
                   hide={() => hideCategory()}
                 />
-              ) : null;
+              ) : null
             })}
 
             <li
@@ -618,7 +619,7 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                 marginTop: "15px",
                 height: "40px",
                 width: "72%",
-                marginLeft: "15px",
+                marginLeft: "15px"
               }}
             >
               <Link
@@ -636,7 +637,7 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                     marginTop: "-4px",
                     color: "black",
                     fontSize: "16px",
-                    fontWeight: "600",
+                    fontWeight: "600"
                   }}
                 >
                   {categories[1]?.cname}
@@ -666,7 +667,7 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                   drinkstatus={drinkstatus}
                   hide={() => hideCategory()}
                 />
-              ) : null;
+              ) : null
             })}
             {isPizzaAvailable ? (
               <li
@@ -679,7 +680,7 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                   marginTop: "15px",
                   height: "40px",
                   width: "72%",
-                  marginLeft: "15px",
+                  marginLeft: "15px"
                 }}
               >
                 <Link
@@ -690,17 +691,17 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                   duration={4000}
                   offset={-70}
                   onClick={() => {
-                    var x = document.getElementById("hhour");
-                    var y = document.getElementById("hhour-text");
-                    x.style.backgroundColor = "#f1f1f1";
-                    y.style.color = "black";
-                    var a = document.getElementById("pizza-cat");
-                    var b = document.getElementById("pizza-cat-text");
-                    a.style.backgroundColor = "#6244da";
-                    b.style.color = "white";
-                    drinkstatus(true);
-                    dispatch(displayPizzas());
-                    setdraweropen(false);
+                    var x = document.getElementById("hhour")
+                    var y = document.getElementById("hhour-text")
+                    x.style.backgroundColor = "#f1f1f1"
+                    y.style.color = "black"
+                    var a = document.getElementById("pizza-cat")
+                    var b = document.getElementById("pizza-cat-text")
+                    a.style.backgroundColor = "#6244da"
+                    b.style.color = "white"
+                    drinkstatus(true)
+                    dispatch(displayPizzas())
+                    setdraweropen(false)
                   }}
                 >
                   <p
@@ -710,7 +711,7 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                       marginTop: "-4px",
                       color: "black",
                       fontSize: "16px",
-                      fontWeight: "600",
+                      fontWeight: "600"
                     }}
                   >
                     Pizza's <span> ({isPizzaAvailable}) </span>{" "}
@@ -734,7 +735,7 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                   marginTop: "15px",
                   height: "40px",
                   width: "72%",
-                  marginLeft: "15px",
+                  marginLeft: "15px"
                 }}
               >
                 <Link
@@ -745,17 +746,17 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                   offset={-50}
                   duration={4000}
                   onClick={() => {
-                    var a = document.getElementById("pizza-cat");
-                    var b = document.getElementById("pizza-cat-text");
-                    a.style.backgroundColor = "#f1f1f1";
-                    b.style.color = "black";
-                    var x = document.getElementById("hhour");
-                    var y = document.getElementById("hhour-text");
-                    x.style.backgroundColor = "#6244da";
-                    y.style.color = "white";
-                    drinkstatus(false);
-                    dispatch(displayHappyHours());
-                    setdraweropen(false);
+                    var a = document.getElementById("pizza-cat")
+                    var b = document.getElementById("pizza-cat-text")
+                    a.style.backgroundColor = "#f1f1f1"
+                    b.style.color = "black"
+                    var x = document.getElementById("hhour")
+                    var y = document.getElementById("hhour-text")
+                    x.style.backgroundColor = "#6244da"
+                    y.style.color = "white"
+                    drinkstatus(false)
+                    dispatch(displayHappyHours())
+                    setdraweropen(false)
                   }}
                 >
                   <p
@@ -765,7 +766,7 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
                       marginTop: "-4px",
                       color: "black",
                       fontSize: "16px",
-                      fontWeight: "600",
+                      fontWeight: "600"
                     }}
                   >
                     Happy hours <span> ({menu?.happyHours?.length}) </span>
@@ -798,8 +799,8 @@ const MenuCategories = React.memo(({ categories, loading, drinkstatus }) => {
         </section>
       ) : null} */}
     </>
-  );
-});
+  )
+})
 
 const MenuSubCategory = React.memo(
   ({
@@ -808,69 +809,71 @@ const MenuSubCategory = React.memo(
     selectedCategoryId,
     setSelectedCategoryId,
     drinkstatus,
-    hide,
+    hide
   }) => {
-    const menu = useSelector((state) => state.menu);
+    const menu = useSelector((state) => state.menu)
+    const [active, setActive] = useState()
     const isSelectedCategory = (categoryId, index) => {
       if (menu.selectedCategoryId) {
-        return categoryId === menu.selectedCategoryId;
+        return categoryId === menu.selectedCategoryId
       }
 
-      return menu.searchQuery.trim().length > 0 ? false : index === 0;
-    };
-    console.log("list in menucategories is", list);
-    const dispatch = useDispatch();
+      return menu.searchQuery.trim().length > 0 ? false : index === 0
+    }
+    console.log("list in menucategories is", list)
+    const dispatch = useDispatch()
     const handleClick = (e, item) => {
-      drinkstatus(true);
+      console.log("on click item", item)
+      drinkstatus(true)
       // console.log("lis of sub cat", temp_cat);
       // e.stopPropagation();
 
-      var a = document.getElementById("pizza-cat");
-      var b = document.getElementById("pizza-cat-text");
+      var a = document.getElementById("pizza-cat")
+      var b = document.getElementById("pizza-cat-text")
 
-      var x = document.getElementById("hhour");
-      var y = document.getElementById("hhour-text");
+      var x = document.getElementById("hhour")
+      var y = document.getElementById("hhour-text")
       if (x) {
-        x.style.backgroundColor = "#f1f1f1";
+        x.style.backgroundColor = "#f1f1f1"
       }
       if (y) {
-        y.style.color = "black";
+        y.style.color = "black"
       }
       if (a) {
-        a.style.backgroundColor = "#f1f1f1";
+        a.style.backgroundColor = "#f1f1f1"
       }
       if (b) {
-        b.style.color = "black";
+        b.style.color = "black"
       }
 
-      dispatch(setSelectedCategoryId(item.category_id));
-      hide();
+      dispatch(setSelectedCategoryId(item.category_id))
+      hide()
 
-      console.log("items is", item);
-    };
+      console.log("items is", item)
+    }
 
     return list.map((s_category, i) => {
       //drinkstatus(true);
-      console.log("s_category", s_category);
+      console.log("s_category", s_category)
 
       return (
         <Link
-          activeClass='active'
+          activeClass='selected_cat_id'
           className={s_category.cname}
           to={s_category.cname}
           // to='Kebabs'
           spy={true}
           smooth={true}
           offset={-70}
-          duration={4000}
+          duration={0}
           onClick={(e) => {
-            handleClick(e, s_category);
+            handleClick(e, s_category)
           }}
         >
           <li
             //id={s_category.cname}
             key={s_category.category_id}
-            className='categories-list-in-menu'
+            // className='categories-list-in-menu'
             style={{
               cursor: "pointer",
               backgroundColor: "#f1f1f1",
@@ -879,7 +882,7 @@ const MenuSubCategory = React.memo(
               // height: "40px",
               height: "auto",
               width: "85%",
-              marginLeft: "15px",
+              marginLeft: "15px"
             }}
             className={`category ${
               isSelectedCategory(s_category.category_id, i)
@@ -901,7 +904,7 @@ const MenuSubCategory = React.memo(
                 marginTop: "-12px",
                 color: "black",
                 fontSize: "16px",
-                fontWeight: "600",
+                fontWeight: "600"
 
                 // whiteSpace: "nowrap",
               }}
@@ -915,12 +918,12 @@ const MenuSubCategory = React.memo(
             </a>
           </li>
         </Link>
-      );
-    });
+      )
+    })
   }
-);
+)
 
-export default MenuCategories;
+export default MenuCategories
 
 //  cursor: "pointer",
 // borderRadius: "8px",

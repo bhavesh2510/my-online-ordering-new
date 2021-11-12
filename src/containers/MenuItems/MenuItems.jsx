@@ -1,11 +1,11 @@
-import React, { useMemo, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import MenuTable from "../../components/MenuTable/MenuTable";
-import PizzaMenuTable from "../../components/MenuTable/PizzaMenuTable";
-import { getTaxes } from "../../state-management/menu/operations";
-import { getFilterredList } from "../../state-management/menu/selectors";
-import Skeleton from "react-loading-skeleton";
-import { addItem, removeItem } from "../../state-management/menu/actions";
+import React, { useMemo, useState } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import MenuTable from "../../components/MenuTable/MenuTable"
+import PizzaMenuTable from "../../components/MenuTable/PizzaMenuTable"
+import { getTaxes } from "../../state-management/menu/operations"
+import { getFilterredList } from "../../state-management/menu/selectors"
+import Skeleton from "react-loading-skeleton"
+import { addItem, removeItem } from "../../state-management/menu/actions"
 
 const MenuItems = React.memo(
   ({
@@ -19,7 +19,7 @@ const MenuItems = React.memo(
     restaurantInfo,
     searchQuery,
     loading,
-    status,
+    status
   }) => {
     //! [x] Need to refractored, should create a seperate Table (presentational component)
     //! Should filter isOnline isHappyhour active and need to implement details page for menun with subcategory,
@@ -27,52 +27,52 @@ const MenuItems = React.memo(
     //? Need code splitting, load lazily because this is data intensive operation, create a suspense in main route.
 
     //? Need to filter Pizzas and HappyHours based on isActive and isOnline
-    const menu = useSelector((state) => state.menu);
-    const state = useSelector((state) => state);
-    const [hhour, sethhour] = useState(false);
-    const dispatch = useDispatch();
-    console.log("status in menuiten", status);
+    const menu = useSelector((state) => state.menu)
+    const state = useSelector((state) => state)
+    const [hhour, sethhour] = useState(false)
+    const dispatch = useDispatch()
+    console.log("status in menuiten", status)
 
-    console.log("loading in menuTable", loading);
+    console.log("loading in menuTable", loading)
 
-    const allforcedModifiers = menu.allForcedModifier;
-    var array_of_ids = [];
-    var tem_arr_cname = [];
-    var list = (menuItems = getFilterredList(state));
-    console.log("happ hour array ", list);
+    const allforcedModifiers = menu.allForcedModifier
+    var array_of_ids = []
+    var tem_arr_cname = []
+    var list = (menuItems = getFilterredList(state))
+    console.log("happ hour array ", list)
 
     const func = () => {
-      var tem_arr = [];
+      var tem_arr = []
 
-      var dish_subcat_id = [];
-      var dish_cname = [];
-      var drink_subcat_id = [];
-      var drink_cname = [];
+      var dish_subcat_id = []
+      var dish_cname = []
+      var drink_subcat_id = []
+      var drink_cname = []
 
       if (menu.categoriesList[0]) {
         for (let i = 0; i < menu.categoriesList[0].sub_category.length; i++) {
           dish_subcat_id.push(
             menu.categoriesList[0].sub_category[i].category_id
-          );
-          dish_cname.push(menu.categoriesList[0].sub_category[i].cname);
+          )
+          dish_cname.push(menu.categoriesList[0].sub_category[i].cname)
         }
-        array_of_ids.push(dish_subcat_id);
-        tem_arr_cname.push(dish_cname);
+        array_of_ids.push(dish_subcat_id)
+        tem_arr_cname.push(dish_cname)
       }
 
       if (menu.categoriesList[1]) {
         for (let i = 0; i < menu.categoriesList[1].sub_category.length; i++) {
           drink_subcat_id.push(
             menu.categoriesList[1].sub_category[i].category_id
-          );
+          )
 
-          dish_cname.push(menu.categoriesList[1].sub_category[i].cname);
+          dish_cname.push(menu.categoriesList[1].sub_category[i].cname)
         }
       }
-      array_of_ids.push(drink_subcat_id);
-      tem_arr_cname.push(drink_cname);
+      array_of_ids.push(drink_subcat_id)
+      tem_arr_cname.push(drink_cname)
 
-      console.log("temp arr cname is", tem_arr_cname);
+      console.log("temp arr cname is", tem_arr_cname)
 
       for (let j = 0; j < dish_subcat_id.length; j++) {
         tem_arr.push(
@@ -80,7 +80,7 @@ const MenuItems = React.memo(
             ({ category_id: cid, online }) =>
               cid === dish_subcat_id[j] && online === "1"
           )
-        );
+        )
       }
 
       for (let j = 0; j < drink_subcat_id.length; j++) {
@@ -89,26 +89,26 @@ const MenuItems = React.memo(
             ({ category_id: cid, online }) =>
               cid === drink_subcat_id[j] && online === "1"
           )
-        );
+        )
       }
 
-      console.log("temp arr is", tem_arr);
-      return tem_arr;
-    };
+      console.log("temp arr is", tem_arr)
+      return tem_arr
+    }
 
     const findCategory = (selectedCategoryId) => {
-      console.log("memoized value");
+      console.log("memoized value")
 
       return menu.menuItems.filter(
         ({ category_id: cid, online }) =>
           cid === selectedCategoryId && online === "1"
-      );
-    };
+      )
+    }
 
     const filteredIems = useMemo(
       () => findCategory(selectedCategoryId),
       [selectedCategoryId]
-    );
+    )
 
     function getDishesDescription() {
       if (
@@ -122,29 +122,29 @@ const MenuItems = React.memo(
             category["sub_category"].find(
               ({ category_id: cId }) => cId === selectedCategoryId
             )
-        );
-        console.log("category", category);
+        )
+        console.log("category", category)
         const subCategory =
           category &&
           category["sub_category"] &&
           category["sub_category"].find(
             ({ category_id: cId }) => cId === selectedCategoryId
-          );
-        console.log("subcategory is", subCategory);
+          )
+        console.log("subcategory is", subCategory)
         // cname = subCategory ? subCategory.cname : "";
-        return subCategory ? subCategory.description : "";
+        return subCategory ? subCategory.description : ""
       }
     }
     function getSelectedCategoryName(catname) {
-      console.log("catname is xyz", catname);
-      console.log("array of id in catname", array_of_ids);
-      var req_ids = [];
+      console.log("catname is xyz", catname)
+      console.log("array of id in catname", array_of_ids)
+      var req_ids = []
       for (let i = 0; i < 2; i++) {
         for (let j = 0; j < array_of_ids[i].length; j++)
-          req_ids.push(array_of_ids[i][j]);
+          req_ids.push(array_of_ids[i][j])
       }
 
-      console.log("req ids in catnme", tem_arr_cname);
+      console.log("req ids in catnme", tem_arr_cname)
       // if (
       //   categories.length &&
       //   selectedCategoryId &&
@@ -171,17 +171,17 @@ const MenuItems = React.memo(
               category["sub_category"].find(
                 ({ category_id: cId }) => cId === req_ids[k]
               )
-          );
-          console.log("category in catname", category);
+          )
+          console.log("category in catname", category)
           const subCategory =
             category &&
             category["sub_category"] &&
             category["sub_category"].find(
               ({ category_id: cId }) => cId === req_ids[k]
-            );
-          console.log("subcategory in catname", subCategory);
-          console.log("break");
-          return subCategory ? subCategory.cname : "";
+            )
+          console.log("subcategory in catname", subCategory)
+          console.log("break")
+          return subCategory ? subCategory.cname : ""
         }
         //console.log("subcategory in catname", subCategory);
         // cname = subCategory ? subCategory.cname : "";
@@ -189,15 +189,15 @@ const MenuItems = React.memo(
       }
 
       if (selectedCategoryId === -1) {
-        return "Happy Hours";
+        return "Happy Hours"
       } else if (selectedCategoryId === -2) {
-        return "Pizza's";
+        return "Pizza's"
       }
     }
 
     const isPriceWithoutTax = () => {
-      return Number(menu.restaurantInfo["price_without_tax_flag"]);
-    };
+      return Number(menu.restaurantInfo["price_without_tax_flag"])
+    }
 
     const getActualPrice = (item) => {
       //console.log("item.price", item.price);
@@ -208,13 +208,13 @@ const MenuItems = React.memo(
           : (
               Number(item.price) +
               Number(getTaxes(item, item.price, menu.restaurantInfo).tax)
-            ).toFixed(2);
+            ).toFixed(2)
       }
 
-      return 0;
-    };
+      return 0
+    }
 
-    var a = 1;
+    var a = 1
     // const getItemPrice = (item, isStillActive) => {
     //   if (item.happyHourItem && isStillActive) {
     //     if (item.similarItems && item.similarItems.length > 0) {
@@ -264,10 +264,8 @@ const MenuItems = React.memo(
     // };
 
     const removefromcart = (item) => {
-      dispatch(
-        removeItem(item, item.modifiers || null, 0, menu.restaurantInfo)
-      );
-    };
+      dispatch(removeItem(item, item.modifiers || null, 0, menu.restaurantInfo))
+    }
 
     return (
       <>
@@ -345,7 +343,7 @@ const MenuItems = React.memo(
                       onRemoveItem={onRemoveItem}
                       loading={loading}
                     />
-                  );
+                  )
                 })}
               </>
             ) : null}
@@ -366,19 +364,19 @@ const MenuItems = React.memo(
               />
             ) : null} */}
             {console.log("items in menuitem before pizza", pizzas)}
-            {status ? (
-              <>
-                {menu.selectedCategoryId === -2 ? (
-                  <PizzaMenuTable
-                    symbol={restaurantInfo.monetary_symbol}
-                    category_name='Pizza'
-                    list={pizzas}
-                    loading={loading}
-                    removeforpizza={removefromcart}
-                  />
-                ) : null}
-              </>
+            {/* {status ? (
+              <> */}
+            {menu.pizzas ? (
+              <PizzaMenuTable
+                symbol={restaurantInfo.monetary_symbol}
+                category_name='Pizza'
+                list={pizzas}
+                loading={loading}
+                removeforpizza={removefromcart}
+              />
             ) : null}
+            {/* </> */}
+            {/* ) : null} */}
 
             {console.log(
               "checking for happyhour",
@@ -401,8 +399,8 @@ const MenuItems = React.memo(
           </>
         )}
       </>
-    );
+    )
   }
-);
+)
 
-export default MenuItems;
+export default MenuItems

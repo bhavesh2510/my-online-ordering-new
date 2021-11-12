@@ -1,58 +1,59 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import {
   fetchMyOrderList,
-  fetchMyOrderDetails,
-} from "../../state-management/user/asyncActions";
-import AppHeader from "../AppHeader/AppHeader";
-import Footer from "../Footer/Footer";
-import WaitingOverlay from "../WaitingOverlay/WaitingOverlay";
-import moment from "moment";
-import { truncateDecimal } from "../../state-management/menu/utils";
-import HelpIcon from "@material-ui/icons/Help";
-import "./OrderSuccess.css";
-import icon from "./dersucces-icon.png";
-import { clearMenuState } from "../../state-management/menu/actions";
-import RestrictUser from "../RestrictUser/RestrictUser";
+  fetchMyOrderDetails
+} from "../../state-management/user/asyncActions"
+import AppHeader from "../AppHeader/AppHeader"
+import Footer from "../Footer/Footer"
+import WaitingOverlay from "../WaitingOverlay/WaitingOverlay"
+import moment from "moment"
+import { truncateDecimal } from "../../state-management/menu/utils"
+import HelpIcon from "@material-ui/icons/Help"
+import "./OrderSuccess.css"
+import icon from "./dersucces-icon.png"
+import { clearMenuState } from "../../state-management/menu/actions"
+import RestrictUser from "../RestrictUser/RestrictUser"
 
 const OrderSuccess = () => {
-  const dispatch = useDispatch();
-  const menu = useSelector((state) => state.menu);
-  const user = useSelector((state) => state.user);
-  const [restrict, setRestrict] = useState(false);
-  const [ordersession, setordersession] = useState();
+  const dispatch = useDispatch()
+  const menu = useSelector((state) => state.menu)
+  const user = useSelector((state) => state.user)
+  const [restrict, setRestrict] = useState(false)
+  const [ordersession, setordersession] = useState()
+  const [orderid, setorderid] = useState()
 
   const [state, setstate] = useState({
     showOrderDetails: false,
     loadingData: false,
     showOverlay: false,
     errorMessage: false,
-    requestSuccess: null,
-  });
-  var ordersList = [];
-  var ordersData = [];
-  const [orderCoompleteDetails, setorderCoompleteDetails] = useState({});
-  const [savedcouponamount, setsavedcouponamount] = useState();
-  const [waitfordata, setwaitfordata] = useState(true);
-  const [happyHour, sethappyHour] = useState();
+    requestSuccess: null
+  })
+  var ordersList = []
+  var ordersData = []
+  const [orderCoompleteDetails, setorderCoompleteDetails] = useState({})
+  const [savedcouponamount, setsavedcouponamount] = useState()
+  const [waitfordata, setwaitfordata] = useState(true)
+  const [happyHour, sethappyHour] = useState()
 
   const fetchdata = async () => {
-    setstate({ ...state, loadingData: true });
-    console.log("clientid", user.user.clientId);
-    const response = await dispatch(fetchMyOrderList(user.user.clientId));
-    const { payload } = await response;
-    console.log("payload is", payload);
+    setstate({ ...state, loadingData: true })
+    console.log("clientid", user.user.clientId)
+    const response = await dispatch(fetchMyOrderList(user.user.clientId))
+    const { payload } = await response
+    console.log("payload is", payload)
 
-    setstate({ ...state, loadingData: false });
-    let dataSource = [];
+    setstate({ ...state, loadingData: false })
+    let dataSource = []
     if (payload.status == "200") {
       //setstate({ ...state, ordersList: payload.data });
-      ordersList = payload.data;
+      ordersList = payload.data
       console.log(
         ordersList.filter(
           (order) => order.restaurant_id === menu.restaurantInfo.restaurant_id
         )
-      );
+      )
       //console.log("orderList", state.ordersList);
 
       ordersList
@@ -60,82 +61,93 @@ const OrderSuccess = () => {
           (order) => order.restaurant_id === menu.restaurantInfo.restaurant_id
         )
         .map((order, i) => {
-          let data = {};
-          data["key"] = `${i}`;
-          data["order_no"] = order.order_id;
-          data["order_date"] = order.order_date;
-          data["paid"] = order.paid === "1" ? "Yes" : "No";
-          data["status"] = order.order_status;
+          let data = {}
+          data["key"] = `${i}`
+          data["order_no"] = order.order_id
+          data["order_date"] = order.order_date
+          data["paid"] = order.paid === "1" ? "Yes" : "No"
+          data["status"] = order.order_status
           // console.log(data);
-          dataSource.push(data);
+          dataSource.push(data)
           // console.log(this.state.ordersData);
-        });
-      ordersData = dataSource;
+        })
+      ordersData = dataSource
 
-      var oid = ordersList[0].order_id;
-      console.log("orders data", oid);
+      var oid = ordersList[0].order_id
+      console.log("orders data", oid)
       //setstate({ ...state, ordersData: dataSource });
       //console.log("complete data", state);
     }
 
-    const urlParams = new URLSearchParams(window.location.search);
-    var order_session = "";
+    const urlParams = new URLSearchParams(window.location.search)
+    var order_session = ""
     for (const entry of urlParams.entries()) {
-      order_session = entry[1].slice("30");
+      order_session = entry[1].slice("30")
     }
-    console.log("order session in 78", order_session);
-    const response_2 = await dispatch(fetchMyOrderDetails(order_session));
-    const { payload_again } = await response_2;
+    console.log("order session in 78", order_session)
+    const response_2 = await dispatch(fetchMyOrderDetails(order_session))
+    const { payload_again } = await response_2
 
-    console.log("response_2 in ordersuccess", response_2);
+    console.log("response_2 in ordersuccess", response_2)
 
-    var i = 0;
+    var i = 0
 
     if (response_2.payload.status == 200) {
       //orderCoompleteDetails = response_2.payload.data;
-      setorderCoompleteDetails(response_2.payload.data[0]);
-      setsavedcouponamount(response_2.payload.data[0].savings);
-      sethappyHour(response.payload.data[0].happy_hours_discount);
-      dispatch(clearMenuState());
-      setwaitfordata(false);
+      setorderCoompleteDetails(response_2.payload.data[0])
+      setsavedcouponamount(response_2.payload.data[0].savings)
+      sethappyHour(response.payload.data[0].happy_hours_discount)
+      dispatch(clearMenuState())
+      setwaitfordata(false)
     } else if (response_2.payload.status == 201) {
       setTimeout(async function () {
-        var order_session_for_card = "";
+        var order_session_for_card = ""
         for (const entry of urlParams.entries()) {
-          order_session_for_card = entry[1].slice("30");
+          order_session_for_card = entry[1].slice("30")
         }
-        console.log("after 20 seconds", order_session_for_card);
+        console.log("after 20 seconds", order_session_for_card)
         const response_2_for_payments = await dispatch(
           fetchMyOrderDetails(order_session_for_card)
-        );
-        setorderCoompleteDetails(response_2_for_payments.payload.data[0]);
-        setsavedcouponamount(response_2_for_payments.payload.data[0].savings);
-        dispatch(clearMenuState());
-        setwaitfordata(false);
-        var order_session_for_card = "";
-      }, 25000);
+        )
+        setorderCoompleteDetails(response_2_for_payments.payload.data[0])
+        setsavedcouponamount(response_2_for_payments.payload.data[0].savings)
+        dispatch(clearMenuState())
+        setwaitfordata(false)
+        var order_session_for_card = ""
+      }, 25000)
     }
-    console.log("complete details", orderCoompleteDetails);
-    var order_session = "";
-    console.log("order session in 89", order_session);
-  };
+    console.log("complete details", orderCoompleteDetails)
+    var order_session = ""
+    console.log("order session in 89", order_session)
+  }
 
   useEffect(() => {
-    if (!user.user.isUserLoggedIn) {
-      setRestrict(true);
-    } else {
-      fetchdata();
-    }
-    localStorage.removeItem("paymentType");
-    localStorage.removeItem("deliveryType");
-    localStorage.removeItem("checkoutState");
-    localStorage.removeItem("dtime");
-    localStorage.removeItem("ptime");
-  }, []);
+    setTimeout(async function () {
+      if (!user.user.isUserLoggedIn) {
+        setRestrict(true)
+      } else {
+        // fetchdata()
+        const urlParams = new URLSearchParams(window.location.search)
+        var order_session = ""
+        for (const entry of urlParams.entries()) {
+          order_session = entry[1].slice("30")
+        }
+        setorderid(order_session)
+        setwaitfordata(false)
+      }
+
+      dispatch(clearMenuState())
+      localStorage.removeItem("paymentType")
+      localStorage.removeItem("deliveryType")
+      localStorage.removeItem("checkoutState")
+      localStorage.removeItem("dtime")
+      localStorage.removeItem("ptime")
+    }, 5000)
+  }, [])
 
   useEffect(() => {
-    console.log("saved amount", savedcouponamount);
-  }, [savedcouponamount]);
+    console.log("saved amount", savedcouponamount)
+  }, [savedcouponamount])
 
   // useEffect(() => {
 
@@ -153,7 +165,7 @@ const OrderSuccess = () => {
                 style={{
                   textAlign: "center",
                   marginTop: "180px",
-                  fontSize: "30px",
+                  fontSize: "30px"
                 }}
               >
                 Order Confirmed ! <br />
@@ -180,16 +192,29 @@ const OrderSuccess = () => {
                     <div style={{ marginTop: "80px" }}>
                       <img src={icon} style={{ height: "400px" }} />
                       <div className='myorder-parent'>
-                        <p className='order-confirm-text'>Order confirmed !</p>
+                        <p
+                          className='order-confirm-text'
+                          style={{ marginTop: "10px" }}
+                        >
+                          Order confirmed !
+                        </p>
 
                         <p className='hi-text'>Hi {user.user.firstName} !</p>
                         <p className='hi-text-2'>Thanks for your order !</p>
 
-                        <p className='order-number-text'>
-                          Order Number : {orderCoompleteDetails.order_id}
+                        <p
+                          className='order-confirm-text'
+                          style={{ whiteSpace: "nowrap" }}
+                        >
+                          {" "}
+                          Order Number : {orderid}
                         </p>
 
-                        {orderCoompleteDetails.products &&
+                        {/* <p className='order-number-text'>
+                          Order Number : {orderid}
+                        </p> */}
+
+                        {/* {orderCoompleteDetails.products &&
                           orderCoompleteDetails.products.map((currval) => {
                             return (
                               <>
@@ -209,9 +234,9 @@ const OrderSuccess = () => {
                                 <hr style={{ marginTop: "0px" }} />
                               </>
                             );
-                          })}
+                          })} */}
 
-                        {savedcouponamount > 0 ? (
+                        {/* {savedcouponamount > 0 ? (
                           <>
                             <div className='list-of-orders'>
                               <p
@@ -223,9 +248,9 @@ const OrderSuccess = () => {
                               </p>
                             </div>
                           </>
-                        ) : null}
+                        ) : null} */}
 
-                        {happyHour > 0 ? (
+                        {/* {happyHour > 0 ? (
                           <>
                             <div className='list-of-orders'>
                               <p
@@ -237,9 +262,9 @@ const OrderSuccess = () => {
                               </p>
                             </div>
                           </>
-                        ) : null}
+                        ) : null} */}
 
-                        <div className='list-of-orders'>
+                        {/* <div className='list-of-orders'>
                           <p className='list-of-order-text'>Total</p>
                           <p
                             className='list-of-order-text2'
@@ -248,9 +273,9 @@ const OrderSuccess = () => {
                             {orderCoompleteDetails.currency}&nbsp;
                             {orderCoompleteDetails.total}
                           </p>
-                        </div>
+                        </div> */}
 
-                        <div className='list-of-orders'>
+                        {/* <div className='list-of-orders'>
                           <p className='list-of-order-text'>Payment method</p>
                           <p
                             className='list-of-order-text2'
@@ -258,9 +283,9 @@ const OrderSuccess = () => {
                           >
                             {orderCoompleteDetails.pay_method}
                           </p>
-                        </div>
+                        </div> */}
 
-                        <div className='list-of-orders'>
+                        {/* <div className='list-of-orders'>
                           <p className='list-of-order-text'>Order Option</p>
 
                           {orderCoompleteDetails.delivery_option == "pickup" ? (
@@ -290,7 +315,18 @@ const OrderSuccess = () => {
                               {orderCoompleteDetails.delivery_option}
                             </p>
                           ) : null}
-                        </div>
+                        </div> */}
+                      </div>
+                      <div
+                        style={{
+                          textAlign: "center",
+                          marginLeft: "40%",
+                          fontWeight: "600",
+                          fontSize: "15px",
+                          whiteSpace: "nowrap"
+                        }}
+                      >
+                        To view more details, please visit my orders page
                       </div>
                     </div>
                   </div>
@@ -303,6 +339,6 @@ const OrderSuccess = () => {
         </>
       )}
     </>
-  );
-};
-export default OrderSuccess;
+  )
+}
+export default OrderSuccess
