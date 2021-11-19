@@ -1616,7 +1616,7 @@ ul.opening_list li span {
 /* 3.2 Parallax bg */
 .parallax-window {
   min-height: 170px;
-  height: 370px;
+  height: 250px;
   background: transparent;
   position: relative;
 }
@@ -3039,8 +3039,14 @@ ul.plan-features {
 } */
 .selected_cat_id {
   background-color: #6244da !important;
+  color: whitesmoke !important;
+  border-radius: 8px !important;
 }
 .selected_cat_id_color {
+  color: whitesmoke !important;
+}
+.selected_pizza {
+  background-color: #6244da !important;
   color: whitesmoke !important;
 }
 .fontsize-of-ordersuccess {
@@ -3102,7 +3108,7 @@ ul.plan-features {
 }
 @media (max-width: 768px) {
   .mobile-menu-categories {
-    display: block;
+    display: block !important;
     position: fixed;
     bottom: 12%;
     z-index: 100;

@@ -8,10 +8,44 @@
   flex-direction: row;
 }
 .logo-measurements {
-  height: 50px;
-  width: 150px;
+  height: 30px;
+  width: 90px;
+}
+.margin-for-ul-footer {
+  margin-left: 50px;
+}
+.margin-top-for-ul-footer {
+  margin-top: 0px;
+}
+.margin-left-for-ul-footer {
+  margin-left: 0px;
+}
+.margin-for-iphoneplus-pixel {
+  margin-top: 0%;
+}
+.margin-left-in-anchor {
+  margin-left: -27px;
+}
+.hide-on-footer-phone {
+  display: flex;
+  gap: 10px;
+  margin-left: 15%;
+  margin-top: 11%;
 }
 @media (max-width: 768px) {
+  .hide-on-footer-phone {
+    display: none !important;
+  }
+  .margin-top-for-ul-footer {
+    margin-top: 20px;
+  }
+  .margin-for-ul-footer {
+    margin-left: 20px;
+  }
+  .set-margin-zero-from-left {
+    margin-left: 0px;
+  }
+
   .footer-parent {
     display: flex;
     flex-direction: row;
@@ -21,6 +55,7 @@
     display: flex;
     flex-direction: row;
     width: 200%;
+    margin-left: -47%;
   }
   .logo-measurements {
     height: 40px;
@@ -28,6 +63,12 @@
   }
   .margin-for-mobile {
     margin-top: 40px;
+  }
+  .margin-for-iphoneplus-pixel {
+    margin-top: 0%;
+  }
+  .margin-left-in-anchor {
+    margin-left: -27px;
   }
 }
 @media (min-width: 410px) and (max-width: 415px) {
@@ -52,5 +93,20 @@
   }
   .margin-for-mobile {
     margin-top: 50px;
+  }
+  .margin-top-for-ul-footer {
+    margin-top: 20px;
+  }
+  .margin-for-ul-footer {
+    margin-left: 20px;
+  }
+  .set-margin-zero-from-left {
+    margin-left: -15px;
+  }
+  .margin-for-iphoneplus-pixel {
+    margin-top: 80%;
+  }
+  .margin-left-in-anchor {
+    margin-left: -37px;
   }
 }

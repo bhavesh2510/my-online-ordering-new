@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import MenuTable from "../../components/MenuTable/MenuTable"
 import PizzaMenuTable from "../../components/MenuTable/PizzaMenuTable"
@@ -6,6 +6,7 @@ import { getTaxes } from "../../state-management/menu/operations"
 import { getFilterredList } from "../../state-management/menu/selectors"
 import Skeleton from "react-loading-skeleton"
 import { addItem, removeItem } from "../../state-management/menu/actions"
+import { displayHappyHours } from "../../state-management/menu/actions"
 
 const MenuItems = React.memo(
   ({
@@ -267,6 +268,10 @@ const MenuItems = React.memo(
       dispatch(removeItem(item, item.modifiers || null, 0, menu.restaurantInfo))
     }
 
+    useEffect(() => {
+      dispatch(displayHappyHours())
+    }, [])
+
     return (
       <>
         {/* {console.log("seleted category name", getSelectedCategoryName())}
@@ -366,7 +371,7 @@ const MenuItems = React.memo(
             {console.log("items in menuitem before pizza", pizzas)}
             {/* {status ? (
               <> */}
-            {menu.pizzas ? (
+            {menu.pizzas && selectedCategoryId !== -1 ? (
               <PizzaMenuTable
                 symbol={restaurantInfo.monetary_symbol}
                 category_name='Pizza'
@@ -382,20 +387,20 @@ const MenuItems = React.memo(
               "checking for happyhour",
               (menuItems = getFilterredList(state))
             )}
-            {!status ? (
+            {/* {!status ? (
               <>
                 {selectedCategoryId === -1 ? (
-                  <MenuTable
-                    symbol={restaurantInfo.monetary_symbol}
-                    category_name='Happy Hours'
-                    list={(menuItems = getFilterredList(state))}
-                    onAddItem={onAddItem}
-                    loading={loading}
-                    headerforhappyhour={hhour}
-                  />
+                <MenuTable
+                  symbol={restaurantInfo.monetary_symbol}
+                  category_name='Happy Hours'
+                  list={(menuItems = getFilterredList(state))}
+                  onAddItem={onAddItem}
+                  loading={loading}
+                  headerforhappyhour={hhour}
+                />
                 ) : null}
               </>
-            ) : null}
+            ) : null} */}
           </>
         )}
       </>

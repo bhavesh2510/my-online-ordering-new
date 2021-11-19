@@ -1,42 +1,43 @@
-import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router";
-import { useSelector, useDispatch } from "react-redux";
-import { animateScroll as scroll } from "react-scroll";
-import MenuCategories from "../../../components/MenuCategories/MenuCategories";
-import MenuItems from "../../MenuItems/MenuItems";
-import Cart from "../../../components/Cart/Cart";
-import Login from "../../../components/Login/Login";
-import CreateAccount from "../../../components/CreateAccount/CreateAccount";
-import ForgotPassword from "../../../components/ForgotPassword/ForgotPassword";
-import AppHeader from "../../../components/AppHeader/AppHeader";
-import Footer from "../../../components/Footer/Footer";
-import AppModal from "../../../components/AppModal/AppModal";
-import HelpIcon from "@material-ui/icons/Help";
-import HomeSlider from "../../../components/HomeSlider/HomeSlider";
-import moment from "moment";
-import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-import LocationOnIcon from "@material-ui/icons/LocationOn";
+import React, { useEffect, useState } from "react"
+import { useHistory } from "react-router"
+import { useSelector, useDispatch } from "react-redux"
+import { animateScroll as scroll } from "react-scroll"
+import MenuCategories from "../../../components/MenuCategories/MenuCategories"
+import MenuItems from "../../MenuItems/MenuItems"
+import Cart from "../../../components/Cart/Cart"
+import Login from "../../../components/Login/Login"
+import CreateAccount from "../../../components/CreateAccount/CreateAccount"
+import ForgotPassword from "../../../components/ForgotPassword/ForgotPassword"
+import AppHeader from "../../../components/AppHeader/AppHeader"
+import Footer from "../../../components/Footer/Footer"
+import AppModal from "../../../components/AppModal/AppModal"
+import HelpIcon from "@material-ui/icons/Help"
+import HomeSlider from "../../../components/HomeSlider/HomeSlider"
+import moment from "moment"
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline"
+import LocationOnIcon from "@material-ui/icons/LocationOn"
 
-import ExpandLessIcon from "@material-ui/icons/ExpandLess";
-import { Divider } from "antd";
-import LocalMallIcon from "@material-ui/icons/LocalMall";
-import CloseIcon from "@material-ui/icons/Close";
-import "./Information.css";
-import { Link } from "react-scroll";
-import { Box, Drawer, ListItem, SwipeableDrawer } from "@material-ui/core";
-import { List } from "antd/lib/form/Form";
-import { makeStyles } from "@material-ui/core";
-import { ListItemText } from "@material-ui/core";
-import { notification } from "antd";
-import { showLoginFormMethod } from "../../../state-management/user/actions";
-import InfoSlider from "./InfoSlider";
-import CheckBoxIcon from "@material-ui/icons/CheckBox";
+import ExpandLessIcon from "@material-ui/icons/ExpandLess"
+import { Divider } from "antd"
+import LocalMallIcon from "@material-ui/icons/LocalMall"
+import CloseIcon from "@material-ui/icons/Close"
+import "./Information.css"
+import { Link } from "react-scroll"
+import { Box, Drawer, ListItem, SwipeableDrawer } from "@material-ui/core"
+import { List } from "antd/lib/form/Form"
+import { makeStyles } from "@material-ui/core"
+import { ListItemText } from "@material-ui/core"
+import { notification } from "antd"
+import { showLoginFormMethod } from "../../../state-management/user/actions"
+import InfoSlider from "./InfoSlider"
+import CheckBoxIcon from "@material-ui/icons/CheckBox"
+import RestaurantIcon from "@material-ui/icons/Restaurant"
 const useStyle = makeStyles({
   list: {
     width: 360,
-    height: 250,
-  },
-});
+    height: 250
+  }
+})
 
 const buttonStyle = {
   position: "fixed",
@@ -51,33 +52,33 @@ const buttonStyle = {
   color: "white",
   fontSize: "0.8rem",
   fontWeight: "600",
-  cursor: "pointer",
-};
+  cursor: "pointer"
+}
 
 const Information = (props) => {
-  const menu = useSelector((state) => state.menu);
-  const user = useSelector((state) => state.user);
-  const main = useSelector((state) => state.main);
-  const dispatch = useDispatch();
-  const [showdish, setshowdish] = useState(true);
-  const [visible, setVisible] = useState(false);
-  const [freeEligible, setfreeEligible] = useState();
-  console.log("menu in selector is", menu);
-  console.log("loading in menuItems", props.loading);
-  const [timings, settimings] = useState();
+  const menu = useSelector((state) => state.menu)
+  const user = useSelector((state) => state.user)
+  const main = useSelector((state) => state.main)
+  const dispatch = useDispatch()
+  const [showdish, setshowdish] = useState(true)
+  const [visible, setVisible] = useState(false)
+  const [freeEligible, setfreeEligible] = useState()
+  console.log("menu in selector is", menu)
+  console.log("loading in menuItems", props.loading)
+  const [timings, settimings] = useState()
 
   const toggleVisible = () => {
-    const scrolled = document.documentElement.scrollTop;
+    const scrolled = document.documentElement.scrollTop
     if (scrolled >= 1000) {
-      setVisible(true);
+      setVisible(true)
     } else {
-      setVisible(false);
+      setVisible(false)
     }
-  };
+  }
 
   const scrollToTop = () => {
     //scroll.scrollToTop();
-    scroll.scrollTo("250");
+    scroll.scrollTo("250")
 
     // window.onscroll = function () {
     //   var pageOffset = document.documentElement.scrollTop;
@@ -88,23 +89,23 @@ const Information = (props) => {
     //     document.getElementById("stotop").style.visibility = "hidden";
     //   }
     // };
-  };
-  window.addEventListener("scroll", toggleVisible);
+  }
+  window.addEventListener("scroll", toggleVisible)
   useEffect(() => {
     //setfreeEligible(menu.restaurantInfo.cost.free_delivery_eligible_amount);
     if (main.isClosed) {
-      settimings("closed");
+      settimings("closed")
     } else {
-      settimings(main.businessHour);
+      settimings(main.businessHour)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    console.log("set eligible is", freeEligible);
-  }, [freeEligible]);
+    console.log("set eligible is", freeEligible)
+  }, [freeEligible])
 
   const handleAddItem = (item, isHappyHoursActive) => {
-    console.log("items in cart is", item);
+    console.log("items in cart is", item)
     // if (item.optional_modifier !== '0' || item.forced_modifier !== '0') {
     //   if (item.qty) {
     //     this.props.openModal(
@@ -132,11 +133,11 @@ const Information = (props) => {
     // }
 
     // this.props.addItem(item, null, 0, this.props.restaurantInfo);
-  };
+  }
 
-  const [draweropen, setdraweropen] = useState(false);
-  const classes = useStyle();
-  const History = useHistory();
+  const [draweropen, setdraweropen] = useState(0)
+  const classes = useStyle()
+  const History = useHistory()
 
   const checkoutformobile = () => {
     if (main.isClosed) {
@@ -145,58 +146,60 @@ const Information = (props) => {
           marginTop: "50px",
           color: "rgba(0, 0, 0, 0.65)",
           border: "1px solid #b7eb8f",
-          backgroundColor: "#f6ffed",
+          backgroundColor: "#f6ffed"
         },
-        message: "Oops ! Restaurant is closed.",
-      });
+        message: "Oops ! Restaurant is closed."
+      })
     } else if (main.isClosedForWeekday) {
       return notification["warning"]({
         style: {
           marginTop: "50px",
           color: "rgba(0, 0, 0, 0.65)",
           border: "1px solid #b7eb8f",
-          backgroundColor: "#f6ffed",
+          backgroundColor: "#f6ffed"
         },
-        message: `${main.messageForWeekday}`,
-      });
+        message: `${main.messageForWeekday}`
+      })
     } else if (main.isClosedForMonth) {
       return notification["warning"]({
         style: {
           marginTop: "50px",
           color: "rgba(0, 0, 0, 0.65)",
           border: "1px solid #b7eb8f",
-          backgroundColor: "#f6ffed",
+          backgroundColor: "#f6ffed"
         },
-        message: `${main.messageForMonth}`,
-      });
+        message: `${main.messageForMonth}`
+      })
     } else if (main.isClosedForOnceAMonth) {
       return notification["warning"]({
         style: {
           marginTop: "50px",
           color: "rgba(0, 0, 0, 0.65)",
           border: "1px solid #b7eb8f",
-          backgroundColor: "#f6ffed",
+          backgroundColor: "#f6ffed"
         },
-        message: `${main.messageForOnceAMonth}`,
-      });
+        message: `${main.messageForOnceAMonth}`
+      })
     } else {
-      History.push(`/restId=${menu.restaurantInfo.restaurant_id}/checkout`);
+      History.push(`/restId=${menu.restaurantInfo.restaurant_id}/checkout`)
     }
-  };
+  }
 
   // const toggleDrawer = (open) => (event) => {
   //   setdraweropen(open);
   // };
 
   const loginformobile = () => {
-    dispatch(showLoginFormMethod());
-  };
+    dispatch(showLoginFormMethod())
+  }
 
-  var x = main.opening;
-  var opening_time = x.substring(0, x.length - 3);
+  var x = main.opening
+  var opening_time = x.substring(0, x.length - 3)
 
-  var arr = [];
-  arr.push(menu.restaurantInfo?.order_option?.split(","));
+  var arr = []
+  arr.push(menu.restaurantInfo?.order_option?.split(","))
+
+  const [openDrawer, setopenDrawer] = useState(false)
 
   return (
     <>
@@ -253,15 +256,16 @@ const Information = (props) => {
       {/* content */}
       <div className='container margin_60_35'>
         <div className='row customised_row '>
-          <div className='col-lg-3' style={{ marginTop: "250px" }}>
+          <div className='col-lg-3' style={{ marginTop: "170px" }}>
             <div
-              className='customised_theiaStickySidebar  hide-on-mobile '
+              className='customised_theiaStickySidebar '
               style={{ position: "sticky", top: "85px", width: "95%" }}
             >
               <MenuCategories
                 categories={menu.categoriesList}
                 loading={props.loading}
                 drinkstatus={setshowdish}
+                statusOfDrawer={openDrawer}
               />
             </div>
 
@@ -308,19 +312,19 @@ const Information = (props) => {
                   height: "100%",
                   width: "100%",
                   objectFit: "contain",
-                  borderRadius: "8px",
+                  borderRadius: "8px"
                 }}
               />
             </div>
-            <div style={{ marginTop: "20px" }}>
+            <div style={{ marginTop: "10px" }}>
               <h3 className='restro-name-text'>{props.restaurantInfo.rname}</h3>
-              <p className='restro-info-txt1'>
+              {/* <p className='restro-info-txt1'>
                 <LocationOnIcon />{" "}
                 {`${props.restaurantInfo.address} - ${props.restaurantInfo.city} - ${props.restaurantInfo.country}- ${props.restaurantInfo.zipcode}`}{" "}
               </p>
               <p className='restro-info-txt2'>
                 +{menu.restaurantInfo.phone_code} {menu.restaurantInfo.phone}
-              </p>
+              </p> */}
             </div>
             {/* <div className="info-container">
               {menu.restaurantInfo?.order_option?.split(",").map((val, i) => {
@@ -358,7 +362,7 @@ const Information = (props) => {
               </div>
             </div> */}
 
-            <div className='info-container'>
+            <div className='info-container' style={{ marginTop: "20px" }}>
               {menu.restaurantInfo?.order_option?.split(",").map((val, i) => {
                 if (val == "eatin") {
                   return (
@@ -369,7 +373,7 @@ const Information = (props) => {
                         </p>
                       </div>
                     </>
-                  );
+                  )
                 } else if (val == "delivery") {
                   return (
                     <>
@@ -379,7 +383,7 @@ const Information = (props) => {
                         </p>
                       </div>
                     </>
-                  );
+                  )
                 } else if (val == "pickup") {
                   return (
                     <>
@@ -389,7 +393,7 @@ const Information = (props) => {
                         </p>
                       </div>
                     </>
-                  );
+                  )
                 }
               })}
 
@@ -430,7 +434,7 @@ const Information = (props) => {
             <div
               className='box_style_2 full-width-mobile'
               id='main_menu'
-              style={{ marginTop: "20px" }}
+              style={{ marginTop: "0px" }}
             >
               {/* <h2
                 className="inner hide-on-mobile"
@@ -455,7 +459,7 @@ const Information = (props) => {
             {/* End box_style_1 */}
           </div>
           {/* End col */}
-          <div className='col-lg-3' id='sidebar' style={{ marginTop: "250px" }}>
+          <div className='col-lg-3' id='sidebar' style={{ marginTop: "170px" }}>
             <div
               className='customised_theiaStickySidebar  hide-on-mobile '
               style={{ position: "sticky", top: "85px" }}
@@ -479,6 +483,33 @@ const Information = (props) => {
             >
               <ExpandLessIcon />
             </button>
+
+            {/* <button
+              className='scroll_to_top_button'
+              id='stotop'
+              
+              //style={buttonStyle}
+              style={{ display: visible ? "inline" : "none", bottom: "10%" }}
+            >
+              MENU
+            </button> */}
+
+            <section
+              className='mobile-menu-categories hide-on-desktop'
+              id='id-of-menu'
+            >
+              <span
+                onClick={() => setopenDrawer(openDrawer + 1)}
+                className='categories-button'
+              >
+                <RestaurantIcon
+                  style={{ marginTop: "-5px" }}
+                  fontSize='small'
+                />{" "}
+                MENU
+              </span>
+            </section>
+
             {/* End theiaStickySidebar */}
           </div>
           {/* <button
@@ -515,7 +546,7 @@ const Information = (props) => {
                       fontSize: "18px",
                       marginTop: "12px",
                       marginLeft: "16px",
-                      whiteSpace: "nowrap",
+                      whiteSpace: "nowrap"
                     }}
                   >
                     View cart ( {menu.cart.length} items )
@@ -597,7 +628,7 @@ const Information = (props) => {
 
       <Footer />
     </>
-  );
-};
+  )
+}
 
-export default Information;
+export default Information

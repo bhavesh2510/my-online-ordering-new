@@ -14,8 +14,10 @@ import "./OrderSuccess.css"
 import icon from "./dersucces-icon.png"
 import { clearMenuState } from "../../state-management/menu/actions"
 import RestrictUser from "../RestrictUser/RestrictUser"
+import { useHistory } from "react-router"
 
 const OrderSuccess = () => {
+  const history = useHistory()
   const dispatch = useDispatch()
   const menu = useSelector((state) => state.menu)
   const user = useSelector((state) => state.user)
@@ -323,8 +325,10 @@ const OrderSuccess = () => {
                           marginLeft: "40%",
                           fontWeight: "600",
                           fontSize: "15px",
-                          whiteSpace: "nowrap"
+                          whiteSpace: "nowrap",
+                          cursor: "pointer"
                         }}
+                        onClick={() => history.push("myOrders")}
                       >
                         To view more details, please visit my orders page
                       </div>

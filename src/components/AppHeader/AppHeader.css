@@ -11,7 +11,8 @@
   display: none !important;
 }
 .header-bg {
-  background: white;
+  background: #f3f2f7;
+  /* background: white; */
   border-bottom: 1px solid #f1f1f1;
 }
 @media (max-width: 768px) {

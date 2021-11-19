@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { removeItem, addItem } from "../../state-management/menu/actions";
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { removeItem, addItem } from "../../state-management/menu/actions"
 import {
   isHappyHourStillActive,
-  setTimer,
-} from "../../state-management/menu/utils";
-import { showLoginFormMethod } from "../../state-management/user/actions";
-import { getTaxes } from "../../state-management/menu/operations";
-import Login from "../../components/Login/Login";
-import { useHistory } from "react-router";
-import ItemList from "./ItemList";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-import { suppressDeprecationWarnings } from "moment";
-import { notification } from "antd";
+  setTimer
+} from "../../state-management/menu/utils"
+import { showLoginFormMethod } from "../../state-management/user/actions"
+import { getTaxes } from "../../state-management/menu/operations"
+import Login from "../../components/Login/Login"
+import { useHistory } from "react-router"
+import ItemList from "./ItemList"
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart"
+import { suppressDeprecationWarnings } from "moment"
+import { notification } from "antd"
 
 const Cart = (props) => {
-  const History = useHistory();
-  const main = useSelector((state) => state.main);
-  const menu = useSelector((state) => state.menu);
-  const user = useSelector((state) => state.user);
-  let isDecimalAmount = false;
+  const History = useHistory()
+  const main = useSelector((state) => state.main)
+  const menu = useSelector((state) => state.menu)
+  const user = useSelector((state) => state.user)
+  let isDecimalAmount = false
   //const grandTotal = Number(getGrandTotal());
-  const deliveryCharges = 0;
+  const deliveryCharges = 0
 
   // function getDeliveryCharges() {
   //   const {
@@ -81,13 +81,13 @@ const Cart = (props) => {
   //   return 0;
   // }
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
   const truncateDecimal = (number) => {
     return Number.isInteger(Number(number))
       ? Number(number)
-      : Number(number).toFixed(2);
-  };
+      : Number(number).toFixed(2)
+  }
 
   function getSubTotal() {
     return menu.cart.length
@@ -103,16 +103,16 @@ const Cart = (props) => {
                 (item.happyHourItem.subTotal
                   ? Number(item.happyHourItem.subTotal)
                   : Number(item.qty) * Number(item.price))
-              );
+              )
             }
 
             return (
               acc +
               (item.subTotal ? item.subTotal : item.qty * Number(item.price))
-            );
+            )
           }, 0)
         )
-      : "";
+      : ""
   }
 
   function getSubTaxTotal() {
@@ -129,13 +129,13 @@ const Cart = (props) => {
                 (item.happyHourItem.tax
                   ? item.happyHourItem.tax
                   : item.tax || 0)
-              );
+              )
             }
 
-            return acc + Number(item.tax || 0);
+            return acc + Number(item.tax || 0)
           }, 0)
         )
-      : "";
+      : ""
   }
 
   function getGrandTotal() {
@@ -153,13 +153,13 @@ const Cart = (props) => {
                     ? item.happyHourItem.grandTotal
                     : item.happyHourItem.subTotal
                 )
-              );
+              )
             }
 
-            return acc + (item.grandTotal ? item.grandTotal : item.subTotal);
+            return acc + (item.grandTotal ? item.grandTotal : item.subTotal)
           }, 0)
         )
-      : "";
+      : ""
   }
 
   // const getItemPrice = (item, isStillActive) => {
@@ -211,22 +211,22 @@ const Cart = (props) => {
 
   function getDiscountedPrice(item, isStillActive) {
     if (item.happyHourItem && isStillActive) {
-      const itemPrice = item.subTotal;
-      const itemHappyHourPrice = item.happyHourItem.subTotal;
+      const itemPrice = item.subTotal
+      const itemHappyHourPrice = item.happyHourItem.subTotal
 
-      return truncateDecimal(itemPrice - itemHappyHourPrice);
+      return truncateDecimal(itemPrice - itemHappyHourPrice)
     }
 
-    return 0;
+    return 0
   }
 
   const isPriceWithoutTax = () => {
     console.log(
       "price without tax",
       menu.restaurantInfo["price_without_tax_flag"]
-    );
-    return Number(menu.restaurantInfo["price_without_tax_flag"]);
-  };
+    )
+    return Number(menu.restaurantInfo["price_without_tax_flag"])
+  }
 
   const getActualPrice = (item) => {
     if (menu.restaurantInfo) {
@@ -236,47 +236,47 @@ const Cart = (props) => {
         : (
             Number(item.price) +
             Number(getTaxes(item, item.price, menu.restaurantInfo).tax)
-          ).toFixed(2);
+          ).toFixed(2)
     }
 
-    return 0;
-  };
+    return 0
+  }
 
   const getBillAmount = () => {
     const finalAmount = (
       Number(deliveryCharges) + Number(getGrandTotal())
-    ).toFixed(2);
+    ).toFixed(2)
     const showAmountInDecimal =
-      Number(menu.restaurantInfo["show_prices_in_decimal_flag"]) === 1;
+      Number(menu.restaurantInfo["show_prices_in_decimal_flag"]) === 1
 
     if (showAmountInDecimal) {
-      isDecimalAmount = true;
+      isDecimalAmount = true
     } else {
-      isDecimalAmount = finalAmount % 1 === 0;
+      isDecimalAmount = finalAmount % 1 === 0
     }
 
     return !showAmountInDecimal && finalAmount % 1 !== 0
       ? finalAmount
-      : finalAmount;
-  };
+      : finalAmount
+  }
 
   const removeFromCart = (item) => {
     // dispatch(removeItem(item, item.modifiers, 0, menu.restaurantInfo));
-    dispatch(removeItem(item, item.modifiers || null, 0, menu.restaurantInfo));
-  };
+    dispatch(removeItem(item, item.modifiers || null, 0, menu.restaurantInfo))
+  }
 
   const addItemToCart = (item) => {
     dispatch(
       addItem(item, item.modifiers || 0, item.subTotal, menu.restaurantInfo)
-    );
-  };
+    )
+  }
 
   const callLoginForm = () => {
-    dispatch(showLoginFormMethod());
-  };
+    dispatch(showLoginFormMethod())
+  }
 
-  const [warning, setwarning] = useState(false);
-  const grandTotal = Number(getGrandTotal());
+  const [warning, setwarning] = useState(false)
+  const grandTotal = Number(getGrandTotal())
   const goToCheckout = () => {
     if (menu.cart.length == 0) {
       return notification["warning"]({
@@ -284,58 +284,62 @@ const Cart = (props) => {
           marginTop: "50px",
           color: "rgba(0, 0, 0, 0.65)",
           border: "1px solid #b7eb8f",
-          backgroundColor: "#f6ffed",
+          backgroundColor: "#f6ffed"
         },
-        message: "Please add something in cart to proceed.",
-      });
+        message: "Please add something in cart to proceed."
+      })
     } else if (main.isClosed) {
       return notification["warning"]({
         style: {
           marginTop: "50px",
           color: "rgba(0, 0, 0, 0.65)",
           border: "1px solid #b7eb8f",
-          backgroundColor: "#f6ffed",
+          backgroundColor: "#f6ffed"
         },
-        message: "Oops ! Restaurant is closed.",
-      });
+        message: "Oops ! Restaurant is closed."
+      })
     } else if (main.isClosedForWeekday) {
       return notification["warning"]({
         style: {
           marginTop: "50px",
           color: "rgba(0, 0, 0, 0.65)",
           border: "1px solid #b7eb8f",
-          backgroundColor: "#f6ffed",
+          backgroundColor: "#f6ffed"
         },
-        message: `${main.messageForWeekday}`,
-      });
+        message: `${main.messageForWeekday}`
+      })
     } else if (main.isClosedForMonth) {
       return notification["warning"]({
         style: {
           marginTop: "50px",
           color: "rgba(0, 0, 0, 0.65)",
           border: "1px solid #b7eb8f",
-          backgroundColor: "#f6ffed",
+          backgroundColor: "#f6ffed"
         },
-        message: `${main.messageForMonth}`,
-      });
+        message: `${main.messageForMonth}`
+      })
     } else if (main.isClosedForOnceAMonth) {
       return notification["warning"]({
         style: {
           marginTop: "50px",
           color: "rgba(0, 0, 0, 0.65)",
           border: "1px solid #b7eb8f",
-          backgroundColor: "#f6ffed",
+          backgroundColor: "#f6ffed"
         },
-        message: `${main.messageForOnceAMonth}`,
-      });
+        message: `${main.messageForOnceAMonth}`
+      })
     } else {
-      History.push(`/restId=${menu.restaurantInfo.restaurant_id}/checkout`);
+      History.push(`/restId=${menu.restaurantInfo.restaurant_id}/checkout`)
     }
-  };
+  }
 
   return (
-    <div id='cart_box' style={{ backgroundColor: "#f8f8f8" }}>
-      <h3 id='Your Order' className='hide-on-mobile'>
+    <div id='cart_box' style={{ backgroundColor: "#F3F2F7" }}>
+      <h3
+        id='Your Order'
+        className='hide-on-mobile'
+        style={{ backgroundColor: "#F3F2F7" }}
+      >
         Your order <ShoppingCartIcon style={{ float: "right" }} />
       </h3>
 
@@ -490,6 +494,6 @@ const Cart = (props) => {
         </button>
       )}
     </div>
-  );
-};
-export default Cart;
+  )
+}
+export default Cart
