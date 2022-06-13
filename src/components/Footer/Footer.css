@@ -110,3 +110,19 @@
     margin-left: -37px;
   }
 }
+@media (min-width: 420px) and (max-width: 760px) {
+  .margin-for-mobile {
+    margin-top: 0px;
+    margin-left: 13%;
+  }
+  .margin-for-tab-view {
+    margin-left: 5% !important;
+    margin-top: 10%;
+  }
+  .margin-top-for-tab-view {
+    margin-top: 40% !important;
+  }
+  .negative-margin-for-text {
+    margin-left: -140px !important;
+  }
+}

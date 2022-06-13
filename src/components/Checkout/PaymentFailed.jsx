@@ -1,9 +1,9 @@
-import { Link, useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Link, useHistory } from "react-router-dom"
+import { useSelector } from "react-redux"
 
 const PaymentFailed = () => {
-  const menu = useSelector((state) => state.menu);
-  const history = useHistory();
+  const menu = useSelector((state) => state.menu)
+  const history = useHistory()
   //http://ciboapp.me
   return (
     <>
@@ -18,12 +18,12 @@ const PaymentFailed = () => {
         </p>
         <a
           style={{ marginLeft: "40%", fontSize: "30px" }}
-          href={`/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/menu`}
+          href={`/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/checkout`}
         >
           Please try again
         </a>
       </div>
     </>
-  );
-};
-export default PaymentFailed;
+  )
+}
+export default PaymentFailed

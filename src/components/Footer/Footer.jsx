@@ -216,7 +216,10 @@ const Footer = () => {
               </li>
             </ul>
 
-            <ul style={{ marginTop: "10px" }}>
+            <ul
+              className='margin-top-for-tab-view'
+              style={{ marginTop: "10px" }}
+            >
               <p
                 className='margin-for-ul-footer margin-top-for-ul-footer set-margin-zero-from-left'
                 style={{
@@ -261,8 +264,9 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          <div className='col-md-4 margin-for-mobile'>
+          <div className='col-md-4 margin-for-mobile margin-for-tab-view'>
             <p
+              className='negative-margin-for-text'
               style={{
                 letterSpacing: "0.15em",
                 color: "#302F31",

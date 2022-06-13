@@ -1,111 +1,163 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 
-import { useSelector, useDispatch } from "react-redux";
-import { connect } from "react-redux";
-import { addItem, removeItem } from "../../../state-management/menu/actions";
-import { truncateDecimal } from "../../../state-management/menu/utils";
-import ForcedModifiers from "../../Modifiers/ForcedModifiers/ForcedModifiers";
-import OptionalModifiers from "../../Modifiers/OptionalModifiers/OptionalModifiers";
+import { useSelector, useDispatch } from "react-redux"
+import { connect } from "react-redux"
+import { addItem, removeItem } from "../../../state-management/menu/actions"
+import { truncateDecimal } from "../../../state-management/menu/utils"
+import ForcedModifiers from "../../Modifiers/ForcedModifiers/ForcedModifiers"
+import OptionalModifiers from "../../Modifiers/OptionalModifiers/OptionalModifiers"
 // import ModalHeader from "./ModalHeader";
-import FooterModifier from "./FooterModifier";
-import "./DishModal.css";
-import SimpleBarReact from "simplebar-react";
-import "simplebar/src/simplebar.css";
-import { getTaxes } from "../../../state-management/menu/operations";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { openModal, closeModal } from "../../../state-management/modal/actions";
-import { modalNames } from "../../../components/AppModal/constants";
+import FooterModifier from "./FooterModifier"
+import "./DishModal.css"
+import SimpleBarReact from "simplebar-react"
+import "simplebar/src/simplebar.css"
+import { getTaxes } from "../../../state-management/menu/operations"
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap"
+import { openModal, closeModal } from "../../../state-management/modal/actions"
+import { modalNames } from "../../../components/AppModal/constants"
 
 const DishModal = () => {
-  const dispatch = useDispatch();
-  const menu = useSelector((state) => state.menu);
-  const modal = useSelector((state) => state.modal);
-  const [modalM, setModalM] = useState(false);
+  const dispatch = useDispatch()
+  const menu = useSelector((state) => state.menu)
+  const modal = useSelector((state) => state.modal)
+  const [modalM, setModalM] = useState(false)
+  const [lowerPriceIds, setlowerPriceIds] = useState()
+
+  const [tempstate, settempstate] = useState({
+    selectedTempForcedModifier: [],
+    forcedTempPrice: 0
+  })
 
   const [state, setState] = useState({
     selectedOptionalModifier: [],
     selectedForcedModifier: [],
     forcedPrice: 0,
     optionalPrice: 0,
-    item: modal.modal.state.item,
-  });
+    item: modal.modal.state.item
+  })
 
   const getForcedModifiers = () => {
     if (state.item.forced_modifier !== "0") {
-      const itemForcedModifiers = state.item.forced_modifier.split(",");
+      const itemForcedModifiers = state.item.forced_modifier.split(",")
 
       return menu.allForcedModifier.filter((item) =>
         itemForcedModifiers.includes(item.fm_cat_id)
-      );
+      )
     }
 
-    return [];
-  };
+    return []
+  }
 
   const getOptionModifiers = () => {
     if (state.item.optional_modifier !== "0") {
-      const itemOptionalModifiers = state.item.optional_modifier.split(",");
+      const itemOptionalModifiers = state.item.optional_modifier.split(",")
 
       return menu.allOptionalModifier.filter((item) =>
         itemOptionalModifiers.includes(item.om_cat_id)
-      );
+      )
     }
 
-    return [];
-  };
+    return []
+  }
 
-  const [detourid, setdetourid] = useState();
+  const [detourid, setdetourid] = useState()
 
   useEffect(() => {
-    console.log("check id", setdetourid);
-  });
-  const handleAddItem = () => {
-    const current_item = modal.modal.state.item;
-    const similarItems = menu.cart.filter(({ id }) => current_item.id === id);
+    var priceArr = []
+    const itemForcedModifiers =
+      modal.modal.state.item.forced_modifier.split(",")
+    console.log("split fm", itemForcedModifiers)
+    var temp = 0
+    itemForcedModifiers.map((curritem) => {
+      const filteredModifier = menu.allForcedModifier.filter((itemOfFilter) =>
+        curritem.includes(itemOfFilter.fm_cat_id)
+      )
 
-    console.log("similar item in dish modal", similarItems);
-    const menuItems = menu.menuItems;
-    const item = menuItems.find(({ id }) => state.item.id === id);
-    const { forcedPrice, optionalPrice } = state;
+      // let arr = filteredModifier[0]?.items
+
+      let min = Math.min.apply(
+        null,
+        filteredModifier[0]?.items.map(function (item) {
+          return item.price
+        })
+      )
+      temp = temp + parseFloat(min)
+      filteredModifier[0]?.items.map((curr) => {
+        if (min == curr.price) {
+          priceArr.push(curr)
+        }
+      })
+      console.log("total price is", temp, priceArr)
+      setState({
+        ...state,
+        selectedForcedModifier: priceArr,
+        forcedPrice: temp
+      })
+      settempstate({
+        ...tempstate,
+        selectedTempForcedModifier: priceArr,
+        forcedTempPrice: temp
+      })
+      // setState({ ...state, forcedPrice: temp })
+    })
+  }, [])
+
+  const handleAddItem = () => {
+    const current_item = modal.modal.state.item
+    const similarItems = menu.cart.filter(({ id }) => current_item.id === id)
+
+    console.log("similar item in dish modal", similarItems)
+    const menuItems = menu.menuItems
+    const item = menuItems.find(({ id }) => state.item.id === id)
+    const { forcedPrice, optionalPrice } = state
     const modifier = {
       forcedModifier: state.selectedForcedModifier,
-      optionalModifier: state.selectedOptionalModifier,
-    };
-    const subTotal = forcedPrice + optionalPrice + Number(item.price);
-    console.log("modifier in dish modal", modifier);
+      optionalModifier: state.selectedOptionalModifier
+    }
+    const subTotal = forcedPrice + optionalPrice + Number(item.price)
+    console.log("modifier in dish modal", modifier)
 
-    console.log("modifiers in handleAddItem", modifier);
-    console.log("item in modifier", item);
-    console.log("subtotal in dish", subTotal);
+    console.log("modifiers in handleAddItem", modifier)
+    console.log("item in modifier", item)
+    console.log("subtotal in dish", subTotal)
 
     // if (modifier.forcedModifier[0].optionalModifiers[0].id) {
     //   setdetourid(modifier.forcedModifier[0].optionalModifiers[0].id);
     // }
 
-    dispatch(addItem(item, modifier, subTotal, menu.restaurantInfo));
-    dispatch(closeModal());
+    dispatch(addItem(item, modifier, subTotal, menu.restaurantInfo))
+    dispatch(closeModal())
 
-    setState({ ...state, forcedPrice: 0, optionalPrice: 0 });
-  };
+    setState({ ...state, forcedPrice: 0, optionalPrice: 0 })
+  }
 
   const handleForcedModifierSelectionChange = (
     selectedForcedModifier,
     forcedPrice
   ) => {
-    setState({ ...state, selectedForcedModifier, forcedPrice });
-    console.log("selection change", state);
-  };
+    setState({
+      ...state,
+      selectedForcedModifier: selectedForcedModifier,
+      forcedPrice: forcedPrice
+    })
+    settempstate({
+      ...tempstate,
+      selectedTempForcedModifier: selectedForcedModifier,
+      forcedTempPrice: forcedPrice
+    })
+    console.log("selection change", state)
+  }
 
   const handleOptionalModifierSelectionChange = (
     selectedOptionalModifier,
     optionalPrice
   ) => {
-    setState({ ...state, selectedOptionalModifier, optionalPrice });
-  };
+    setState({ ...state, selectedOptionalModifier, optionalPrice })
+  }
 
   const isPriceWithoutTax = () => {
-    return Number(menu.restaurantInfo["price_without_tax_flag"]);
-  };
+    return Number(menu.restaurantInfo["price_without_tax_flag"])
+  }
 
   const getActualPrice = (item) => {
     if (menu.restaurantInfo) {
@@ -116,11 +168,11 @@ const DishModal = () => {
               Number(
                 getTaxes(item, Number(item.price), menu.restaurantInfo).tax
               )
-          );
+          )
     }
 
-    return 0;
-  };
+    return 0
+  }
 
   const getModifierPrice = (price) =>
     isPriceWithoutTax()
@@ -128,7 +180,7 @@ const DishModal = () => {
       : truncateDecimal(
           Number(price) +
             Number(getTaxes(state.item, Number(price), menu.restaurantInfo).tax)
-        );
+        )
 
   const getPrice = (item, price) => {
     return isPriceWithoutTax()
@@ -136,34 +188,36 @@ const DishModal = () => {
       : truncateDecimal(
           Number(price) +
             Number(getTaxes(item, Number(price), menu.restaurantInfo).tax)
-        );
-  };
+        )
+  }
 
   const getTotalPrice = (item) => {
-    const { forcedPrice, optionalPrice } = state;
-    const { price } = item;
-    const modifierPrice = forcedPrice + optionalPrice;
+    const { forcedPrice, optionalPrice } = state
+    const { price } = item
+    const modifierPrice = forcedPrice + optionalPrice
     const result = modifierPrice
-      ? modifierPrice + Number(price)
-      : getActualPrice(item);
+      ? modifierPrice + Number(parseFloat(price))
+      : getActualPrice(item)
 
-    return modifierPrice ? getPrice(item, result) : result;
-  };
+    return modifierPrice ? getPrice(item, result) : result
+  }
 
   const isConfirmationDisabled = () => {
-    const forcedModifers = getForcedModifiers();
-    const { selectedForcedModifier } = state;
+    const forcedModifers = getForcedModifiers()
+
+    const { selectedForcedModifier } = state
+    console.log("is confirmation", forcedModifers, selectedForcedModifier)
 
     if (forcedModifers && forcedModifers.length) {
       return (
         !selectedForcedModifier ||
         (selectedForcedModifier &&
           forcedModifers.length !== selectedForcedModifier.length)
-      );
+      )
     }
 
-    return false;
-  };
+    return false
+  }
 
   // renderFooter() {
   //   const { menuItems } = this.props;
@@ -182,24 +236,44 @@ const DishModal = () => {
   //   );
   // }
 
-  const menuItems = menu.menuItems;
-  console.log("menu item", menuItems);
-  const itemForFooter = menuItems.find(({ id }) => state.item.id === id);
-  console.log("Forced modifiers with Detours ", state.selectedForcedModifier);
+  const menuItems = menu.menuItems
+  console.log("menu item", menuItems)
+  const itemForFooter = menuItems.find(({ id }) => state.item.id === id)
+  console.log("Forced modifiers with Detours ", state.selectedForcedModifier)
   console.log(
     "Optional modifiers with Detours ",
     state.selectedOptionalModifier
-  );
-  console.log("Detours ", state.item.omCats);
+  )
+  console.log("Detours ", state.item.omCats)
 
   useEffect(() => {
-    console.log("omCats", state.item);
-  }, [state]);
+    console.log("omCats", state)
+  }, [state])
 
   const toggle = () => {
-    setModalM(!modalM);
-    dispatch(closeModal());
-  };
+    setModalM(!modalM)
+    dispatch(closeModal())
+  }
+
+  const getPriceIfZero = (item) => {
+    // const itemForcedModifiers = item.forced_modifier.split(",")
+    // return
+    // const filteredModifier = menu.allForcedModifier.filter((itemOfFilter) =>
+    //   itemForcedModifiers.includes(itemOfFilter.fm_cat_id)
+    // )
+    // let min = Math.min.apply(
+    //   null,
+    //   filteredModifier[0]?.items.map(function (item) {
+    //     return item.price
+    //   })
+    // )
+    // return isPriceWithoutTax()
+    //   ? min
+    //   : truncateDecimal(
+    //       Number(min) +
+    //         Number(getTaxes(item, Number(min), menu.restaurantInfo).tax)
+    //     )
+  }
   return (
     <>
       <Modal
@@ -218,22 +292,23 @@ const DishModal = () => {
           style={{
             maxHeight: "400px",
             overflowY: "scroll",
-            marginTop: "-15px",
+            marginTop: "-15px"
           }}
         >
           <ForcedModifiers
-            currency={menu.restaurantInfo.currency}
+            currency={menu.restaurantInfo.monetary_symbol}
             isPriceWithoutTax={isPriceWithoutTax()}
             item={state.item}
             forcedModifiers={getForcedModifiers()}
             detours={state.item.detour_ids}
             getModifierPrice={getModifierPrice}
             onSelectionChange={handleForcedModifierSelectionChange}
+            lowestPricearray={state.selectedForcedModifier}
           />
           {console.log("detour id", state.item.detour_ids)}
           <OptionalModifiers
             getModifierPrice={getModifierPrice}
-            currency={menu.restaurantInfo.currency}
+            currency={menu.restaurantInfo.monetary_symbol}
             optionalModifier={getOptionModifiers()}
             onSelectionChange={handleOptionalModifierSelectionChange}
           />
@@ -241,18 +316,18 @@ const DishModal = () => {
         {console.log("confirm disabke is", isConfirmationDisabled)}
         <FooterModifier
           buttonTitle={`ADD TO ORDER - ${
-            menu.restaurantInfo.currency
+            menu.restaurantInfo.monetary_symbol
           } ${getTotalPrice(itemForFooter)}`}
-          btnCls="cart"
+          btnCls='cart'
           disabled={isConfirmationDisabled()}
           onClick={handleAddItem}
         />
       </Modal>
     </>
-  );
+  )
   return (
     <>
-      <div className="dish-modal">
+      <div className='dish-modal'>
         <ModalHeader
           title={state.item.name}
           //onClose={this.props.onCloseModal}
@@ -287,10 +362,10 @@ const DishModal = () => {
         /> */}
       </div>
     </>
-  );
-};
+  )
+}
 
-export default DishModal;
+export default DishModal
 
 // function mapStateToProps(state) {
 //   return {

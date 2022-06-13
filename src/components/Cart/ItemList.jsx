@@ -1,93 +1,93 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 import {
   isHappyHourStillActive,
   setTimer,
-  truncateDecimal,
-} from "../../state-management/menu/utils";
-import { useDispatch, useSelector } from "react-redux";
-import { getTaxes } from "../../state-management/menu/operations";
-import RenderModifiers from "../../containers/Modifiers/RenderModifiers";
-import "./Cart.css";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import RemoveCircleIcon from "@material-ui/icons/RemoveCircle";
+  truncateDecimal
+} from "../../state-management/menu/utils"
+import { useDispatch, useSelector } from "react-redux"
+import { getTaxes } from "../../state-management/menu/operations"
+import RenderModifiers from "../../containers/Modifiers/RenderModifiers"
+import "./Cart.css"
+import ChevronRightIcon from "@material-ui/icons/ChevronRight"
+import RemoveCircleIcon from "@material-ui/icons/RemoveCircle"
 const ItemList = ({
   items,
   currency,
   isPriceWithoutTax,
   timezone,
   onRemove,
-  onAdd,
+  onAdd
 }) => {
-  const menu = useSelector((state) => state.menu);
-  const modal = useSelector((state) => state.modal);
-  let refIndex = -1;
-  const timeOutRef = Array.from({ length: 100 }, () => React.createRef());
+  const menu = useSelector((state) => state.menu)
+  const modal = useSelector((state) => state.modal)
+  let refIndex = -1
+  const timeOutRef = Array.from({ length: 100 }, () => React.createRef())
 
   const [state, setState] = useState({
-    item: "",
-  });
+    item: ""
+  })
 
   function getDiscountedPrice(item, isStillActive) {
     if (item.happyHourItem && isStillActive) {
-      const itemPrice = item.subTotal;
-      const itemHappyHourPrice = item.happyHourItem.subTotal;
+      const itemPrice = item.subTotal
+      const itemHappyHourPrice = item.happyHourItem.subTotal
 
-      return truncateDecimal(itemPrice - itemHappyHourPrice);
+      return truncateDecimal(itemPrice - itemHappyHourPrice)
     }
 
-    return 0;
+    return 0
   }
   function isPriceWithoutTax() {
     console.log(
       "price without tax",
       menu.restaurantInfo["price_without_tax_flag"]
-    );
-    return Number(menu.restaurantInfo["price_without_tax_flag"]);
+    )
+    return Number(menu.restaurantInfo["price_without_tax_flag"])
   }
   function renderHappyHourOffers(item, isStillActive) {
     if (isStillActive && item.happyHourItem) {
       switch (item.happyHourDetail.type) {
         case "Discount":
         case "Amount": {
-          const discountedPrice = getDiscountedPrice(item, isStillActive);
+          const discountedPrice = getDiscountedPrice(item, isStillActive)
 
-          return <span>{`You saved: ${currency} ${discountedPrice}`}</span>;
+          return <span>{`You saved: ${currency} ${discountedPrice}`}</span>
         }
         default: {
-          const extraQty = item.happyHourItem.freeQty;
+          const extraQty = item.happyHourItem.freeQty
 
           return extraQty ? (
             <span>{`You recieved : ${extraQty} ${
               extraQty > 1 ? "extra quantities" : "extra quantity"
             }`}</span>
-          ) : null;
+          ) : null
         }
       }
     }
 
-    return null;
+    return null
   }
 
   function renderPizzaDetails(item) {
-    let defaultToppings = "";
+    let defaultToppings = ""
 
-    let optionalToppings = "";
+    let optionalToppings = ""
 
-    let halfAndHalf = "";
+    let halfAndHalf = ""
 
     for (let i = 0; i < item.defaultToppings.length; i++) {
-      defaultToppings += `, ${item.defaultToppings[i].topping_name}`;
+      defaultToppings += `, ${item.defaultToppings[i].topping_name}`
     }
-    defaultToppings = defaultToppings.replace(/[\s,]+/, " ").trim();
+    defaultToppings = defaultToppings.replace(/[\s,]+/, " ").trim()
 
     for (let i = 0; i < item.optionalToppings.length; i++) {
-      optionalToppings += ` ,${item.optionalToppings[i].topping_name}`;
+      optionalToppings += ` ,${item.optionalToppings[i].topping_name}`
     }
-    optionalToppings = optionalToppings.replace(/[\s,]+/, " ").trim();
+    optionalToppings = optionalToppings.replace(/[\s,]+/, " ").trim()
 
     if (item.firstHalf !== null) {
-      halfAndHalf = `First Half: ${item.firstHalf.topping_name},`;
-      halfAndHalf += ` Second Half: ${item.secondHalf.topping_name}`;
+      halfAndHalf = `First Half: ${item.firstHalf.topping_name},`
+      halfAndHalf += ` Second Half: ${item.secondHalf.topping_name}`
     }
 
     return (
@@ -107,20 +107,20 @@ const ItemList = ({
           <span>{halfAndHalf}</span>
         </section>
       </>
-    );
+    )
   }
 
   function getItemPrice(item, isStillActive) {
-    console.log("getItem item is", item);
+    console.log("getItem item is", item)
     if (item.happyHourItem && isStillActive) {
       return isPriceWithoutTax
         ? truncateDecimal(item.happyHourItem.grandTotal)
-        : truncateDecimal(item.happyHourItem.grandTotal);
+        : truncateDecimal(item.happyHourItem.grandTotal)
     } else if (item.subTotal && item.grandTotal) {
-      return isPriceWithoutTax ? item.grandTotal : item.grandTotal;
+      return isPriceWithoutTax ? item.grandTotal : item.grandTotal
     }
 
-    console.log("items in itemlits", item);
+    console.log("items in itemlits", item)
     // if (item.modifiers !== null) {
     //   if (item.modifiers && item.happyHourItem && isStillActive) {
     //     return isPriceWithoutTax
@@ -177,38 +177,38 @@ const ItemList = ({
   }
 
   function getModifierPrice(item, isStillActive) {
-    console.log("item in getModi", item);
+    console.log("item in getModi", item)
 
-    var temp_arr = [];
-    var temp_comapre_array = [];
+    var temp_arr = []
+    var temp_comapre_array = []
     item.modifiers.forcedModifier.map((val) => {
-      temp_arr.push(val.optionalModifiers);
-    });
-    console.log("temp_arr in getModi", temp_arr);
+      temp_arr.push(val.optionalModifiers)
+    })
+    console.log("temp_arr in getModi", temp_arr)
     for (let i = 0; i < temp_arr.length; i++) {
-      temp_comapre_array.push(temp_arr[i]);
+      temp_comapre_array.push(temp_arr[i])
     }
-    console.log("comaprision lenmgth", temp_comapre_array[0].length);
+    console.log("comaprision lenmgth", temp_comapre_array[0].length)
 
     if (temp_comapre_array[0].length > 0) {
       return isPriceWithoutTax()
         ? item.subTotal || item.price
-        : item.grandTotal || getActualPrice(item);
+        : item.grandTotal || getActualPrice(item)
     } else {
       return isPriceWithoutTax()
         ? item.subTotal || item.price
-        : item.grandTotal || getActualPrice(item);
+        : item.grandTotal || getActualPrice(item)
     }
   }
 
   function getPizzaItemPrice(item, isStillActive) {
-    console.log("getItem item is", item);
+    console.log("getItem item is", item)
     if (item.happyHourItem && isStillActive) {
       return isPriceWithoutTax
         ? truncateDecimal(item.happyHourItem.subTotal)
-        : truncateDecimal(item.happyHourItem.grandTotal);
+        : truncateDecimal(item.happyHourItem.grandTotal)
     } else if (item.subTotal && item.grandTotal) {
-      return isPriceWithoutTax ? item.grandTotal : item.grandTotal;
+      return isPriceWithoutTax ? item.grandTotal : item.grandTotal
     }
   }
   function getActualPrice(item) {
@@ -219,32 +219,32 @@ const ItemList = ({
         : (
             Number(item.price) +
             Number(getTaxes(item, item.price, menu.restaurantInfo).tax)
-          ).toFixed(2);
+          ).toFixed(2)
     }
 
-    return 0;
+    return 0
   }
 
   function renderPizzaDetails(item) {
-    let defaultToppings = "";
+    let defaultToppings = ""
 
-    let optionalToppings = "";
+    let optionalToppings = ""
 
-    let halfAndHalf = "";
+    let halfAndHalf = ""
 
     for (let i = 0; i < item.defaultToppings.length; i++) {
-      defaultToppings += `, ${item.defaultToppings[i].topping_name}`;
+      defaultToppings += `, ${item.defaultToppings[i].topping_name}`
     }
-    defaultToppings = defaultToppings.replace(/[\s,]+/, " ").trim();
+    defaultToppings = defaultToppings.replace(/[\s,]+/, " ").trim()
 
     for (let i = 0; i < item.optionalToppings.length; i++) {
-      optionalToppings += ` ,${item.optionalToppings[i].topping_name}`;
+      optionalToppings += ` ,${item.optionalToppings[i].topping_name}`
     }
-    optionalToppings = optionalToppings.replace(/[\s,]+/, " ").trim();
+    optionalToppings = optionalToppings.replace(/[\s,]+/, " ").trim()
 
     if (item.firstHalf !== null) {
-      halfAndHalf = `First Half: ${item.firstHalf.topping_name},`;
-      halfAndHalf += ` Second Half: ${item.secondHalf.topping_name}`;
+      halfAndHalf = `First Half: ${item.firstHalf.topping_name},`
+      halfAndHalf += ` Second Half: ${item.secondHalf.topping_name}`
     }
 
     return (
@@ -256,7 +256,7 @@ const ItemList = ({
           <label style={{ fontSize: "12px" }}>Size & Base:&nbsp; </label>
           <span
             style={{
-              fontSize: "12px",
+              fontSize: "12px"
             }}
           >
             {item.selectedBase.name}
@@ -275,7 +275,7 @@ const ItemList = ({
             style={{
               textTransform: "lowercase",
               fontSize: "12px",
-              lineHeight: "0",
+              lineHeight: "0"
             }}
           >
             {defaultToppings}
@@ -290,7 +290,7 @@ const ItemList = ({
             style={{
               textTransform: "lowercase",
               fontSize: "12px",
-              lineHeight: "0",
+              lineHeight: "0"
             }}
           >
             {optionalToppings}
@@ -309,29 +309,37 @@ const ItemList = ({
             style={{
               textTransform: "lowercase",
               fontSize: "12px",
-              lineHeight: "0",
+              lineHeight: "0"
             }}
           >
             {halfAndHalf}
           </span>
         </section>
       </>
-    );
+    )
   }
 
   return (
     <>
+      {/* <div
+        style={{
+          // border: "1px solid black",
+          overflowY: "scroll",
+          maxHeight: "200px",
+          scrollbarWidth: "none"
+        }}
+      > */}
       <table className='table table_summary'>
         <tbody>
           {items.map((item, i) => {
             if (item.isHappyHourActive) {
-              const result = isHappyHourStillActive(item, timezone);
-              console.log("items in itemlist", item);
+              const result = isHappyHourStillActive(item, timezone)
+              console.log("items in itemlist", item)
 
-              var isStillActive = result.isActive;
+              var isStillActive = result.isActive
               if (isStillActive) {
-                refIndex++;
-                setTimer(result.distance, timeOutRef[refIndex]);
+                refIndex++
+                setTimer(result.distance, timeOutRef[refIndex])
               }
             }
 
@@ -339,25 +347,43 @@ const ItemList = ({
               <>
                 <tr
                   style={{
-                    lineHeight: "1",
+                    lineHeight: "1"
                   }}
                 >
                   <td>
-                    <button
-                      onClick={() => onRemove(item)}
-                      className='cart-button'
-                    >
-                      <RemoveCircleIcon
-                        fontSize='small'
-                        style={{ color: "black" }}
-                      />
-                    </button>
                     {/* <button onClick={() => onAdd(item)} className="cart-button">
                       <i className="icon_plus_alt" />
                     </button>{" "}  */}
-                    <strong>{item.qty}x</strong>
-                    <strong>{item.name} &nbsp;</strong>
-                    <br />
+                    <div style={{ display: "flex" }}>
+                      <button
+                        onClick={() => onRemove(item)}
+                        className='cart-button'
+                      >
+                        <RemoveCircleIcon
+                          fontSize='small'
+                          style={{ color: "black" }}
+                        />
+                      </button>
+                      {/* <div style={{ fontWeight: "700", lineHeight: "1.2rem" }}>
+                        {item.qty}x
+                      </div> */}
+                      &nbsp;
+                      <div style={{ fontWeight: "700", lineHeight: "1.2rem" }}>
+                        <p>
+                          {" "}
+                          {item.qty} x {item.name}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* <strong>
+                      {item.qty}x <p>{item.name}</p>
+                    </strong> */}
+
+                    {/* <strong style={{ textAlign: "center" }}>
+                      {item.name} &nbsp;
+                    </strong> */}
+
                     {item.modifiers ? (
                       <>
                         <p
@@ -365,7 +391,7 @@ const ItemList = ({
                             // marginTop: "10px",
                             marginLeft: "25px",
                             lineHeight: "1.4",
-                            fontSize: "10px",
+                            fontSize: "10px"
                           }}
                         >
                           <RenderModifiers modifier={item.modifiers} />
@@ -416,13 +442,14 @@ const ItemList = ({
                   </td>
                 </tr>
               </>
-            );
+            )
           })}
 
           {/* })} */}
         </tbody>
       </table>
+      {/* </div> */}
     </>
-  );
-};
-export default ItemList;
+  )
+}
+export default ItemList

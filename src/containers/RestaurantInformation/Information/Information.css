@@ -286,7 +286,7 @@
   }
 
   .info-box-eatin-container {
-    flex: 0 45%;
+    flex: 0 39%;
     height: 45px;
     margin-bottom: 2%;
     border-radius: 5px;
@@ -294,7 +294,7 @@
   }
 
   .info-box-delivery-container {
-    flex: 0 45%;
+    flex: 0 39%;
     height: 45px;
     margin-bottom: 2%;
     border-radius: 5px;
@@ -302,7 +302,7 @@
   }
 
   .info-box-pickup-container {
-    flex: 0 45%;
+    flex: 0 39%;
     height: 45px;
     margin-bottom: 2%;
     border-radius: 5px;
@@ -310,7 +310,7 @@
   }
 
   .info-box-opens-container {
-    flex: 0 45%;
+    flex: 0 39%;
     height: 45px;
     margin-bottom: 2%;
     border-radius: 5px;
@@ -318,7 +318,7 @@
   }
 
   .info-box-freedelivery-container {
-    flex: 0 45%;
+    flex: 0 39%;
     height: 50px;
     margin-bottom: 2%;
     border-radius: 5px;
@@ -328,9 +328,9 @@
   }
 }
 
-@media (min-width: 420px) and (max-width: 760px) {
+@media (min-width: 420px) and (max-width: 768px) {
   .img-logo-container {
-    margin-top: -73%;
+    margin-top: -53%;
     margin-left: 35%;
     height: 120px;
     width: 120px;
@@ -478,6 +478,16 @@
   .img-logo-container {
     margin-top: -75%;
     margin-left: 33%;
+    height: 120px;
+    width: 120px;
+
+    border-radius: 10px;
+  }
+}
+@media (min-width: 768px) and (max-width: 1024px) {
+  .img-logo-container {
+    margin-top: -43%;
+    margin-left: 35%;
     height: 120px;
     width: 120px;
 

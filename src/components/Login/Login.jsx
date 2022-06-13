@@ -1,44 +1,57 @@
-import React, { useState, useEffect } from "react";
-import "../Login/login.css";
-import { notification } from "antd";
-import "antd/dist/antd.css";
-import { useSelector, useDispatch } from "react-redux";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import CloseIcon from "@material-ui/icons/Close";
-import WaitingOverlay from "../../components/WaitingOverlay/WaitingOverlay";
-import IconButton from "@material-ui/core/IconButton";
-import { showRegisterFormMethod } from "../../state-management/user/actions";
-import { showForgotPasswordFormMethod } from "../../state-management/user/actions";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import React, { useState, useEffect } from "react"
+import "../Login/login.css"
+import { notification } from "antd"
+import "antd/dist/antd.css"
+import { useSelector, useDispatch } from "react-redux"
+import TextField from "@material-ui/core/TextField"
+import Button from "@material-ui/core/Button"
+import CloseIcon from "@material-ui/icons/Close"
+import WaitingOverlay from "../../components/WaitingOverlay/WaitingOverlay"
+import IconButton from "@material-ui/core/IconButton"
+import { showRegisterFormMethod } from "../../state-management/user/actions"
+import { showForgotPasswordFormMethod } from "../../state-management/user/actions"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap"
 
 import {
   hideLoginFormMethod,
-  setUserLoggedIn,
-} from "../../state-management/user/actions";
-import FacebookLogin from "react-facebook-login";
+  setUserLoggedIn
+} from "../../state-management/user/actions"
+import FacebookLogin from "react-facebook-login"
 import {
   postLoginForm,
   postSocialRegisterForm,
   postSocialLoginForm,
   updateProfile,
-  fetchUserDetails,
-} from "../../state-management/user/asyncActions";
-import GoogleLogin from "react-google-login";
-import PhoneInput from "react-phone-input-2";
+  fetchUserDetails
+} from "../../state-management/user/asyncActions"
+import GoogleLogin from "react-google-login"
+import PhoneInput from "react-phone-input-2"
+
+import countries from "i18n-iso-countries"
+import english from "i18n-iso-countries/langs/en.json"
+
+countries.registerLocale(english)
 
 const Login = (props) => {
-  const menu = useSelector((state) => state.menu);
-  const user = useSelector((state) => state.user);
-  const [modal, setModal] = useState(false);
-  const [phn, setphn] = useState();
-  const [finalphn, setfinalphn] = useState();
-  const [gotophnmodal, setgotophnmodal] = useState(false);
-  const [getUpdateCreds, setgetUpdateCreds] = useState();
-  const [LoginParametersInPhone, setLoginParametersInPhone] = useState();
-  const [showerror, setshowerror] = useState(true);
-  const [phoneInput, setphoneInput] = useState();
-  const [name, setName] = useState();
+  const menu = useSelector((state) => state.menu)
+  const user = useSelector((state) => state.user)
+  const [modal, setModal] = useState(false)
+  const [phn, setphn] = useState()
+  const [finalphn, setfinalphn] = useState()
+  const [gotophnmodal, setgotophnmodal] = useState(false)
+  const [getUpdateCreds, setgetUpdateCreds] = useState()
+  const [LoginParametersInPhone, setLoginParametersInPhone] = useState()
+  const [showerror, setshowerror] = useState(true)
+  const [phoneInput, setphoneInput] = useState()
+  const [name, setName] = useState()
+  const [defaultCountry, setdefaultCountry] = useState()
+
+  useEffect(() => {
+    let x = countries
+      .getAlpha2Code(`${menu.restaurantInfo.country}`, "en")
+      ?.toLowerCase()
+    setdefaultCountry(x)
+  }, [])
 
   const [state, setState] = useState({
     email: "",
@@ -56,32 +69,32 @@ const Login = (props) => {
     submitText: "SUBMIT",
     errorMessage: false,
     requestSuccess: null,
-    showLoader: false,
-  });
-  const dispatch = useDispatch();
+    showLoader: false
+  })
+  const dispatch = useDispatch()
 
   const closeLoginModal = () => {
-    dispatch(hideLoginFormMethod());
-  };
+    dispatch(hideLoginFormMethod())
+  }
   const showCreateAccount = () => {
-    dispatch(showRegisterFormMethod());
+    dispatch(showRegisterFormMethod())
     //alert("cloick");
-  };
+  }
   const showForgotPassword = () => {
-    dispatch(showForgotPasswordFormMethod());
-  };
+    dispatch(showForgotPasswordFormMethod())
+  }
 
   const onEmailChange = (value) => {
-    console.log("value", { ...state, [value.target.name]: value.target.value });
-    setState({ ...state, [value.target.name]: value.target.value });
-  };
+    console.log("value", { ...state, [value.target.name]: value.target.value })
+    setState({ ...state, [value.target.name]: value.target.value })
+  }
 
   const onPasswordChange = (value) => {
-    setState({ ...state, password: value });
-  };
+    setState({ ...state, password: value })
+  }
 
-  const toggle = () => setModal(!modal);
-  var checkphnfornormalemail = "";
+  const toggle = () => setModal(!modal)
+  var checkphnfornormalemail = ""
   const onFormSubmit = async () => {
     setState({
       ...state,
@@ -89,13 +102,13 @@ const Login = (props) => {
       errorMessage: false,
       submittingClass: "submitting",
       requestSuccess: null,
-      showLoader: true,
-    });
+      showLoader: true
+    })
 
-    console.log("login data is", state);
-    const resp = await dispatch(postLoginForm(state));
-    const { payload } = await resp;
-    console.log("normal", payload);
+    console.log("login data is", state)
+    const resp = await dispatch(postLoginForm(state))
+    const { payload } = await resp
+    console.log("normal", payload)
 
     if (payload.success) {
       const {
@@ -105,11 +118,11 @@ const Login = (props) => {
           lastname: lastName,
           mobile,
           email,
-          client_id: clientId,
-        },
-      } = payload;
-      checkphnfornormalemail = payload.data.mobile;
-      console.log("payload of normal mail", payload);
+          client_id: clientId
+        }
+      } = payload
+      checkphnfornormalemail = payload.data.mobile
+      console.log("payload of normal mail", payload)
 
       // const va = {
       //   token: payload.token,
@@ -129,27 +142,27 @@ const Login = (props) => {
         lastName,
         mobile,
         email,
-        clientId,
-      });
-      console.log("phn for normal email", checkphnfornormalemail);
+        clientId
+      })
+      console.log("phn for normal email", checkphnfornormalemail)
       if (!checkphnfornormalemail) {
-        const phoneNumber = getPhoneNumber();
+        const phoneNumber = getPhoneNumber()
         // console.log("input from prompt", phoneNumber);
-        console.log("MERCHANT", menu.restaurantInfo.merchant_key);
+        console.log("MERCHANT", menu.restaurantInfo.merchant_key)
         const updateCred = {
           client_id: payload.data.client_id,
           merchant_id: menu.restaurantInfo.merchant_key,
-          phone: phoneNumber,
-        };
-        const resp2 = await dispatch(updateProfile(updateCred));
+          phone: phoneNumber
+        }
+        const resp2 = await dispatch(updateProfile(updateCred))
         const {
-          payload: { success, message },
-        } = await resp2;
-        console.log("UPDATE_PROFILE", payload);
+          payload: { success, message }
+        } = await resp2
+        console.log("UPDATE_PROFILE", payload)
         if (success) {
-          alert("Phonenumber Added succesfully");
+          alert("Phonenumber Added succesfully")
         } else {
-          alert("Some Error has occured! please check My Profile");
+          alert("Some Error has occured! please check My Profile")
         }
       }
       // console.log("normal before login", );
@@ -160,9 +173,9 @@ const Login = (props) => {
           lastName,
           mobile,
           email,
-          clientId,
+          clientId
         })
-      );
+      )
 
       //this.props.hideLoginFormMethod();
     }
@@ -173,8 +186,8 @@ const Login = (props) => {
       errorMessage: payload.message,
       submittingClass: "",
       requestSuccess: payload.success,
-      showLoader: false,
-    });
+      showLoader: false
+    })
 
     {
       payload.message
@@ -184,8 +197,8 @@ const Login = (props) => {
               marginTop: "50px",
               color: "rgba(0, 0, 0, 0.65)",
               border: "1px solid #b7eb8f",
-              backgroundColor: "#f6ffed",
-            },
+              backgroundColor: "#f6ffed"
+            }
           })
         : notification.open({
             message: "Login Successfull",
@@ -193,41 +206,41 @@ const Login = (props) => {
               marginTop: "50px",
               color: "rgba(0, 0, 0, 0.65)",
               border: "1px solid #b7eb8f",
-              backgroundColor: "#f6ffed",
-            },
-          });
+              backgroundColor: "#f6ffed"
+            }
+          })
     }
-  };
+  }
 
   useEffect(() => {
-    console.log("state in menu", state);
-  }, [state]);
+    console.log("state in menu", state)
+  }, [state])
 
-  const getPhoneNumber = () => {};
+  const getPhoneNumber = () => {}
 
-  var checkphno = "";
+  var checkphno = ""
 
   const goToPhoneNumber = () => {
     // return;
-    setfinalphn(phn);
+    setfinalphn(phn)
 
     if (phn == "") {
-      setshowerror(true);
+      setshowerror(true)
     } else {
       const creds = {
         client_id: getUpdateCreds.client_id,
         merchant_id: getUpdateCreds.merchant_id,
         phone: phoneInput.phnno,
-        mobile: phoneInput.phnno,
-      };
+        mobile: phoneInput.phnno
+      }
 
-      console.log("phn is", creds);
+      console.log("phn is", creds)
 
-      dispatch(updateProfile(creds));
+      dispatch(updateProfile(creds))
 
-      console.log("login parameters", LoginParametersInPhone);
+      console.log("login parameters", LoginParametersInPhone)
 
-      dispatch(setUserLoggedIn(LoginParametersInPhone));
+      dispatch(setUserLoggedIn(LoginParametersInPhone))
 
       notification.open({
         message: "Login Successfull",
@@ -235,24 +248,24 @@ const Login = (props) => {
           marginTop: "50px",
           color: "rgba(0, 0, 0, 0.65)",
           border: "1px solid #b7eb8f",
-          backgroundColor: "#f6ffed",
-        },
-      });
+          backgroundColor: "#f6ffed"
+        }
+      })
 
       //setgotophnmodal(false);
 
-      console.log("final creds are", LoginParametersInPhone);
+      console.log("final creds are", LoginParametersInPhone)
     }
-  };
+  }
 
   const getPhoneNumberFinal = (e) => {
-    setphn(e.target.value);
+    setphn(e.target.value)
     if (e.target.value.length < 5) {
-      setshowerror(true);
+      setshowerror(true)
     } else if (e.target.value.length >= 5) {
-      setshowerror(false);
+      setshowerror(false)
     }
-  };
+  }
 
   // const getPhoneNumberFinal = (e) => {
   //   setphn(e.target.value);
@@ -264,12 +277,12 @@ const Login = (props) => {
   // };
 
   useEffect(() => {
-    console.log("final phone is", finalphn);
-  }, [finalphn]);
+    console.log("final phone is", finalphn)
+  }, [finalphn])
 
   const responseFacebook = async (res) => {
     if (res.status !== undefined && res.status === "unknown") {
-      return;
+      return
     }
 
     // setState({
@@ -288,13 +301,13 @@ const Login = (props) => {
       email: res.email,
       firstName: res.name.split(" ")[0],
       lastName: res.name.split(" ")[1],
-      showLoader: true,
-    };
-    setName(res.name.split(" ")[0]);
+      showLoader: true
+    }
+    setName(res.name.split(" ")[0])
 
-    console.log("facebook state", newState);
+    console.log("facebook state", newState)
     // First check if this user exist in database
-    const { payload } = await dispatch(postSocialLoginForm(newState));
+    const { payload } = await dispatch(postSocialLoginForm(newState))
 
     if (payload.success) {
       // payload.data.mobile ? alert("Please enter Mobile Number") : alert("Mobile number is present")
@@ -320,19 +333,19 @@ const Login = (props) => {
         showLoader: false,
         firstName: payload.data.firstname,
         lastName: payload.data.lastname,
-        mobile: payload.data.mobile,
-      };
-      checkphno = payload.data.mobile;
+        mobile: payload.data.mobile
+      }
+      checkphno = payload.data.mobile
       // this.props.fetchUserDetails(payload.data.client_id);
       //check if mobile exists in db after
       if (!newStateAgain.mobile) {
-        setgotophnmodal(true);
+        setgotophnmodal(true)
 
         setgetUpdateCreds({
           ...getUpdateCreds,
           client_id: payload.data.client_id,
-          merchant_id: menu.restaurantInfo.merchant_key,
-        });
+          merchant_id: menu.restaurantInfo.merchant_key
+        })
 
         setLoginParametersInPhone({
           ...LoginParametersInPhone,
@@ -342,11 +355,11 @@ const Login = (props) => {
           email: res.email,
           firstName: res.name.split(" ")[0],
           lastName: res.name.split(" ")[1],
-          showLoader: true,
-        });
+          showLoader: true
+        })
       } else {
-        dispatch(setUserLoggedIn(newStateAgain));
-        dispatch(fetchUserDetails(payload.data.client_id));
+        dispatch(setUserLoggedIn(newStateAgain))
+        dispatch(fetchUserDetails(payload.data.client_id))
       }
     } else {
       // create an account
@@ -359,12 +372,12 @@ const Login = (props) => {
         mobile: "",
         timezone: menu.restaurantInfo.timezone,
         account_type: "facebook",
-        social_account_id: res.userID,
-      };
+        social_account_id: res.userID
+      }
 
-      const { payload } = await dispatch(postSocialRegisterForm(reisterState));
+      const { payload } = await dispatch(postSocialRegisterForm(reisterState))
 
-      console.log("facebook database check", payload);
+      console.log("facebook database check", payload)
 
       if (payload.success) {
         // this.setState({
@@ -375,16 +388,16 @@ const Login = (props) => {
         const newStateAgain2 = {
           clientId: payload.data.client_id,
           token: payload.token,
-          showLoader: false,
-        };
+          showLoader: false
+        }
         if (!checkphno) {
-          setgotophnmodal(true);
+          setgotophnmodal(true)
 
           setgetUpdateCreds({
             ...getUpdateCreds,
             client_id: payload.data.client_id,
-            merchant_id: menu.restaurantInfo.merchant_key,
-          });
+            merchant_id: menu.restaurantInfo.merchant_key
+          })
 
           setLoginParametersInPhone({
             ...LoginParametersInPhone,
@@ -394,25 +407,25 @@ const Login = (props) => {
             email: res.email,
             firstName: res.name.split(" ")[0],
             lastName: res.name.split(" ")[1],
-            showLoader: true,
-          });
+            showLoader: true
+          })
 
           //setState({ mobile: phoneNumber });
         } else {
-          dispatch(setUserLoggedIn(newStateAgain2));
+          dispatch(setUserLoggedIn(newStateAgain2))
         }
       } else {
         // some error has occured
-        return;
+        return
       }
     }
-  };
+  }
 
   //google
-  var checkphnforgoogle = "";
+  var checkphnforgoogle = ""
   const responseGoogle = async (res) => {
     if (res.error) {
-      return;
+      return
     }
     const newState = {
       socialLoginId: res.profileObj.googleId,
@@ -421,16 +434,16 @@ const Login = (props) => {
       email: res.profileObj.email,
       firstName: res.profileObj.givenName,
       lastName: res.profileObj.familyName,
-      showLoader: true,
-    };
-    setState(newState);
-    setName(res.profileObj.givenName);
-    console.log("121 state", newState);
+      showLoader: true
+    }
+    setState(newState)
+    setName(res.profileObj.givenName)
+    console.log("121 state", newState)
     // First check if this user exist in database
     // const { payload } = await postSocialLoginForm(newState);
-    const resp = await dispatch(postSocialLoginForm(newState));
-    const { payload } = await resp;
-    console.log("124 res", resp);
+    const resp = await dispatch(postSocialLoginForm(newState))
+    const { payload } = await resp
+    console.log("124 res", resp)
     if (payload.success) {
       // user logged In
       const newStateAgain = {
@@ -444,22 +457,22 @@ const Login = (props) => {
         clientId: payload.data.client_id,
         token: payload.token,
         mobile: payload.data.mobile,
-        showLoader: false,
-      };
-      checkphnforgoogle = payload.data.mobile;
-      setState(newStateAgain);
+        showLoader: false
+      }
+      checkphnforgoogle = payload.data.mobile
+      setState(newStateAgain)
 
       //ask phn no
-      console.log("phn of google", checkphnforgoogle);
+      console.log("phn of google", checkphnforgoogle)
 
       if (!newStateAgain.mobile) {
-        setgotophnmodal(true);
+        setgotophnmodal(true)
 
         setgetUpdateCreds({
           ...getUpdateCreds,
           client_id: payload.data.client_id,
-          merchant_id: menu.restaurantInfo.merchant_key,
-        });
+          merchant_id: menu.restaurantInfo.merchant_key
+        })
 
         setLoginParametersInPhone({
           ...LoginParametersInPhone,
@@ -473,8 +486,8 @@ const Login = (props) => {
           clientId: payload.data.client_id,
           token: payload.token,
           mobile: phn,
-          showLoader: false,
-        });
+          showLoader: false
+        })
 
         // dispatch(hideLoginFormMethod());
         // const {
@@ -489,16 +502,16 @@ const Login = (props) => {
         //dispatch(setUserLoggedIn(newStateAgain));
         //dispatch(hideLoginFormMethod());
       } else {
-        dispatch(setUserLoggedIn(newStateAgain));
+        dispatch(setUserLoggedIn(newStateAgain))
         notification.open({
           message: "Login Successfull",
           style: {
             marginTop: "50px",
             color: "rgba(0, 0, 0, 0.65)",
             border: "1px solid #b7eb8f",
-            backgroundColor: "#f6ffed",
-          },
-        });
+            backgroundColor: "#f6ffed"
+          }
+        })
       } //newState
     } else {
       // create an account
@@ -511,20 +524,20 @@ const Login = (props) => {
         mobile: "",
         timezone: menu.restaurantInfo.timezone,
         account_type: "google",
-        social_account_id: res.profileObj.googleId,
-      };
+        social_account_id: res.profileObj.googleId
+      }
 
-      console.log("check register database", reisterState);
+      console.log("check register database", reisterState)
 
-      const { payload } = await dispatch(postSocialRegisterForm(reisterState)); //state
-      console.log("check register database", payload);
+      const { payload } = await dispatch(postSocialRegisterForm(reisterState)) //state
+      console.log("check register database", payload)
       if (payload.success) {
         const newStateAgain2 = {
           clientId: payload.data.client_id,
           token: payload.token,
-          showLoader: false,
-        };
-        setState(newStateAgain2);
+          showLoader: false
+        }
+        setState(newStateAgain2)
         if (!checkphnforgoogle) {
           // const phoneNumber = getPhoneNumber();
 
@@ -545,13 +558,13 @@ const Login = (props) => {
           //   alert("Some Error has occured! please check My Profile");
           // }
 
-          setgotophnmodal(true);
+          setgotophnmodal(true)
 
           setgetUpdateCreds({
             ...getUpdateCreds,
             client_id: payload.data.client_id,
-            merchant_id: menu.restaurantInfo.merchant_key,
-          });
+            merchant_id: menu.restaurantInfo.merchant_key
+          })
 
           setLoginParametersInPhone({
             ...LoginParametersInPhone,
@@ -565,10 +578,10 @@ const Login = (props) => {
             clientId: payload.data.client_id,
             token: payload.token,
             mobile: phn,
-            showLoader: false,
-          });
+            showLoader: false
+          })
         } else {
-          dispatch(setUserLoggedIn(newStateAgain2));
+          dispatch(setUserLoggedIn(newStateAgain2))
         }
         //this.props.setUserLoggedIn(this.state);
         //state
@@ -576,7 +589,7 @@ const Login = (props) => {
         // some error has occured
       }
     }
-  };
+  }
 
   return (
     <>
@@ -584,13 +597,14 @@ const Login = (props) => {
         <>
           <Modal
             isOpen={true}
+            className='custom-phone-modal'
             // toggle={toggle}
-            style={{
-              top: "25%",
-              left: "1%",
-              width: "35%",
-              borderRadius: "20px",
-            }}
+            // style={{
+            //   top: "25%",
+            //   left: "1%",
+            //   width: "35%",
+            //   borderRadius: "20px"
+            // }}
           >
             <ModalHeader style={{ borderBottom: "none" }}>
               {" "}
@@ -598,7 +612,7 @@ const Login = (props) => {
                 style={{
                   fontSize: "20px",
                   marginLeft: "30px",
-                  whiteSpace: "nowrap",
+                  whiteSpace: "nowrap"
                 }}
               ></p>
             </ModalHeader>
@@ -606,7 +620,7 @@ const Login = (props) => {
               style={{
                 maxHeight: "400px",
 
-                marginTop: "-15px",
+                marginTop: "-15px"
               }}
             >
               <div style={{ marginLeft: "30px" }}>
@@ -615,21 +629,22 @@ const Login = (props) => {
                 <p>
                   <b>Please enter your phone number to proceed</b>
                 </p>
+                {console.log("default country in comp", defaultCountry)}
                 <PhoneInput
                   className='resp_tf'
-                  country={"dk"}
+                  country={`${defaultCountry}`}
                   enableSearch={true}
                   name='phonenumber'
                   onChange={(e, country, value) => {
                     setphoneInput({
                       ccid: country,
-                      phnno: e,
-                    });
-                    console.log("value of phn", value);
+                      phnno: e
+                    })
+                    console.log("value of phn", value)
                     if (e == "" || e == null) {
-                      setshowerror(true);
+                      setshowerror(true)
                     } else {
-                      setshowerror(false);
+                      setshowerror(false)
                     }
                   }}
                   // onChange={getPhoneNumberFinal}
@@ -646,7 +661,7 @@ const Login = (props) => {
                     backgroundColor: "#302f31",
                     padding: "10px",
                     color: "white",
-                    width: "90%",
+                    width: "90%"
                   }}
                 >
                   Submit
@@ -715,7 +730,7 @@ const Login = (props) => {
                     backgroundColor: "#302f31",
                     padding: "10px",
                     color: "white",
-                    width: "90%",
+                    width: "90%"
                   }}
                 >
                   Submit
@@ -728,7 +743,7 @@ const Login = (props) => {
                   style={{
                     marginLeft: "40px",
                     color: "#5d5e5e",
-                    cursor: "pointer",
+                    cursor: "pointer"
                   }}
                 >
                   Create account
@@ -738,7 +753,7 @@ const Login = (props) => {
                   style={{
                     marginLeft: "31%",
                     color: "#5d5e5e",
-                    cursor: "pointer",
+                    cursor: "pointer"
                   }}
                 >
                   Forgot Password ?
@@ -799,6 +814,6 @@ const Login = (props) => {
         </div>
       ) : null}
     </>
-  );
-};
-export default Login;
+  )
+}
+export default Login

@@ -24,7 +24,7 @@ import img2 from "./387@2x.png"
 import img3 from "./389@2x.png"
 import img4 from "./391@2x.png"
 import img5 from "./390@2x.png"
-
+import { truncateDecimal } from "../../state-management/menu/utils"
 const MenuTable = ({
   onAddItem,
   onRemoveItem,
@@ -266,6 +266,59 @@ const MenuTable = ({
     dispatch(removeItem(item, item.modifiers || null, 0, menu.restaurantInfo))
   }
 
+  const getPriceIfZero = (item) => {
+    var priceArr = []
+    const itemForcedModifiers = item.forced_modifier.split(",")
+    console.log("split fm", itemForcedModifiers)
+    itemForcedModifiers.map((curritem) => {
+      const filteredModifier = menu.allForcedModifier.filter((itemOfFilter) =>
+        curritem.includes(itemOfFilter.fm_cat_id)
+      )
+
+      // let arr = filteredModifier[0]?.items
+
+      let min = Math.min.apply(
+        null,
+        filteredModifier[0]?.items.map(function (item) {
+          return item.price
+        })
+      )
+      var m = isPriceWithoutTax()
+        ? truncateDecimal(min)
+        : truncateDecimal(
+            Number(min) +
+              Number(getTaxes(item, Number(min), menu.restaurantInfo).tax)
+          )
+
+      priceArr.push(m)
+    })
+
+    console.log("min is", priceArr)
+    var final = 0
+    priceArr.map((currval) => {
+      final = final + parseFloat(currval)
+    })
+    return final
+    // const filteredModifier = menu.allForcedModifier.filter((itemOfFilter) =>
+    //   itemForcedModifiers.includes(itemOfFilter.fm_cat_id)
+    // )
+
+    // // let arr = filteredModifier[0]?.items
+
+    // let min = Math.min.apply(
+    //   null,
+    //   filteredModifier[0]?.items.map(function (item) {
+    //     return item.price
+    //   })
+    // )
+    // return isPriceWithoutTax()
+    //   ? min
+    //   : truncateDecimal(
+    //       Number(min) +
+    //         Number(getTaxes(item, Number(min), menu.restaurantInfo).tax)
+    //     )
+  }
+
   return (
     <>
       {loading ? (
@@ -407,10 +460,10 @@ const MenuTable = ({
                                   </div>
                                 </div>
 
-                                {item.description ? (
+                                {item.description.length > 100 ? (
                                   <>
                                     <p className='food-description'>
-                                      {item.description.slice(0, 50)}
+                                      {item.description.slice(0, 100)}
                                       <span id={`${item.id}dots`}>...</span>
                                       <span
                                         id={`${item.id}myBtn`}
@@ -424,17 +477,35 @@ const MenuTable = ({
                                         id={`${item.id}more`}
                                         style={{ display: "none" }}
                                       >
-                                        {item.description.slice(51, 10000)}
+                                        {item.description.slice(101, 10000)}
                                       </p>
                                     </p>
                                   </>
-                                ) : null}
+                                ) : (
+                                  <>
+                                    <p className='food-description'>
+                                      {item.description}
+                                    </p>
+                                  </>
+                                )}
 
-                                <div className='item-price-parent-div'>
-                                  <span className='item-price'>{`${symbol} ${getActualPrice(
-                                    item
-                                  )}`}</span>
-                                </div>
+                                {item.price == "0" ? (
+                                  <>
+                                    <div className='item-price-parent-div'>
+                                      <span className='item-price'>
+                                        {`${symbol} ${getPriceIfZero(item)}`}
+                                      </span>
+                                    </div>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div className='item-price-parent-div'>
+                                      <span className='item-price'>
+                                        {`${symbol} ${getActualPrice(item)}`}
+                                      </span>
+                                    </div>
+                                  </>
+                                )}
                               </div>
 
                               {/* {item.base ? (
@@ -484,6 +555,7 @@ const MenuTable = ({
                                 </div>
                               </div>
                             )} */}
+
                               {item.qty ? (
                                 <>
                                   <div className='after-first-add-container'>

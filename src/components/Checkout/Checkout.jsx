@@ -460,10 +460,10 @@ const Checkout = () => {
   const sendpaymentreq = async (type, orderId) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        var errorurl = `https://ciboapp.com/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`
-        var failedurl = `https://ciboapp.com/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`
+        var errorurl = `https://ciboapp.me/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`
+        var failedurl = `https://ciboapp.me/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`
         //var failedurl = `http://localhost:3000/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/paymentfailed`;
-        var accepturl = `https://ciboapp.com/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${orderId}`
+        var accepturl = `https://ciboapp.me/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${orderId}`
         //var accepturl = `http://localhost:3000/feedmii/?/restId=${menu.restaurantInfo.restaurant_id}/ordersuccess?orderid=${orderId}`;
         var callbackurl = "https://ciboapp.com/api/mobileApi/v2/app/callback"
         var mkey = menu.restaurantInfo.merchant_key
@@ -502,10 +502,7 @@ const Checkout = () => {
         //test secret : eAfg21swu0y2
 
         axios
-          .post(
-            "https://api.zotto.z-payments.com/api/payment-link",
-            paymentdata
-          )
+          .post("https://paymentz.z-pay.co.uk/api/payment-link", paymentdata)
           .then((response) => {
             console.log(response.data)
             resolve("complete")

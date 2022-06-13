@@ -160,7 +160,7 @@
   margin: 0rem 0px;
   font-size: 0.8rem;
   color: rgb(79, 79, 79);
-  max-width: 75%;
+  max-width: 100%;
   overflow-wrap: break-word;
 }
 .specific-add-button {
@@ -194,7 +194,7 @@
 }
 .read-more {
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: 500;
   color: rgb(28, 28, 28);
 }
@@ -307,6 +307,7 @@
     margin: 0rem 0px;
     font-size: 0.8rem;
     color: rgb(79, 79, 79);
+
     max-width: 100%;
     overflow-wrap: break-word;
   }

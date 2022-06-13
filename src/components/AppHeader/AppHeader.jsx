@@ -1,66 +1,85 @@
-import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
+import React, { useState } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { Link, useHistory } from "react-router-dom"
 //import Logo from "../../assets/img/zottoLogo.png";
 import {
   setUserLoggedOut,
   showLoginFormMethod,
-  showRegisterFormMethod,
-} from "../../state-management/user/actions";
+  showRegisterFormMethod
+} from "../../state-management/user/actions"
 // import "./AppHeader.scss";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import CloseIcon from "@material-ui/icons/Close";
-import "./AppHeader.css";
-import img1 from "./Bold-2px-person.png";
-import PersonIcon from "@material-ui/icons/Person";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
+import CloseIcon from "@material-ui/icons/Close"
+import { IconButton } from "@material-ui/core"
+import "./AppHeader.css"
+import img1 from "./Bold-2px-person.png"
+import PersonIcon from "@material-ui/icons/Person"
+import { SwipeableDrawer } from "@material-ui/core"
+import { makeStyles } from "@material-ui/core"
+import { DialogTitle } from "@material-ui/core"
+
+const useStyle = makeStyles({
+  list: {
+    width: 300,
+    zIndex: 99
+  }
+})
 
 const Appheader = () => {
-  const History = useHistory();
-  const main = useSelector((state) => state.main);
-  const menu = useSelector((state) => state.menu);
+  const History = useHistory()
+  const main = useSelector((state) => state.main)
+  const menu = useSelector((state) => state.menu)
 
-  const [navbar, setNavbar] = useState(false);
-  const user = useSelector((state) => state.user);
-  const dispatch = useDispatch();
-  const history = useHistory();
+  const [navbar, setNavbar] = useState(false)
+  const user = useSelector((state) => state.user)
+  const dispatch = useDispatch()
+  const history = useHistory()
 
   const changeBackground = () => {
     if (window.scrollY >= 60) {
-      setNavbar(true);
+      setNavbar(true)
     } else {
-      setNavbar(false);
+      setNavbar(false)
     }
-  };
+  }
 
-  window.addEventListener("scroll", changeBackground);
+  window.addEventListener("scroll", changeBackground)
 
   const callLogout = () => {
-    dispatch(setUserLoggedOut());
+    dispatch(setUserLoggedOut())
     window.location.replace(
       `${process.env.REACT_APP_PUBLIC_URL}restId=${menu.restaurantInfo.restaurant_id}/menu`
-    );
-  };
+    )
+  }
 
   const showMobileMenu = () => {
-    var x = document.getElementById("main-menu-id");
-    x.classList.add("show");
-  };
+    // var x = document.getElementById("main-menu-id")
+    // x.classList.add("show")
+    setdraweropen(true)
+  }
 
   const showEditProfileOnMobile = () => {
-    var x = document.getElementById("editprofile");
-    x.classList.add("show_normal");
-  };
+    var x = document.getElementById("editprofile")
+    x.classList.add("show_normal")
+  }
   const closemobilemenu = () => {
-    var x = document.getElementById("main-menu-id");
-    x.classList.remove("show");
-  };
+    var x = document.getElementById("main-menu-id")
+    x.classList.remove("show")
+  }
+
+  const [draweropen, setdraweropen] = useState(false)
+  const classes = useStyle()
+
+  const callCancel = () => {
+    alert("heyeye")
+  }
 
   return (
-    <header className="main-header header-bg">
-      <div className="container-fluid">
-        <div className="row">
+    <header className='main-header header-bg'>
+      <div className='container-fluid'>
+        <div className='row'>
           <div
-            className="col-md-4 col-sm-4 col-4"
+            className='col-md-4 col-sm-4 col-4'
             style={{ fontSize: "1.2rem", color: "black" }}
           >
             {/* paste logo here */}
@@ -72,18 +91,18 @@ const Appheader = () => {
               alt="zotto"
 
             /> */}
-            <div className="left-parent hide-on-mobile">
+            <div className='left-parent hide-on-mobile'>
               <ul>
                 {Number(menu.restaurantInfo["chain_owner_id"]) ? (
                   <>
                     <>
-                      <li key={11} className="navigation-buttons">
+                      <li key={11} className='navigation-buttons'>
                         <a
-                          className="text-pizzamodal"
+                          className='text-pizzamodal'
                           style={{
                             color: "black",
                             fontWeight: "600",
-                            fontSize: "16px",
+                            fontSize: "16px"
                           }}
                           href={`?/chainId=${menu.restaurantInfo.chain_owner_id}`}
                         >
@@ -103,9 +122,9 @@ const Appheader = () => {
                       cursor: "pointer",
                       color: "black",
                       fontWeight: "600",
-                      fontSize: "16px",
+                      fontSize: "16px"
                     }}
-                    className="text-pizzamodal"
+                    className='text-pizzamodal'
                     // href={`?/restId=${menu.restaurantInfo.restaurant_id}/menu`}
                   >
                     MENU
@@ -114,25 +133,197 @@ const Appheader = () => {
               </ul>
             </div>
           </div>
-          <nav className="col-md-8 col-sm-8 col-8">
-            <div className="hide-on-desktop hamburger-container">
+
+          <nav className='col-md-8 col-sm-8 col-8'>
+            <div className='hide-on-desktop hamburger-container'>
+              <SwipeableDrawer
+                anchor={"left"}
+                open={draweropen}
+                onClose={() => setdraweropen(false)}
+                onOpen={() => {}}
+              >
+                <div
+                  className={classes.list}
+                  style={{
+                    marginTop: "10px"
+                  }}
+                >
+                  {/* <DialogTitle
+                    className='drawerTitle'
+                    onClick={() => setdraweropen(false)}
+                  >
+                    <IconButton>
+                      <CloseIcon />
+                    </IconButton>
+                  </DialogTitle> */}
+                  {/* <div
+                    style={{
+                      height: "30px",
+                      width: "30px",
+                      position: "relative",
+                      // border: "1px solid black",
+                      left: "85%",
+                      zIndex: "-1",
+                      top: "-20%"
+                    }}
+                    onClick={callCancel}
+                  >
+                    <CloseIcon />
+                  </div> */}
+
+                  <div
+                    style={{ marginTop: "20%" }}
+                    onClick={() => {
+                      History.push("menu")
+                      setdraweropen(false)
+                    }}
+                  >
+                    <h3
+                      style={{
+                        marginLeft: "20px",
+                        color: "black",
+                        cursor: "pointer",
+                        color: "black",
+                        fontWeight: "600",
+                        fontSize: "18px",
+                        letterSpacing: "0.15em"
+                      }}
+                    >
+                      MENU
+                    </h3>
+                  </div>
+                  <hr />
+
+                  {user.user.isUserLoggedIn ? (
+                    <>
+                      <div
+                        onClick={() => {
+                          History.push("myOrders")
+                          setdraweropen(false)
+                        }}
+                      >
+                        <h3
+                          style={{
+                            marginLeft: "20px",
+                            color: "black",
+                            cursor: "pointer",
+                            color: "black",
+                            fontWeight: "600",
+                            fontSize: "18px",
+                            letterSpacing: "0.15em"
+                          }}
+                        >
+                          MY ORDERS
+                        </h3>
+                      </div>
+                      <hr />
+
+                      <div
+                        onClick={() => {
+                          History.push("myOrders")
+                          setdraweropen(false)
+                        }}
+                      >
+                        <h3
+                          style={{
+                            marginLeft: "20px",
+                            color: "black",
+                            cursor: "pointer",
+                            color: "black",
+                            fontWeight: "600",
+                            fontSize: "18px",
+                            letterSpacing: "0.15em"
+                          }}
+                        >
+                          MY PROFILE
+                        </h3>
+                      </div>
+                      <hr />
+
+                      <div onClick={callLogout}>
+                        <h3
+                          style={{
+                            marginLeft: "20px",
+                            color: "black",
+                            cursor: "pointer",
+                            color: "black",
+                            fontWeight: "600",
+                            fontSize: "18px",
+                            letterSpacing: "0.15em"
+                          }}
+                        >
+                          LOGOUT
+                        </h3>
+                      </div>
+                      <hr />
+                    </>
+                  ) : (
+                    <>
+                      <div
+                        onClick={() => {
+                          setdraweropen(false)
+                          dispatch(showLoginFormMethod())
+                        }}
+                      >
+                        <h3
+                          style={{
+                            marginLeft: "20px",
+                            color: "black",
+                            cursor: "pointer",
+                            color: "black",
+                            fontWeight: "600",
+                            fontSize: "18px",
+                            letterSpacing: "0.15em"
+                          }}
+                        >
+                          LOGIN
+                        </h3>
+                      </div>
+                      <hr />
+
+                      <div
+                        onClick={() => {
+                          setdraweropen(false)
+                          dispatch(showRegisterFormMethod())
+                        }}
+                      >
+                        <h3
+                          style={{
+                            marginLeft: "20px",
+                            color: "black",
+                            cursor: "pointer",
+                            color: "black",
+                            fontWeight: "600",
+                            fontSize: "18px",
+                            letterSpacing: "0.15em"
+                          }}
+                        >
+                          REGISTER
+                        </h3>
+                      </div>
+                      <hr />
+                    </>
+                  )}
+                </div>
+              </SwipeableDrawer>
+
               <a
-                className="cmn-toggle-switch cmn-toggle-switch__htx open_close "
+                className='cmn-toggle-switch cmn-toggle-switch__htx open_close '
                 style={{
-                  marginTop: "12px",
+                  marginTop: "12px"
                 }}
                 onClick={showMobileMenu}
               >
-                <span className="color-black">Menu mobile</span>
+                <span className='color-black'>Menu mobile</span>
               </a>
             </div>
 
-            <div className="main-menu" id="main-menu-id">
-              <div id="header_menu" style={{ backgroundColor: "white" }}></div>
+            <div className='main-menu' id='main-menu-id'>
+              <div id='header_menu' style={{ backgroundColor: "white" }}></div>
               <a
-                href="#"
-                className="open_close"
-                id="close_in"
+                href='#'
+                className='open_close'
+                id='close_in'
                 onClick={closemobilemenu}
               >
                 <CloseIcon style={{ color: "black" }} />
@@ -149,9 +340,9 @@ const Appheader = () => {
                           color: "black",
                           fontWeight: "600",
                           fontSize: "16px",
-                          letterSpacing: "0.15em",
+                          letterSpacing: "0.15em"
                         }}
-                        className="hide-on-desktop text-pizzamodal"
+                        className='hide-on-desktop text-pizzamodal'
                         href={`?/chainId=${menu.restaurantInfo.chain_owner_id}`}
                       >
                         Home
@@ -167,9 +358,9 @@ const Appheader = () => {
                       color: "black",
                       fontWeight: "600",
                       fontSize: "16px",
-                      letterSpacing: "0.15em",
+                      letterSpacing: "0.15em"
                     }}
-                    className="hide-on-desktop text-pizzamodal"
+                    className='hide-on-desktop text-pizzamodal'
                     // href={`?/restId=${menu.restaurantInfo.restaurant_id}/menu`}
                   >
                     Menu
@@ -178,19 +369,19 @@ const Appheader = () => {
 
                 {user.user.isUserLoggedIn ? (
                   <li
-                    className="submenu"
+                    className='submenu'
                     style={{ color: "black", cursor: "pointer" }}
                     onClick={showEditProfileOnMobile}
                   >
                     {user.user.isUserLoggedIn ? (
                       <a
-                        className="show-submenu text-pizzamodal"
+                        className='show-submenu text-pizzamodal'
                         style={{
                           color: "black",
                           fontWeight: "600",
                           fontSize: "16px",
                           letterSpacing: "0.15em",
-                          marginTop: "-0px",
+                          marginTop: "-0px"
                         }}
                       >
                         {user.user.firstName} &nbsp;
@@ -201,15 +392,15 @@ const Appheader = () => {
                             marginTop: "7px",
                           }}
                         /> */}
-                        <img src={img1} className="img-profile" />
+                        <img src={img1} className='img-profile' />
                       </a>
                     ) : (
                       <a
-                        className="show-submenu text-pizzamodal"
+                        className='show-submenu text-pizzamodal'
                         style={{ fontWeight: "600" }}
                       >
                         user
-                        <ExpandMoreIcon fontSize="small" />
+                        <ExpandMoreIcon fontSize='small' />
                       </a>
                     )}
                     {/* <a href="javascript:void(0);" className="show-submenu">
@@ -217,11 +408,11 @@ const Appheader = () => {
                     <i className="icon-down-open-mini" />
                   </a> */}
 
-                    <ul className="" id="editprofile">
+                    <ul className='' id='editprofile'>
                       <li
                         style={{
                           color: "black",
-                          cursor: "pointer",
+                          cursor: "pointer"
                         }}
                         onClick={() => History.push("myOrders")}
                       >
@@ -272,40 +463,40 @@ const Appheader = () => {
                   <>
                     <li>
                       <a
-                        className="text-pizzamodal"
+                        className='text-pizzamodal'
                         style={{
                           color: "black",
                           cursor: "pointer",
                           fontWeight: "600",
-                          fontSize: "16px",
+                          fontSize: "16px"
                         }}
                         onClick={() => {
-                          var x = document.getElementById("main-menu-id");
-                          x.classList.remove("show");
-                          dispatch(showLoginFormMethod());
+                          var x = document.getElementById("main-menu-id")
+                          x.classList.remove("show")
+                          dispatch(showLoginFormMethod())
                         }}
-                        data-toggle="modal"
-                        data-target="#login_2"
+                        data-toggle='modal'
+                        data-target='#login_2'
                       >
                         Login
                       </a>
                     </li>
                     <li>
                       <a
-                        className="text-pizzamodal"
+                        className='text-pizzamodal'
                         style={{
                           color: "black",
                           cursor: "pointer",
                           fontWeight: "600",
-                          fontSize: "16px",
+                          fontSize: "16px"
                         }}
                         onClick={() => {
-                          var x = document.getElementById("main-menu-id");
-                          x.classList.remove("show");
-                          dispatch(showRegisterFormMethod());
+                          var x = document.getElementById("main-menu-id")
+                          x.classList.remove("show")
+                          dispatch(showRegisterFormMethod())
                         }}
-                        data-toggle="modal"
-                        data-target="#login_2"
+                        data-toggle='modal'
+                        data-target='#login_2'
                       >
                         Register
                       </a>
@@ -321,7 +512,7 @@ const Appheader = () => {
       </div>
       {/* End container */}
     </header>
-  );
-};
+  )
+}
 
-export default Appheader;
+export default Appheader

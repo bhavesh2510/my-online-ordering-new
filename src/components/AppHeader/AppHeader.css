@@ -64,3 +64,19 @@
     border-radius: 10px;
   }
 }
+@media (min-width: 420px) and (max-width: 768px) {
+  .hamburger-container {
+    margin-left: 340px;
+    background-color: transparent;
+    height: 50px;
+    width: 50px;
+    border-radius: 10px;
+  }
+}
+
+.drawerTitle {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 !important;
+  cursor: pointer;
+}

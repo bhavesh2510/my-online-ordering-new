@@ -93,7 +93,10 @@ const MenuItems = React.memo(
         )
       }
 
-      console.log("temp arr is", tem_arr)
+      tem_arr = tem_arr.filter(function (x) {
+        return x.length
+      })
+
       return tem_arr
     }
 
@@ -371,7 +374,7 @@ const MenuItems = React.memo(
             {console.log("items in menuitem before pizza", pizzas)}
             {/* {status ? (
               <> */}
-            {menu.pizzas && selectedCategoryId !== -1 ? (
+            {menu.pizzas.length >= 1 && selectedCategoryId !== -1 ? (
               <PizzaMenuTable
                 symbol={restaurantInfo.monetary_symbol}
                 category_name='Pizza'

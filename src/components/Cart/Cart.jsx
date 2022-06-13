@@ -343,17 +343,19 @@ const Cart = (props) => {
         Your order <ShoppingCartIcon style={{ float: "right" }} />
       </h3>
 
-      <ItemList
-        items={menu.cart}
-        currency={menu.restaurantInfo.monetary_symbol}
-        isPriceWithoutTax={
-          Number(menu.restaurantInfo["price_without_tax_flag"]) == 1
-        }
-        timezone={menu.restaurantInfo.timezone}
-        onRemove={removeFromCart}
-        onAdd={addItemToCart}
-        //onDelete={props.removeCartItem}
-      />
+      <div className='small-scroll'>
+        <ItemList
+          items={menu.cart}
+          currency={menu.restaurantInfo.monetary_symbol}
+          isPriceWithoutTax={
+            Number(menu.restaurantInfo["price_without_tax_flag"]) == 1
+          }
+          timezone={menu.restaurantInfo.timezone}
+          onRemove={removeFromCart}
+          onAdd={addItemToCart}
+          //onDelete={props.removeCartItem}
+        />
+      </div>
 
       {/* <div className="row" id="options_2">
         <div className="col-xl-4 col-md-12 col-sm-12 col-4">

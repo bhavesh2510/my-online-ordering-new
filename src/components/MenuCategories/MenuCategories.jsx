@@ -915,48 +915,51 @@ const MenuSubCategory = React.memo(
     return list.map((s_category, i) => {
       //drinkstatus(true);
       console.log("s_category", s_category)
+      if (s_category.online == 1) {
+        return (
+          <>
+            <li
+              //id={s_category.cname}
+              key={s_category.category_id}
+              // className='categories-list-in-menu'
+              style={{
+                cursor: "pointer",
+                backgroundColor: "#F3F2F7",
+                borderRadius: "8px",
+                marginTop: "15px",
+                // height: "40px",
+                height: "auto",
+                width: "85%",
+                marginLeft: "15px"
+              }}
+              // className={`category ${
+              //   isSelectedCategory(s_category.category_id, i)
+              //     ? "selected_cat_id"
+              //     : ""
+              // }`}
 
-      return (
-        <li
-          //id={s_category.cname}
-          key={s_category.category_id}
-          // className='categories-list-in-menu'
-          style={{
-            cursor: "pointer",
-            backgroundColor: "#F3F2F7",
-            borderRadius: "8px",
-            marginTop: "15px",
-            // height: "40px",
-            height: "auto",
-            width: "85%",
-            marginLeft: "15px"
-          }}
-          // className={`category ${
-          //   isSelectedCategory(s_category.category_id, i)
-          //     ? "selected_cat_id"
-          //     : ""
-          // }`}
-
-          // onClick={(e) => handleClick(e, s_category)}
-        >
-          <Link
-            activeClass='selected_cat_id'
-            style={{ textAlign: "center", fontWeight: "700" }}
-            className={s_category.cname}
-            to={s_category.cname}
-            // to='Kebabs'
-            spy={true}
-            smooth={true}
-            offset={-70}
-            duration={0}
-            onClick={(e) => {
-              handleClick(e, s_category)
-            }}
-          >
-            {s_category?.cname}
-          </Link>
-        </li>
-      )
+              // onClick={(e) => handleClick(e, s_category)}
+            >
+              <Link
+                activeClass='selected_cat_id'
+                style={{ textAlign: "center", fontWeight: "700" }}
+                className={s_category.cname}
+                to={s_category.cname}
+                // to='Kebabs'
+                spy={true}
+                smooth={true}
+                offset={-70}
+                duration={0}
+                onClick={(e) => {
+                  handleClick(e, s_category)
+                }}
+              >
+                {s_category?.cname}
+              </Link>
+            </li>
+          </>
+        )
+      }
     })
   }
 )
